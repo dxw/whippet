@@ -11,23 +11,23 @@ class Plugin extends RubbishThorClone {
     $this->command('update', 'Clones all the plugins in your project into the plugins directory.');
   }
 
-  public function add($repo, $revision){
+  private function init(){
     if(!$plugins_json = $this->find_plugins_json()) {
       echo "Unable to find plugins.json";
       exit(1);
     }
 
-    $project_dir = dirname($plugins_json);
+    $this->plugins_json = $this->find_plugins_json();
+    $this->project_dir = dirname($this->plugins_json);
+    $this->plugins = $this->load_plugins($this->plugins_json);
+  }
 
-    $plugins = json_decode(file_get_contents($plugins_json));
+  private function save_json()
+  {
+    file_put_contents($this->plugins_json . ".new", json_encode($this->plugins, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+  }
 
-    // TODO: handle invalid json properly
-    // http://www.php.net/manual/en/function.json-last-error.php
-    if(!is_object($plugins)) {
-      echo "Unable to parse plugins.json";
-      exit(1);
-    }
-
+  public function add($repo, $revision){
     if(isset($this->options->dir)) {
       $directory = $this->options->dir;
     }
@@ -41,17 +41,43 @@ class Plugin extends RubbishThorClone {
     $new_plugin->repository = $repo;
     $new_plugin->revision = $revision;
 
-    $plugins->plugins->$directory = $new_plugin;
+    $this->init();
 
-    file_put_contents($plugins_json . ".new", json_encode($plugins, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $this->plugins->plugins->$directory = $new_plugin;
+
+    $this->save_json();
   }
 
   public function remove($repo){
-    echo "Remove $repo";
+    $this->init();
+
+    foreach($this->plugins->plugins as $dir => $plugin){
+      if($plugin->repository == $repo) {
+        unset($this->plugins->plugins->$dir);
+        $this->save_json();
+
+        return;
+      }
+    }
+
+    echo "Unable to find {$repo} in this project\n";
   }
 
   public function update(){
     echo "Update";
+  }
+
+  protected function load_plugins($plugins_json){
+    $plugins = json_decode(file_get_contents($plugins_json));
+
+    // TODO: handle invalid json properly
+    // http://www.php.net/manual/en/function.json-last-error.php
+    if(!is_object($plugins)) {
+      echo "Unable to parse plugins.json";
+      exit(1);
+    }
+
+    return $plugins;
   }
 
   protected function find_plugins_json(){
