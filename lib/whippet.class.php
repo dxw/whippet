@@ -9,6 +9,7 @@ class Plugin extends RubbishThorClone {
     });
     $this->command('remove REPO', 'Removes the plugin in REPO from the project.');
     $this->command('update', 'Clones all the plugins in your project into the plugins directory.');
+    $this->command('show', 'Lists currently installed plugins.');
   }
 
   private function init(){
@@ -64,7 +65,35 @@ class Plugin extends RubbishThorClone {
   }
 
   public function update(){
-    echo "Update";
+    $this->init();
+
+    $plugin_dir = "{$this->project_dir}/wp-content/plugins";
+
+    foreach($this->plugins->plugins as $dir => $plugin) {
+      // Is the repo there already?
+      if(file_exists("{$plugin_dir}/$dir/.git")) {
+        // We already have the repo. Make sure it's up to date.
+        shell_exec("cd {$plugin_dir}/$dir && git fetch -a");
+      }
+      else {
+        // We don't have the repo. Clone it.
+        shell_exec("cd {$plugin_dir} && git clone {$plugin->repository} {$dir} && cd {$dir} && git checkout {$plugin->revision}");
+      }
+    }
+  }
+
+  public function show() {
+    $this->init();
+
+    echo "Installed plugins:\n\n";
+
+    $table = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT, '');
+
+    foreach($this->plugins->plugins as $dir => $plugin) {
+      $table->addRow(array($plugin->revision, $dir, $plugin->repository));
+    }
+
+    echo $table->getTable();
   }
 
   protected function load_plugins($plugins_json){
