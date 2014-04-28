@@ -2,6 +2,8 @@
 
 require "rubbish_thor_clone/rubbish_thor_clone.class.php";
 
+require "modules/plugin.class.php";
+
 class Whippet extends RubbishThorClone {
   public function commands() {
     $this->command('plugin PLUGIN_COMMAND', '');
