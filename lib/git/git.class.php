@@ -104,7 +104,7 @@ class Git {
     $output = array();
     $return = 0;
 
-    if(!file_exists($this->repo_path)) {
+    if($cd && !file_exists($this->repo_path)) {
       echo "Error: directory does not exist ({$this->repo_path})\n";
       exit(1);
     }
