@@ -92,6 +92,12 @@ class Plugin extends RubbishThorClone {
       foreach($this->plugins_locked->plugins as $dir => $plugin) {
         $git = new Git("{$this->plugin_dir}/{$dir}");
 
+        if(!$git->is_repo()) {
+          // The repo has gone missing. Let's add it back.
+          echo "[Adding {$dir}] ";
+          $git->clone_repo($plugin->repository);
+        }
+
         if($this->plugins_manifest->$dir->revision == $plugin->revision) {
           echo "[Checking {$dir}] ";
           $git->checkout($plugin->commit);
