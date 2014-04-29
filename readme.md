@@ -10,6 +10,33 @@ Whippet is a tool for managing WordPress applications. It has a few basic goals:
 
 At the moment, Whippet just manages plugins.
 
+
+# TODO
+
+## Next
+
+1. Whippet should manage and deploy the correct version of WordPress
+  - whippet wordpress install
+  - whippet wordpress update
+  - Where should this be configured?
+  - Where should WordPress live? Presumably we should zap wp-content and have wordpress there instead, as it's supposed to be a deployable directory...
+2. How are we going to handle these things?
+  - wp-config.php
+  - favicons
+  - google webmaster shiz
+  - mu-plugins
+  - We need something that defines how and where these things are generated
+    - Some things will be different on production/dev/test. I guess we need to add back nascent support for environments but just not support them in whippet plugin install|update
+3. Refactor plugin.class.php to make it DRYer, and improve console I/O
+4. Integrate whippet-server back into the project
+  - Make sure it is compatible with other servers, like wp-cli
+
+## Later
+
+1. Implement whippet generate theme|app
+2. Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don' have lots of identical copies of things in application directories.
+
+
 # Commands
 
 ## Plugins
@@ -46,7 +73,21 @@ Which will cause Whippet to install the plugin at the commit with that tag. If y
 akismet = master
 ```
 
-Then whippet's behaviour will vary depending on what command you run.
+Then whippet's behaviour will vary depending on what command you run (see below).
+
+Finally, you can also specify a repo explicitly:
+
+```
+# Pull version 3.0.0 from your own special repo
+akismet = 3.0.0, git@my-git-server.com:akismet
+
+# Or, pull master:
+akismet = 3.0.0, git@my-git-server.com:akismet
+
+# This works too:
+akismet = , git@my-git-server.com:akismet
+```
+
 
 ### whippet plugins install
 
