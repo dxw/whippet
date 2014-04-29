@@ -288,10 +288,10 @@ class Plugin extends RubbishThorClone {
         exit(1);
       }
 
-      $this->plugins_locked->plugins->$dir = new stdClass();
-      $this->plugins_locked->plugins->$dir->repository = $this->plugins_manifest->$dir->repository;
-      $this->plugins_locked->plugins->$dir->revision   = $this->plugins_manifest->$dir->revision;
-      $this->plugins_locked->plugins->$dir->commit     = $commit;
+      $this->plugins_locked->plugins->$dir              = new stdClass();
+      $this->plugins_locked->plugins->$dir->repository  = $this->plugins_manifest->$dir->repository;
+      $this->plugins_locked->plugins->$dir->revision    = $this->plugins_manifest->$dir->revision;
+      $this->plugins_locked->plugins->$dir->commit      = $commit;
     }
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
