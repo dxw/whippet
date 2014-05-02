@@ -29,21 +29,21 @@ trait manifest_io {
 
       if($plugin == 'wordpress') {
 
-        $this->wordpress = new stdclass();
+        $this->wordpress_manifest = new stdclass();
 
         if(strpos($data, ',') !== false) {
-          list($this->wordpress->revision, $this->wordpress->repository) = explode(',', $data);
+          list($this->wordpress_manifest->revision, $this->wordpress_manifest->repository) = explode(',', $data);
         }
         else {
-          $this->wordpress->revision = $data;
+          $this->wordpress_manifest->revision = $data;
         }
 
-        if(empty($this->wordpress->repository)) {
-          $this->wordpress->repository = "git@git.dxw.net:wordpress/snapshot";
+        if(empty($this->wordpress_manifest->repository)) {
+          $this->wordpress_manifest->repository = "git@git.dxw.net:wordpress/snapshot";
         }
 
-        if(empty($this->wordpress->revision)) {
-          $this->wordpress->revision = "master";
+        if(empty($this->wordpress_manifest->revision)) {
+          $this->wordpress_manifest->revision = "master";
         }
 
         continue;
@@ -77,7 +77,7 @@ trait manifest_io {
       $this->plugins_manifest->$plugin->revision = $revision;
     }
 
-    if(!isset($this->wordpress)) {
+    if(!isset($this->wordpress_manifest)) {
       echo "Wordpress version missing from Plugins\n";
       exit(1);
     }
@@ -91,6 +91,10 @@ trait manifest_io {
     }
 
     $this->plugins_locked = json_decode(file_get_contents($this->plugins_lock_file));
+
+    if(isset($this->plugins_locked->wordpress)) {
+      $this->wordpress_locked = $this->plugins_locked->wordpress;
+    }
 
     // TODO: handle invalid json properly
     // http://www.php.net/manual/en/function.json-last-error.php
@@ -128,6 +132,29 @@ trait manifest_io {
       $this->plugins_locked->plugins->$dir->revision    = $this->plugins_manifest->$dir->revision;
       $this->plugins_locked->plugins->$dir->commit      = $commit;
     }
+
+    return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+  }
+
+  /**
+   * Writes the current WordPress revision, repo and commit to plugins.lock without
+   * altering plugin lock data.
+   */
+  private function update_wordpress_lock() {
+    if(!$this->plugins_lock_file) {
+      $this->load_plugins_lock();
+    }
+
+    $git = new Git("{$this->project_dir}/wordpress");
+
+    if(!$commit = $git->current_commit())
+    {
+      echo "Unable to determine current WordPress commit; aborting\n";
+      exit(1);
+    }
+
+    $this->plugins_locked->wordpress = $this->wordpress_manifest;
+    $this->plugins_locked->wordpress->commit = $commit;
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
   }

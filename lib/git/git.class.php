@@ -18,7 +18,13 @@ class Git {
   function hard_reset($revision = "HEAD") {
     list($output, $return) = $this->run_command("git reset --hard {$revision}");
 
-    return $this->check_git_return("Reset failed", $return, $output);
+    return $this->check_git_return("Reset --hard failed", $return, $output);
+  }
+
+  function mixed_reset($revision = "HEAD") {
+    list($output, $return) = $this->run_command("git reset --mixed {$revision}");
+
+    return $this->check_git_return("Reset --mixed failed", $return, $output);
   }
 
   function clone_repo($repository) {

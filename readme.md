@@ -13,6 +13,11 @@ At the moment, Whippet just manages plugins.
 
 # TODO
 
+## Reminders
+
+1. When a repo changes in the manifest, that should trigger a re-install
+
+
 ## Next
 
 1. Whippet should manage and deploy the correct version of WordPress
@@ -90,7 +95,54 @@ akismet = 3.0.0, git@my-git-server.com:akismet
 akismet = , git@my-git-server.com:akismet
 ```
 
-#### Specifying the WordPress version
+### whippet plugin install
+
+When run for the first time, this command will install all the plugins in your Plugins file, at the most
+recent commits that exist in the remote for branch or tag you specify (or master, if not specified.) The
+hashes for these commits will be saved in plugins.lock, which you should commit into source control.
+
+When run on subsequent occasions, this command will:
+
+1. Check for plugins that have been removed from your Plugins file, and delete them from the application
+2. Check for changes to the Plugins file, and update, add or remove plugins as specified
+3. Check for plugins that have been added to your Plugins file, and clone them
+
+Critically, if no changes have been made to the Plugins file, whippet plugin install will always install
+the commits specified in plugins.lock; ie, the most recent versions that were available at the time the
+plugins were installed. Updated versions will not be installed unless you lock the plugin to the updated
+version using its tag.
+
+### whippet plugins update <plugin>
+
+This command checks to see if the branch or tag in the Plugins file has a newer commit on the remote than
+it does on the local, and if so, updates the local commit to the newest one available on the remote.
+
+It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
+defaulting to master) and you wish to update the locally installed version to the newest one available.
+
+## wordpress
+
+### whippet wordpress install
+
+Installs the version of WordPress specified in Plugins in the wordpress directory, preserving your
+application's wp-content.
+
+The semantics of this command are as for whippet plugin install. If a branch is specified, Whippet
+will deploy the commit at the head of that branch at the time it is run. Running whippet wordpress install
+again will check the same commit out.
+
+If you are deploying WordPress from a branch, use whippet wordpress update to retrieve the latest
+head of the branch you've specified in Plugins.
+
+### whippet wordpress update
+
+This command checks to see if the wordpress branch or tag in the Plugins file has a newer commit on the remote than it does on the local, and if so, updates the local commit to the newest one available on the remote.
+
+It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
+defaulting to master) and you wish to update the locally installed version to the newest one available.
+
+
+### Specifying the WordPress version
 
 This follows the same rules as plugins (explained below) so you can use the most recent development version, or lock the application to a particular version of WordPress:
 
@@ -111,28 +163,3 @@ wordpress = 3.9, https://github.com/WordPress/WordPress.git
 
 Don't forget that the version must specify a valid branch or tag in the repo, so in this example,
 there is no leading 'v' - because the offical WordPress git repo doesn't use v in its tags.
-
-### whippet plugins install
-
-When run for the first time, this command will install all the plugins in your Plugins file, at the most
-recent commits that exist in the remote for branch or tag you specify (or master, if not specified.) The
-hashes for these commits will be saved in plugins.lock, which you should commit into source control.
-
-When run on subsequent occasions, this command will:
-
-1. Check for plugins that have been removed from your Plugins file, and delete them from the application
-2. Check for changes to the Plugins file, and update, add or remove plugins as specified
-3. Check for plugins that have been added to your Plugins file, and clone them
-
-Critically, if no changes have been made to the Plugins file, whippet plugins install will always install
-the commits specified in plugins.lock; ie, the most recent versions that were available at the time the
-plugins were installed. Updated versions will not be installed unless you lock the plugin to the updated
-version using its tag.
-
-### whippet plugins update <plugin>
-
-This command checks to see if the branch or tag in the Plugins file has a newer commit on the remote than
-it does on the local, and if so, updates the local commit to the newest one available on the remote.
-
-It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
-defaulting to master) and you wish to update the locally installed version to the newest one available.
