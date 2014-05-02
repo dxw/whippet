@@ -3,5 +3,6 @@
 
 require dirname(__FILE__) . "/../lib/whippet.class.php";
 
+
 $whippet = new Whippet();
 $whippet->start($argv);

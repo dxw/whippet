@@ -15,12 +15,32 @@ class Git {
     return $this->check_git_return("Checkout failed", $return, $output);
   }
 
+  function hard_reset($revision = "HEAD") {
+    list($output, $return) = $this->run_command("git reset --hard {$revision}");
+
+    return $this->check_git_return("Reset failed", $return, $output);
+  }
+
   function clone_repo($repository) {
     list($output, $return) = $this->run_command("git clone {$repository} {$this->repo_path}", false);
 
     if(!$this->check_git_return("Clone failed", $return, $output)) {
       return false;
     }
+
+    return true;
+  }
+
+  function clone_no_checkout($repository) {
+    $tmpdir = $this->get_tmpdir();
+
+    list($output, $return) = $this->run_command("git clone --no-checkout {$repository} {$tmpdir}", false);
+
+    if(!$this->check_git_return("No-checkout clone failed", $return, $output)) {
+      return false;
+    }
+
+    $this->run_command("mv {$tmpdir}/.git {$this->repo_path}");
 
     return true;
   }
@@ -63,6 +83,30 @@ class Git {
     return $this->parse_ref_list($output);
   }
 
+  function fetch() {
+    list($output, $return) = $this->run_command("git fetch -a");
+
+    return $this->check_git_return("Checkout failed", $return, $output);
+  }
+
+  function rm($path, $rf = false) {
+    list($output, $return) = $this->run_command("git rm " . ($rf ? "-rf" : "") . " {$path}");
+
+    return $this->check_git_return("rm failed", $return, $output);
+  }
+
+  function add($path) {
+    list($output, $return) = $this->run_command("git add {$path}");
+
+    return $this->check_git_return("Add failed", $return, $output);
+  }
+
+  function commit($message) {
+    list($output, $return) = $this->run_command("git commit -m '{$message}'");
+
+    return $this->check_git_return("Checkout failed", $return, $output);
+  }
+
   protected function parse_ref_list($reflist) {
     $refs = array();
     foreach($reflist as $line) {
@@ -82,12 +126,6 @@ class Git {
     }
 
     return $refs;
-  }
-
-  function fetch() {
-    list($output, $return) = $this->run_command("git fetch -a");
-
-    return $this->check_git_return("Checkout failed", $return, $output);
   }
 
   protected function check_git_return($message, $return, $output) {
@@ -120,5 +158,18 @@ class Git {
     // echo ("{$cd}{$command}\n");
 
     return array($output, $return);
+  }
+
+  function get_tmpdir($in_dir = false) {
+
+    if(!$in_dir) {
+      $in_dir = sys_get_temp_dir();
+    }
+
+    do {
+      $tmp_dir = $in_dir . "/" . md5(microtime());
+    } while(file_exists($tmp_dir));
+
+    return $tmp_dir;
   }
 };

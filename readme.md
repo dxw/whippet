@@ -45,9 +45,9 @@ Note: At the moment, Whippet assumes it is running within dxw's infrastructure, 
 
 To manage plugins using Whippet, you make entries in the Plugins file in the root of the application.
 
-The first lines of the file should specify a source and a wordpress version.
+The first lines of the file should specify a source and a WordPress version.
 
-The source should be a base url for a git repo. The wordpress version follows the same format as plugin entires: see "Specifying the WordPress version", below, for more information.
+The source should be a base url for a git repo. The WordPress version follows the same format as plugin entires: see "Specifying the WordPress version", below, for more information.
 
 Subsequent lines should specify plugins that you want to install. They consist of the name of the plugin followed by an equals sign, followed optionally by a tag or branch name. Example:
 
@@ -103,8 +103,7 @@ wordpress=v3.9
 ```
 
 Whippet will by default pull this version of WordPress from git@git.dxw.net:wordpress/snapshot, so the
-version you specify must be a valid tag. You can use any repo, however, by specifying a repo location. For
-example, to use the official WordPress git repo:
+version you specify must be a valid tag in that repo. You can use any repo, however, by specifying a repo location. For example, to use the official WordPress git repo:
 
 ```
 wordpress = 3.9, https://github.com/WordPress/WordPress.git
