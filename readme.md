@@ -20,21 +20,17 @@ At the moment, Whippet just manages plugins.
 
 ## Next
 
-1. Whippet should manage and deploy the correct version of WordPress
-  - whippet wordpress install
-  - whippet wordpress update
-  - Where should this be configured?
-  - Where should WordPress live? Presumably we should zap wp-content and have wordpress there instead, as it's supposed to be a deployable directory...
-2. How are we going to handle these things?
+1. How are we going to handle these things?
   - wp-config.php
   - favicons
   - google webmaster shiz
   - mu-plugins
   - We need something that defines how and where these things are generated
     - Some things will be different on production/dev/test. I guess we need to add back nascent support for environments but just not support them in whippet plugin install|update
-3. Refactor plugin.class.php to make it DRYer, and improve console I/O
-4. Integrate whippet-server back into the project
+2. Refactor {wordpress,plugin}.class.php to make them DRYer, and improve console I/O
+3. Integrate whippet-server back into the project
   - Make sure it is compatible with other servers, like wp-cli
+
 
 ## Later
 
