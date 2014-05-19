@@ -17,10 +17,12 @@ At the moment, Whippet just manages plugins.
 
 1. When a repo changes in the manifest, that should trigger a re-install
 2. Whippet should obey .gitignore, and not look at non-managed plugins
+     At the moment I think update_plugins_lock will fail on non-whippet plugins
 
 
 ## Next
 
+1. Ignore whippet-managed plugins, instead of un-ignoring non-whippet-managed plugins. That way, we can manage the ignores automatically.
 1. How are we going to handle these things?
   - wp-config.php
   - favicons
@@ -30,7 +32,7 @@ At the moment, Whippet just manages plugins.
     - Some things will be different on production/dev/test. I guess we need to add back nascent support for environments but just not support them in whippet plugin install|update
 2. Refactor {wordpress,plugin}.class.php to make them DRYer, and improve console I/O
 3. Integrate whippet-server back into the project
-  - Make sure it is compatible with other servers, like wp-cli
+  - Make sure it is compatible with other servers, like wp-cli?
 
 
 ## Later
@@ -117,46 +119,3 @@ it does on the local, and if so, updates the local commit to the newest one avai
 It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
 defaulting to master) and you wish to update the locally installed version to the newest one available.
 
-## wordpress
-
-### whippet wordpress install
-
-Installs the version of WordPress specified in Plugins in the wordpress directory, preserving your
-application's wp-content.
-
-The semantics of this command are as for whippet plugin install. If a branch is specified, Whippet
-will deploy the commit at the head of that branch at the time it is run. Running whippet wordpress install
-again will check the same commit out.
-
-If you are deploying WordPress from a branch, use whippet wordpress update to retrieve the latest
-head of the branch you've specified in Plugins.
-
-### whippet wordpress update
-
-This command checks to see if the wordpress branch or tag in the Plugins file has a newer commit on the remote than it does on the local, and if so, updates the local commit to the newest one available on the remote.
-
-It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
-defaulting to master) and you wish to update the locally installed version to the newest one available.
-
-
-### Specifying the WordPress version
-
-This follows the same rules as plugins (explained below) so you can use the most recent development version, or lock the application to a particular version of WordPress:
-
-```
-# Use the most recent development version
-wordpress=
-
-# Use version 3.9
-wordpress=v3.9
-```
-
-Whippet will by default pull this version of WordPress from git@git.dxw.net:wordpress/snapshot, so the
-version you specify must be a valid tag in that repo. You can use any repo, however, by specifying a repo location. For example, to use the official WordPress git repo:
-
-```
-wordpress = 3.9, https://github.com/WordPress/WordPress.git
-```
-
-Don't forget that the version must specify a valid branch or tag in the repo, so in this example,
-there is no leading 'v' - because the offical WordPress git repo doesn't use v in its tags.

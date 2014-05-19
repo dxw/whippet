@@ -27,6 +27,7 @@ trait manifest_io {
         continue;
       }
 
+      /*
       if($plugin == 'wordpress') {
 
         $this->wordpress_manifest = new stdclass();
@@ -48,6 +49,7 @@ trait manifest_io {
 
         continue;
       }
+      */
 
       $repository = $revision = '';
 
@@ -77,10 +79,12 @@ trait manifest_io {
       $this->plugins_manifest->$plugin->revision = $revision;
     }
 
+    /*
     if(!isset($this->wordpress_manifest)) {
       echo "Wordpress version missing from Plugins\n";
       exit(1);
     }
+    */
   }
 
   protected function load_plugins_lock(){
@@ -119,6 +123,10 @@ trait manifest_io {
         continue;
       }
 
+      if(!isset($this->plugins_manifest->$dir)) {
+        continue;
+      }
+
       $git = new Git("{$this->plugin_dir}/{$dir}");
 
       if(!$commit = $git->current_commit())
@@ -140,6 +148,7 @@ trait manifest_io {
    * Writes the current WordPress revision, repo and commit to plugins.lock without
    * altering plugin lock data.
    */
+  /*
   private function update_wordpress_lock() {
     if(!$this->plugins_lock_file) {
       $this->load_plugins_lock();
@@ -158,6 +167,7 @@ trait manifest_io {
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
   }
+  */
 
   protected function find_file($file){
     // Starting in the current dir, walk up until we find a plugins.json
@@ -179,6 +189,6 @@ trait manifest_io {
     $this->load_plugins_lock();
 
     $this->project_dir = dirname($this->plugins_manifest_file);
-    $this->plugin_dir = "{$this->project_dir}/wordpress/wp-content/plugins";
+    $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
   }
 };

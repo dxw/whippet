@@ -79,9 +79,26 @@ class Plugin extends RubbishThorClone {
 
       // Delete the ones that don't
       foreach($plugins_to_delete as $dir) {
-        echo "[Removing {$dir}] ";
+        echo "[Removing {$dir}]\n";
         $git = new Git("{$this->plugin_dir}/{$dir}");
         $git->delete_repo();
+
+        // Remove from ignores
+        $ignore_file = "{$this->project_dir}/.gitignore";
+        $ignores = $git->get_ignores($ignore_file);
+
+        foreach($plugins_to_delete as $dir) {
+          $plugin_dir = "/wp-content/plugins/{$dir}\n";
+
+          if(($index = array_search($plugin_dir, $ignores)) !== false) {
+            unset($ignores[$index]);
+          }
+        }
+
+        $git->save_ignores($ignores, $ignore_file);
+
+        // Remove from the lockfile
+        unset($this->plugins_locked->plugins->$dir);
       }
 
 
@@ -148,7 +165,29 @@ class Plugin extends RubbishThorClone {
 
     }
 
+    //
+    // Update the lockfile
+    //
+
     $this->update_plugins_lock();
+
+
+    //
+    // Make sure that Whippet-managed plugins are gitignored
+    //
+
+    $ignore_file = "{$this->project_dir}/.gitignore";
+    $ignores = $git->get_ignores($ignore_file);
+
+    foreach($this->plugins_locked->plugins as $dir => $plugin) {
+      $plugin_dir = "/wp-content/plugins/{$dir}\n";
+
+      if(array_search($plugin_dir, $ignores) === false) {
+        $ignores[] = $plugin_dir;
+      }
+    }
+
+    $git->save_ignores($ignores, $ignore_file);
   }
 
   /*
