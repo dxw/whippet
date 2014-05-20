@@ -20,7 +20,10 @@ class Plugin extends RubbishThorClone {
    * just makes sure that what's in the project is what's in the file.
    */
   public function install() {
-    $this->manifest_init();
+    $this->whippet_init();
+    $this->load_plugins_manifest();
+    $this->load_plugins_lock();
+
 
     //
     // If there is no lock file:
@@ -195,7 +198,10 @@ class Plugin extends RubbishThorClone {
    * a newer commit, and checks out the newer commit if so.
    */
   public function upgrade($upgrade_plugin) {
-    $this->manifest_init();
+    $this->whippet_init();
+    $this->load_plugins_manifest();
+    $this->load_plugins_lock();
+
 
     //
     //  1. Find the plugin we're going to update.

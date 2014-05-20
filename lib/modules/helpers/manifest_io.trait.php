@@ -2,11 +2,6 @@
 
 trait manifest_io {
   protected function load_plugins_manifest() {
-    if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
-      echo "Unable to find Plugins file";
-      exit(1);
-    }
-
     $plugins = parse_ini_file($this->plugins_manifest_file);
 
     if(!is_array($plugins)) {
@@ -57,8 +52,6 @@ trait manifest_io {
   }
 
   protected function load_plugins_lock(){
-    $this->plugins_lock_file = $this->find_file("plugins.lock");
-
     if(!$this->plugins_lock_file) {
       return false;
     }
@@ -107,28 +100,5 @@ trait manifest_io {
     }
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-  }
-
-  protected function find_file($file){
-    // Starting in the current dir, walk up until we find a plugins.json
-    $path = getcwd();
-
-    do {
-      $file_path = $path . '/' . $file;
-      if(file_exists($file_path)) {
-        return $file_path;
-      }
-    }
-    while($path = dirname($path) != '.');
-
-    return false;
-  }
-
-  private function manifest_init(){
-    $this->load_plugins_manifest();
-    $this->load_plugins_lock();
-
-    $this->project_dir = dirname($this->plugins_manifest_file);
-    $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
   }
 };
