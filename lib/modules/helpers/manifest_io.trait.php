@@ -65,10 +65,6 @@ trait manifest_io {
 
     $this->plugins_locked = json_decode(file_get_contents($this->plugins_lock_file));
 
-    if(isset($this->plugins_locked->wordpress)) {
-      $this->wordpress_locked = $this->plugins_locked->wordpress;
-    }
-
     // TODO: handle invalid json properly
     // http://www.php.net/manual/en/function.json-last-error.php
     if(!is_object($this->plugins_locked)) {
