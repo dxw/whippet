@@ -103,26 +103,75 @@ class Deploy {
       $new_release->create();
 
 
-
-
-
-
       //
       // Did everything work?
       //
 
-      // Check:
-      // We have WP
-      // We have wp-content
-      // We have wp-config
-      // We have uploads
-      // ?
+      //
+      // Is WP installed?
+      //
+
+      $checks = [
+        //
+        // Is WP there?
+        //
+
+        "wp-login.php is missing; is WordPress properly deployed?" => !file_exists("{$new_release->release_dir}/wp-login.php"),
+        "wp-includes/wp-db.php is missing; is WordPress properly deployed?" => !file_exists("{$new_release->release_dir}/wp-includes/wp-db.php"),
+        "wp-admin/edit.php is missing; is WordPress properly deployed?" => !file_exists("{$new_release->release_dir}/wp-admin/edit.php"),
+
+        //
+        // Is the app there?
+        //
+
+        "wp-content/themes is missing; is the app properly deployed?" => !file_exists("{$new_release->release_dir}/wp-content/themes"),
+        "wp-content/plugins is missing; is the app properly deployed?" => !file_exists("{$new_release->release_dir}/wp-content/plugins"),
+
+
+        // Is there stuff in shared? Does it look right?
+        "wp-config.php is not in the shared directory." => !file_exists("{$new_release->release_dir}/../../shared/wp-config.php"),
+        "uploads directory is not in the shared directory." => !file_exists("{$new_release->release_dir}/../../shared/uploads"),
+        "wp-config.php doesn't contain DB_NAME; is it valid?" => !strpos(file_get_contents("{$new_release->release_dir}/../../shared/wp-config.php"), "DB_NAME"),
+
+        //
+        // Did the symlinking work?
+        //
+
+        "wp-config.php is missing; did the symlinking fail?" => !file_exists("{$new_release->release_dir}/wp-config.php"),
+        "wp-content/uploads is missing; did the symlinking fail?" => !file_exists("{$new_release->release_dir}/wp-content/uploads"),
+      ];
+
+      $release_ok = true;
+      $messages = [];
+
+      foreach($checks as $message => $failed) {
+        if($failed) {
+          $release_ok = false;
+          $messages[] = "\t{$message}\n";
+        }
+      }
+
 
       //
       // If it was all ok:
       //
 
-      if(/* everything was fine */ true) {
+      if(!$release_ok) {
+        $broken_release = $broken_release_prefix = "{$new_release->release_dir}.broken";
+        $count = 1;
+
+        while(file_exists($broken_release)) {
+          $broken_release = $broken_release_prefix . "_{$count}";
+        }
+
+        system("mv {$new_release->release_dir} {$broken_release}");
+
+        echo "Problems:\n";
+        echo implode($messages, "\n");
+        echo "Release did not validate; it has been moved to: $broken_release";
+
+      }
+      else{
         system("rm {$new_release->release_dir}/../../current");
         system("ln -s " . realpath("{$new_release->release_dir}") . " {$new_release->release_dir}/../../current");
 
@@ -134,7 +183,6 @@ class Deploy {
         $this->releases_manifest[] = $release;
         $this->save_releases_manifest();
       }
-
     }
     catch(Exception $e) {
       die($e->getMessage());
