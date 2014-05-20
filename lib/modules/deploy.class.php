@@ -147,7 +147,7 @@ class Deploy {
       foreach($checks as $message => $failed) {
         if($failed) {
           $release_ok = false;
-          $messages[] = "\t{$message}\n";
+          $messages[] = "\t{$message}";
         }
       }
 
@@ -172,8 +172,12 @@ class Deploy {
 
       }
       else{
-        system("rm {$new_release->release_dir}/../../current");
-        system("ln -s " . realpath("{$new_release->release_dir}") . " {$new_release->release_dir}/../../current");
+        $current = "{$new_release->release_dir}/../../current";
+        if(file_exists($current)) {
+          system("rm {$current}");
+        }
+
+        system("ln -s " . realpath("{$new_release->release_dir}") . " {$current}");
 
         // Update manifest
         $release = new stdClass();

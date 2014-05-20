@@ -33,19 +33,30 @@ trait whippet_helpers {
 
     if(file_exists($application_config_file)) {
       $this->application_config = json_decode(file_get_contents($application_config_file));
+
+      if(!is_object($this->application_config)) {
+        echo "Unable to parse application config";
+        exit(1);
+      }
     }
+    else {
+      $this->application_config = json_decode('
+        {
+          "wordpress": {
+            "repository": "git@git.dxw.net:wordpress/snapshot",
+            "revision": "master"
+          }
+        }
+      ');
 
-    // TODO: handle invalid json properly
-    // http://www.php.net/manual/en/function.json-last-error.php
-    if(!is_object($this->application_config)) {
-      echo "Unable to parse application config";
-      exit(1);
+      if(file_put_contents($application_config_file, json_encode($this->application_config,  JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))) {
+        echo "A default application.json was created\n";
+      }
+      else {
+        echo "No config/application.json was found, and no default could be created. Quitting.\n";
+        exit(1);
+      }
     }
-
-    //
-    // TODO: check for required configs, and set defaults
-    //
-
   }
 
   function find_file($file){

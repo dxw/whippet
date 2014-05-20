@@ -2,6 +2,7 @@
 
 class Plugin extends RubbishThorClone {
   use manifest_io;
+  use whippet_helpers;
 
   public function commands() {
     $this->command('install', 'Deploys the current set of plugins into your project');
