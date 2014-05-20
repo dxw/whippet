@@ -27,30 +27,6 @@ trait manifest_io {
         continue;
       }
 
-      /*
-      if($plugin == 'wordpress') {
-
-        $this->wordpress_manifest = new stdclass();
-
-        if(strpos($data, ',') !== false) {
-          list($this->wordpress_manifest->revision, $this->wordpress_manifest->repository) = explode(',', $data);
-        }
-        else {
-          $this->wordpress_manifest->revision = $data;
-        }
-
-        if(empty($this->wordpress_manifest->repository)) {
-          $this->wordpress_manifest->repository = "git@git.dxw.net:wordpress/snapshot";
-        }
-
-        if(empty($this->wordpress_manifest->revision)) {
-          $this->wordpress_manifest->revision = "master";
-        }
-
-        continue;
-      }
-      */
-
       $repository = $revision = '';
 
       // Everything else should be a plugin
@@ -78,13 +54,6 @@ trait manifest_io {
       $this->plugins_manifest->$plugin->repository = $repository;
       $this->plugins_manifest->$plugin->revision = $revision;
     }
-
-    /*
-    if(!isset($this->wordpress_manifest)) {
-      echo "Wordpress version missing from Plugins\n";
-      exit(1);
-    }
-    */
   }
 
   protected function load_plugins_lock(){
@@ -143,31 +112,6 @@ trait manifest_io {
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
   }
-
-  /**
-   * Writes the current WordPress revision, repo and commit to plugins.lock without
-   * altering plugin lock data.
-   */
-  /*
-  private function update_wordpress_lock() {
-    if(!$this->plugins_lock_file) {
-      $this->load_plugins_lock();
-    }
-
-    $git = new Git("{$this->project_dir}/wordpress");
-
-    if(!$commit = $git->current_commit())
-    {
-      echo "Unable to determine current WordPress commit; aborting\n";
-      exit(1);
-    }
-
-    $this->plugins_locked->wordpress = $this->wordpress_manifest;
-    $this->plugins_locked->wordpress->commit = $commit;
-
-    return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-  }
-  */
 
   protected function find_file($file){
     // Starting in the current dir, walk up until we find a plugins.json
