@@ -16,6 +16,7 @@ At the moment, Whippet just manages plugins.
 ## Reminders
 
 1. When a repo changes in the manifest, that should trigger a re-install
+1. Remove .git etc from plugins
 2. Whippet should obey .gitignore, and not look at non-managed plugins
      At the moment I think update_plugins_lock will fail on non-whippet plugins
 

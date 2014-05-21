@@ -7,22 +7,49 @@ class Release {
   public $time = 0;
 
   function __construct($releases_dir, $message, $number) {
+    $this->whippet_init();
+
+    $git = new Git($this->project_dir);
+
     $this->number = $number;
     $this->time = date('r');
-    $this->release_dir = "{$releases_dir}/{$number}";
-
-    $this->whippet_init();
+    $this->deployed_commit = $git->current_commit();
+    $this->release_dir = "{$releases_dir}/{$this->deployed_commit}";
   }
 
-  function create() {
+  function create(&$force) {
+    //
+    // Does this commit have a release directory already? If so, do nothing
+    //
+
+    if(!$force && file_exists($this->release_dir)) {
+      return false;
+    }
+
+    // there's no point in forcing a non-existant release
+    if($force && !file_exists($this->release_dir)) {
+      $force = false;
+    }
+
+    //
+    // If we're here, we must deploy
+    //
+
+
     //    1. Clone WP
     //    2. Delete wp-content etc
-    //    3. Copy our wp-content, omitting gitfoo
-    //    4. ?? Theme/plugin build steps ?? (Makefile-esque thing?)
-    //    5. Symlink required files from shared dir
+    //    3. Make sure wp-content is up to date
+    //    4. Copy our wp-content, omitting gitfoo
+    //    5. ?? Theme/plugin build steps ?? (Makefile-esque thing?)
+    //    6. Symlink required files from shared dir
 
-    // Create a new directory for this release, or use only an empty existing dir
-    $this->check_and_create_dir($this->release_dir, true);
+    // Assuming we're not forcing, create a new directory for this release, or use only an empty existing dir
+    if(!$force) {
+      $this->check_and_create_dir($this->release_dir, true);
+    }
+    else {
+      $this->release_dir = dirname($this->release_dir ) . "/forced_release_tmp_" . sha1(microtime());
+    }
 
     // Clone WP and remove things we don't want
     $wp = new Git($this->release_dir);
@@ -34,9 +61,15 @@ class Release {
       system("rm -rf {$this->release_dir}/$delete");
     }
 
+    // Make sure wp-content is up to date
+    $plugin = new Plugin();
+    $plugin->install();
+
     // Copy over wp-content
     // TODO: Sorry, windows devs
     system("cp -r {$this->project_dir}/wp-content {$this->release_dir}/wp-content");
+
+    // TODO: remove unwanted files (.git)
 
 
     //
@@ -62,7 +95,7 @@ class Deploy {
     $this->shared_dir   = "{$this->deploy_dir}/shared";
   }
 
-  function deploy() {
+  function deploy($force) {
     try {
       //
       // 1. Make sure the target directory does not exist (or exists and is empty)
@@ -100,7 +133,7 @@ class Deploy {
 
 
       // Make it.
-      $new_release->create();
+      $new_release->create($force);
 
 
       //
@@ -172,6 +205,14 @@ class Deploy {
 
       }
       else{
+        // If we are forcing, rejig some directories
+        if($force) {
+          system("mv {$this->releases_dir}/{$new_release->deployed_commit} {$this->releases_dir}/{$new_release->deployed_commit}_" . ($new_release->number - 1));
+          system("mv {$new_release->release_dir} {$this->releases_dir}/{$new_release->deployed_commit}");
+
+          $new_release->release_dir = "{$this->releases_dir}/{$new_release->deployed_commit}";
+        }
+
         $current = "{$new_release->release_dir}/../../current";
         if(file_exists($current)) {
           system("rm {$current}");
@@ -183,6 +224,7 @@ class Deploy {
         $release = new stdClass();
         $release->time = $new_release->time;
         $release->number = $new_release->number;
+        $release->deployed_commit = $new_release->deployed_commit;
 
         $this->releases_manifest[] = $release;
         $this->save_releases_manifest();

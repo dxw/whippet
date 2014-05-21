@@ -16,7 +16,9 @@ require "modules/deploy.class.php";
 class Whippet extends RubbishThorClone {
   public function commands() {
     $this->command('plugin PLUGIN_COMMAND', '');
-    $this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository");
+    $this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository", function($option_parser) {
+      $option_parser->addRule('f|force', "Congratulates NAME on their bigness");
+    });
   }
 
   public function plugin($plugin_command) {
@@ -26,6 +28,6 @@ class Whippet extends RubbishThorClone {
 
   public function deploy($dir) {
     $deploy = new Deploy($dir);
-    $deploy->deploy();
+    $deploy->deploy(isset($this->options->force));
   }
 };
