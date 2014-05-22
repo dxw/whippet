@@ -53,6 +53,9 @@ class Plugin extends RubbishThorClone {
         }
 
         $git->checkout($git->current_commit());
+        if(!$git->submodule_update()) {
+          die();
+        }
       }
     }
     else {
@@ -124,7 +127,6 @@ class Plugin extends RubbishThorClone {
           $git->delete_repo();
 
           // The repo should be re-added below when we add new plugins
-
           continue;
         }
 
@@ -136,6 +138,10 @@ class Plugin extends RubbishThorClone {
         else {
           echo "[Updating {$dir}] ";
           $git->checkout($this->plugins_manifest->$dir->revision);
+        }
+
+        if(!$git->submodule_update()) {
+          die();
         }
       }
 
@@ -174,9 +180,11 @@ class Plugin extends RubbishThorClone {
         if(!$git->checkout($plugin->revision)) {
           die();
         }
+
+        if(!$git->submodule_update()) {
+          die();
+        }
       }
-
-
     }
 
     //
@@ -217,6 +225,7 @@ class Plugin extends RubbishThorClone {
     //  1. Find the plugin we're going to update.
     //  2. Check it out
     //  3. Update the lockfile
+    //
 
     foreach($this->plugins_manifest as $dir => $plugin) {
 
@@ -231,7 +240,13 @@ class Plugin extends RubbishThorClone {
         $git->fetch();
 
         // Check it out
-        $git->checkout($git->remote_revision_commit($plugin->revision));
+        if(!$git->checkout($git->remote_revision_commit($plugin->revision))) {
+          die();
+        }
+
+        if(!$git->submodule_update()) {
+          die();
+        }
 
         // If we were upgrading a specific plugin, bail now
         if($upgrade_plugin != '') {

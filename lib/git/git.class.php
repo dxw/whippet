@@ -67,6 +67,16 @@ class Git {
     return true;
   }
 
+  function submodule_update() {
+    list($output, $return) = $this->run_command("git submodule update --init --recursive");
+
+    if(!$this->check_git_return("submodule update failed", $return, $output)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function delete_repo() {
     $this->run_command("rm -rf {$this->repo_path}", false);
   }
