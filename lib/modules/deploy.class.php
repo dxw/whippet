@@ -126,6 +126,7 @@ class Deploy {
         $release_number = $this->releases_manifest[count($this->releases_manifest)-1]->number + 1;
       }
       else {
+
         $release_number = 0;
       }
 
@@ -214,6 +215,12 @@ class Deploy {
         }
 
         $current = "{$new_release->release_dir}/../../current";
+
+        // If we are not forcing, check to see if the release being deployed is the currently deployed release - if so, do nothing
+        if(!$force && readlink($current) == realpath($new_release->release_dir)) {
+          return;
+        }
+
         if(file_exists($current)) {
           system("rm {$current}");
         }
