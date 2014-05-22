@@ -98,7 +98,7 @@ trait manifest_io {
       $this->plugins_locked->$dir->revision    = $this->plugins_manifest->$dir->revision;
       $this->plugins_locked->$dir->commit      = $commit;
 
-      if(empty($this->old_plugins_locked->$dir) || $this->plugins_locked->$dir->commit != $this->old_plugins_locked->$dir->commit) {
+      if(empty($this->old_plugins_locked->$dir) || $this->plugins_locked->$dir->commit != $this->old_plugins_locked->$dir->commit || $this->plugins_locked->$dir->repository != $this->old_plugins_locked->$dir->repository) {
         $this->plugins_locked->$dir->changed_at  = date('r');
       } else {
         $this->plugins_locked->$dir->changed_at = $this->old_plugins_locked->$dir->changed_at;

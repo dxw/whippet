@@ -15,7 +15,6 @@ At the moment, Whippet just manages plugins.
 
 ## Reminders
 
-1. When a repo changes in the manifest, that should trigger a re-install
 1. Remove .git etc from plugins
 
 

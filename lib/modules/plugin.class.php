@@ -119,13 +119,23 @@ class Plugin extends RubbishThorClone {
           $git->clone_repo($plugin->repository);
         }
 
+        if($this->plugins_manifest->$dir->repository != $plugin->repository) {
+          // The remote has changed. Zap the plugin and add it again.
+          $git->delete_repo();
+
+          // The repo should be re-added below when we add new plugins
+
+          continue;
+        }
+
+        // Check out a new revision, or if no new revision, check the existing one out again (in case of naughty changes)
         if($this->plugins_manifest->$dir->revision == $plugin->revision) {
           echo "[Checking {$dir}] ";
           $git->checkout($plugin->commit);
         }
         else {
           echo "[Updating {$dir}] ";
-         $git->checkout($this->plugins_manifest->$dir->revision);
+          $git->checkout($this->plugins_manifest->$dir->revision);
         }
       }
 
@@ -139,7 +149,7 @@ class Plugin extends RubbishThorClone {
 
       foreach($this->plugins_manifest as $manifest_dir => $manifest_plugin) {
         foreach($this->plugins_locked as $lock_dir => $lock_plugin) {
-          if($lock_dir == $manifest_dir) {
+          if($lock_dir == $manifest_dir && $manifest_plugin->repository == $lock_plugin->repository) {
             unset($plugins_to_clone[array_search($manifest_dir, $plugins_to_clone)]);
           }
         }
@@ -148,7 +158,7 @@ class Plugin extends RubbishThorClone {
       foreach($plugins_to_clone as $dir) {
         $plugin = $this->plugins_manifest->$dir;
 
-       echo "[Adding {$dir}] ";
+        echo "[Adding {$dir}] ";
 
         $git = new Git("{$this->plugin_dir}/{$dir}");
 
