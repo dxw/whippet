@@ -2,12 +2,14 @@
 
 class Release {
   use whippet_helpers;
+  use manifest_io;
 
   public $number = 0;
   public $time = 0;
 
   function __construct($releases_dir, $message, $number) {
     $this->whippet_init();
+    $this->load_plugins_lock();
 
     $git = new Git($this->project_dir);
 
@@ -69,7 +71,17 @@ class Release {
     // TODO: Sorry, windows devs
     system("cp -r {$this->project_dir}/wp-content {$this->release_dir}/wp-content");
 
-    // TODO: remove unwanted files (.git)
+
+    //
+    // Remove unwanted gitfoo
+    //
+
+    foreach($this->plugins_locked as $dir => $plugin) {
+      foreach(['.git', '.gitmodules', '.gitignore'] as $delete) {
+        // TODO: Sorry, Windows devs
+        system("rm -rf {$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+      }
+    }
 
 
     //
@@ -217,7 +229,7 @@ class Deploy {
         $current = "{$new_release->release_dir}/../../current";
 
         // If we are not forcing, check to see if the release being deployed is the currently deployed release - if so, do nothing
-        if(!$force && readlink($current) == realpath($new_release->release_dir)) {
+        if(!$force && file_exists($current) && readlink($current) == realpath($new_release->release_dir)) {
           return;
         }
 
