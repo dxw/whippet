@@ -216,6 +216,7 @@ class Deploy {
         echo implode($messages, "\n");
         echo "Release did not validate; it has been moved to: $broken_release";
 
+        exit(1);
       }
       else{
         // If we are forcing, rejig some directories
