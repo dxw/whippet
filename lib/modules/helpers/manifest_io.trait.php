@@ -68,13 +68,13 @@ trait manifest_io {
 
   private function update_plugins_lock()
   {
-    if($this->plugins_lock_file) {
+    if(!empty($this->plugins_locked)) {
       $this->old_plugins_locked = $this->plugins_locked;
     }
 
-    $this->plugins_lock_file = 'plugins.lock';
+    $this->plugins_lock_file = "{$this->project_dir}/plugins.lock";
+
     $this->plugins_locked = new stdClass();
-    $this->plugins_locked->plugins = new stdClass();
 
     foreach(scandir($this->plugin_dir) as $dir) {
       if($dir[0] == '.') {
@@ -93,10 +93,23 @@ trait manifest_io {
         exit(1);
       }
 
-      $this->plugins_locked->plugins->$dir              = new stdClass();
-      $this->plugins_locked->plugins->$dir->repository  = $this->plugins_manifest->$dir->repository;
-      $this->plugins_locked->plugins->$dir->revision    = $this->plugins_manifest->$dir->revision;
-      $this->plugins_locked->plugins->$dir->commit      = $commit;
+      $this->plugins_locked->$dir              = new stdClass();
+      $this->plugins_locked->$dir->repository  = $this->plugins_manifest->$dir->repository;
+      $this->plugins_locked->$dir->revision    = $this->plugins_manifest->$dir->revision;
+      $this->plugins_locked->$dir->commit      = $commit;
+
+      if(empty($this->old_plugins_locked->$dir) || $this->plugins_locked->$dir->commit != $this->old_plugins_locked->$dir->commit) {
+        $this->plugins_locked->$dir->changed_at  = date('r');
+      } else {
+        $this->plugins_locked->$dir->changed_at = $this->old_plugins_locked->$dir->changed_at;
+      }
+
+      if(!empty($this->old_plugins_locked->$dir)) {
+        $this->plugins_locked->$dir->added_at = $this->old_plugins_locked->$dir->added_at;
+      }
+      else {
+        $this->plugins_locked->$dir->added_at = date('r');
+      }
     }
 
     return file_put_contents($this->plugins_lock_file, json_encode($this->plugins_locked, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

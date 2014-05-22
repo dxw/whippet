@@ -17,13 +17,10 @@ At the moment, Whippet just manages plugins.
 
 1. When a repo changes in the manifest, that should trigger a re-install
 1. Remove .git etc from plugins
-2. Whippet should obey .gitignore, and not look at non-managed plugins
-     At the moment I think update_plugins_lock will fail on non-whippet plugins
 
 
 ## Next
 
-1. Ignore whippet-managed plugins, instead of un-ignoring non-whippet-managed plugins. That way, we can manage the ignores automatically.
 1. How are we going to handle these things?
   - wp-config.php
   - favicons

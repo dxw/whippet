@@ -6,7 +6,7 @@ class Plugin extends RubbishThorClone {
 
   public function commands() {
     $this->command('install', 'Deploys the current set of plugins into your project');
-    $this->command('upgrade PLUGIN', 'Upgrades PLUGIN to the most recent available version, or to the version specified in your Plugin file.');
+    $this->command('upgrade [PLUGIN]', 'Upgrades PLUGIN to the most recent available version, or to the version specified in your Plugin file.');
   }
 
   /*
@@ -71,9 +71,9 @@ class Plugin extends RubbishThorClone {
       //
 
       // Make sure every entry in the lockfile also appears in the manifest
-      $plugins_to_delete = array_keys((Array)$this->plugins_locked->plugins);
+      $plugins_to_delete = array_keys((Array)$this->plugins_locked);
 
-      foreach($this->plugins_locked->plugins as $lock_dir => $lock_plugin) {
+      foreach($this->plugins_locked as $lock_dir => $lock_plugin) {
         foreach($this->plugins_manifest as $manifest_dir => $manifest_plugin) {
           if($lock_dir == $manifest_dir) {
             unset($plugins_to_delete[array_search($lock_dir, $plugins_to_delete)]);
@@ -102,7 +102,7 @@ class Plugin extends RubbishThorClone {
         $git->save_ignores($ignores, $ignore_file);
 
         // Remove from the lockfile
-        unset($this->plugins_locked->plugins->$dir);
+        unset($this->plugins_locked->$dir);
       }
 
 
@@ -110,7 +110,7 @@ class Plugin extends RubbishThorClone {
       // 2. Check that the installed plugins are on the lockfile commit. Checkout the correct commit if not.
       //
 
-      foreach($this->plugins_locked->plugins as $dir => $plugin) {
+      foreach($this->plugins_locked as $dir => $plugin) {
         $git = new Git("{$this->plugin_dir}/{$dir}");
 
         if(!$git->is_repo()) {
@@ -138,7 +138,7 @@ class Plugin extends RubbishThorClone {
       $plugins_to_clone = array_keys((Array)$this->plugins_manifest);
 
       foreach($this->plugins_manifest as $manifest_dir => $manifest_plugin) {
-        foreach($this->plugins_locked->plugins as $lock_dir => $lock_plugin) {
+        foreach($this->plugins_locked as $lock_dir => $lock_plugin) {
           if($lock_dir == $manifest_dir) {
             unset($plugins_to_clone[array_search($manifest_dir, $plugins_to_clone)]);
           }
@@ -183,7 +183,7 @@ class Plugin extends RubbishThorClone {
     $ignore_file = "{$this->project_dir}/.gitignore";
     $ignores = $git->get_ignores($ignore_file);
 
-    foreach($this->plugins_locked->plugins as $dir => $plugin) {
+    foreach($this->plugins_locked as $dir => $plugin) {
       $plugin_dir = "/wp-content/plugins/{$dir}\n";
 
       if(array_search($plugin_dir, $ignores) === false) {
@@ -198,11 +198,10 @@ class Plugin extends RubbishThorClone {
    * Checks the named plugin against the remote to see if the remote is on
    * a newer commit, and checks out the newer commit if so.
    */
-  public function upgrade($upgrade_plugin) {
+  public function upgrade($upgrade_plugin = '') {
     $this->whippet_init();
     $this->load_plugins_manifest();
     $this->load_plugins_lock();
-
 
     //
     //  1. Find the plugin we're going to update.
@@ -210,16 +209,24 @@ class Plugin extends RubbishThorClone {
     //  3. Update the lockfile
 
     foreach($this->plugins_manifest as $dir => $plugin) {
-      // Find the specified revision.
-      if($dir == $upgrade_plugin) {
+
+      // Upgrade the plugin if:
+      //  - It is the plugin they asked for
+      //  - They didn't specify a plugin, and this plugin is in the manifest.
+      if($dir == $upgrade_plugin || ($upgrade_plugin == '' && isset($this->plugins_manifest->$dir))) {
         $git = new Git("{$this->plugin_dir}/{$dir}");
 
+        // Find the specified revision.
         echo "[Checking {$dir}] ";
         $git->fetch();
 
+        // Check it out
         $git->checkout($git->remote_revision_commit($plugin->revision));
 
-        break;
+        // If we were upgrading a specific plugin, bail now
+        if($upgrade_plugin != '') {
+          break;
+        }
       }
     }
 
