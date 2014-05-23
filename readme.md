@@ -7,38 +7,64 @@ Whippet is a tool for managing WordPress applications. It has a few basic goals:
 3. Allowing proper build steps to take place, that automate build tasks both during development and deployment
 4. Properly managing plugins, allowing them to be version controlled and easily updated
 5. Automating the generation of commonly required objects like new applications and new themes
+6. Managing the creation of releases, including rollbacks
 
-At the moment, Whippet just manages plugins.
+At the moment, Whippet just manages plugins and releases.
+
+During development, whippet is designed to be used in conjunction with [Whippet Server](https://github.com/dxw/whippet). These projects will be combined at some point in the future.
+
+Whippet is under development and should be considered pre-alpha software.
 
 
-# TODO
+# Roadmap
 
 ## Reminders
 
 
 ## Next
 
-1. Specs?
-2. How are we going to handle these things?
-  - favicons, google webmaster shiz, anything else that lives in root - shared/public? Or should it be git controlled? app/public?
-  - mu-plugins - should we manage these with a flag in Plugins?
-3. Refactor console I/O
-
+- Specs/Capybara
+  - whippet test? Or just run bundle exec rspec?
+- app/public
+- whippet console (using php --auto-prepend-file=init.php -a?)
+- Refactor console I/O
 
 
 ## Later
 
-1. Implement whippet generate theme|app
-2. Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don' have lots of identical copies of things in application directories.
-3. Integrate whippet-server back into the project
+- whippet generate theme|app
+- whippet console --ruby
+- whippet server
   - Make sure it is compatible with other servers, like wp-cli?
 
+
+## Much later
+
+- Should we manage mu-plugins too? Perhaps with a flag in Plugins?
+- Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don' have lots of identical copies of things in application directories.
+
+# Application structure
+
+Whippet expects that the following directory structure will exist, and that it is a git repository.
+
+```
+- config      # Application configuration files
+- public      # Non-WordPress files that should be available via the web
+- seeds       # Seed data for initialising new checkouts and automated testing
+- spec        # Capybara tests...
+  - plugins       # For plugins
+  - themes        # For themes
+- wp-content  # Your application's wp-content directory
+  - mu-plugins    # Must-use plugins
+  - plugins       # Plugins (Whippet managed and otherwise)
+  - themes        # Themes, which cannot currently be Whippet-managed
+```
 
 # Commands
 
 ## Plugins
 
-Note: At the moment, Whippet assumes it is running within dxw's infrastructure, and makes assumptions accordingly.
+Note: At the moment, Whippet assumes it is running within dxw's infrastructure, and makes some assumptions accordingly.
 
 To manage plugins using Whippet, you make entries in the Plugins file in the root of the application.
 
@@ -112,3 +138,39 @@ it does on the local, and if so, updates the local commit to the newest one avai
 It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
 defaulting to master) and you wish to update the locally installed version to the newest one available.
 
+## Deploys
+
+To deploy applications using Whippet, first create a directory for your releases:
+
+```
+mkdir /var/local/myapp
+```
+
+Then create some subdirectories and a wp-config.php:
+
+```
+mkdir /var/local/myapp/shared
+mkdir /var/local/myapp/shared/uploads
+mkdir /var/local/myapp/releases
+cp /path/to/your/wp-config.php /var/local/myapp/shared/
+```
+
+When you deploy, Whippet will make sure your app is up to date (per your plugins.lock), create a new release in releases, and create a symlink that points to it (in this example, at /var/local/myapp/current).
+
+You can then configure your webserver to use the current symlink as your document root, and your application should be available.
+
+### whippet deploy [-f] <directory>
+
+This command will create a new release, using the base <directory> that you specify. In the example above, this would be:
+
+```
+$ whippet deploy /var/local/myapp
+```
+
+Note that this command must be run from within your Whippet application's repo.
+
+Note also that Whippet, by default, will not deploy your application if the commit that you are on has already been deployed. To override this behaviour and force a redeploy, use -f:
+
+```
+$ whippet deploy -f /var/local/myapp
+```
