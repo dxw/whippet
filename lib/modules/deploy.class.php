@@ -83,6 +83,12 @@ class Release {
       }
     }
 
+    //
+    // Copy public assets
+    //
+
+    system("cp -r {$this->project_dir}/public/* {$this->release_dir}");
+
 
     //
     // TODO: theme and plugin build steps
@@ -151,10 +157,6 @@ class Deploy {
 
       //
       // Did everything work?
-      //
-
-      //
-      // Is WP installed?
       //
 
       $checks = [
