@@ -20,10 +20,18 @@ Whippet is under development and should be considered pre-alpha software.
 
 ## Reminders
 
+- Test environment
+- Database cleanup (database-cleaner)
+- WP integration (ruby-wpdb)
+- Can we avoid HTTP requests/whippet-server when running tests?
+- Only run tests for the activated theme
+- Tests should be run on their own Whippet-Server, in quiet mode
+  - NB, requires allowing multiple whippet-servers
+
 
 ## Next
 
-- Specs/Capybara
+- Specs/Capybara/Cucumber
   - whippet test? Or just run bundle exec rspec?
 - app/public
 - whippet console (using php --auto-prepend-file=init.php -a?)
@@ -34,6 +42,7 @@ Whippet is under development and should be considered pre-alpha software.
 
 - whippet generate theme|app
 - whippet console --ruby
+  - See also phpsh.org, which looks nicer than php -a but requires Python
 - whippet server
   - Make sure it is compatible with other servers, like wp-cli?
 
