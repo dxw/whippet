@@ -20,22 +20,26 @@ Whippet is under development and should be considered pre-alpha software.
 
 ## Reminders
 
-- Test environment
-- Database cleanup (database-cleaner)
-- WP integration (ruby-wpdb)
-- Can we avoid HTTP requests/whippet-server when running tests?
-- Only run tests for the activated theme
-- Tests should be run on their own Whippet-Server, in quiet mode
-  - NB, requires allowing multiple whippet-servers
+- Cucumber - am now blocked on WP integration. It just sucks without that.
+  - Test environment
+  - Database cleanup (database-cleaner)
+  - WP integration (ruby-wpdb)
+  - Can we avoid HTTP requests/whippet-server when running tests?
+    - Quiet mode makes this much better already
+    - Tests should be run on their own Whippet-Server, in quiet mode
+      - requires allowing multiple whippet-servers
+  - Only run tests for the activated theme
+    - I think this is easy, just by doing cucumber path/to/
+  - Some default features for common WordPress things would be helpful
+    - index, single, page, category, archive, search, 404, analytics... delete whatever is inapplicable
 
 
 ## Next
 
-- Specs/Capybara/Cucumber
-  - whippet test? Or just run bundle exec rspec?
-- app/public
-- whippet console (using php --auto-prepend-file=init.php -a?)
 - Refactor console I/O
+- Sort out whippet-server
+- whippet console (using php --auto-prepend-file=init.php -a?)
+  - NB easier to do after we've sorted out whippet-server
 
 
 ## Later
@@ -50,7 +54,8 @@ Whippet is under development and should be considered pre-alpha software.
 ## Much later
 
 - Should we manage mu-plugins too? Perhaps with a flag in Plugins?
-- Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don' have lots of identical copies of things in application directories.
+- Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don't have lots of identical copies of things in application directories.
+
 
 # Application structure
 
@@ -60,13 +65,13 @@ Whippet expects that the following directory structure will exist, and that it i
 - config      # Application configuration files
 - public      # Non-WordPress files that should be available via the web
 - seeds       # Seed data for initialising new checkouts and automated testing
-- spec        # Capybara tests...
-  - plugins       # For plugins
-  - themes        # For themes
+- features      # Cucumber features
+  - steps       # Cucumber steps
+    - helpers   # Helpers, global steps, etc
 - wp-content  # Your application's wp-content directory
-  - mu-plugins    # Must-use plugins
-  - plugins       # Plugins (Whippet managed and otherwise)
-  - themes        # Themes, which cannot currently be Whippet-managed
+  - mu-plugins  # Must-use plugins
+  - plugins     # Plugins (Whippet managed and otherwise)
+  - themes      # Themes, which cannot currently be Whippet-managed
 ```
 
 # Commands
