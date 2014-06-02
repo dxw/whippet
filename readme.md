@@ -47,7 +47,8 @@ Whippet is under development and should be considered pre-alpha software.
 - whippet console (using php --auto-prepend-file=init.php -a?)
   - easier to do after we've sorted out whippet-server
   - No wait. wpcli does this. wp shell!
-
+- Add some way to provide a helpful description in a generator
+- whippet generate with no arguments should print an error message
 
 
 ## Later

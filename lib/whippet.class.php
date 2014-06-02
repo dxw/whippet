@@ -22,25 +22,32 @@ class Whippet extends RubbishThorClone {
       $option_parser->addRule('f|force', "Force Whippet to deploy, even if a release already exists for this commit");
     });
 
-    $this->command('generate THING', 'Generates a thing', function($option_parser) {
+    $this->command('generate [THING]', 'Generates a thing', function($option_parser) {
       $option_parser->addRule('l|list', "Lists available generators");
       $option_parser->addRule('d|directory::', "Override the generator's default creation directory with this one");
     });
+
+    $this->command('init [PATH]', "Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.");
   }
 
   public function plugin($plugin_command) {
-    $plugins = new Plugin;
-    $plugins->start(array_slice($this->argv, 1));
+    (new Plugin)->start(array_slice($this->argv, 1));
   }
 
   public function deploy($dir) {
-    $deploy = new Deploy($dir);
-    $deploy->deploy(isset($this->options->force));
+    (new Deploy($dir))->deploy(isset($this->options->force));
+  }
+
+  public function init($path = false) {
+    if($path) {
+      $this->options = new stdClass();
+      $this->options->directory = $path;
+    }
+
+    (new Generate())->start("whippet", $this->options);
   }
 
   public function generate($thing = false) {
-    $generate = new Generate($thing);
-
-    $generate->start($thing, $this->options);
+    (new Generate())->start($thing, $this->options);
   }
 };
