@@ -9,7 +9,6 @@ require WHIPPET_ROOT . "/lib/git/git.class.php";
 require WHIPPET_ROOT . "/lib/modules/helpers/manifest_io.trait.php";
 require WHIPPET_ROOT . "/lib/modules/helpers/whippet_helpers.trait.php";
 
-
 require WHIPPET_ROOT . "/lib/modules/plugin.class.php";
 require WHIPPET_ROOT . "/lib/modules/deploy.class.php";
 require WHIPPET_ROOT . "/lib/modules/generate.class.php";
@@ -28,6 +27,8 @@ class Whippet extends RubbishThorClone {
     });
 
     $this->command('init [PATH]', "Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.");
+
+    $this->command('migrate OLDPATH NEWPATH', "Examines an existing wp-content directory and attempts to create an identical Whippet application.");
   }
 
   public function plugin($plugin_command) {
@@ -49,5 +50,16 @@ class Whippet extends RubbishThorClone {
 
   public function generate($thing = false) {
     (new Generate())->start($thing, $this->options);
+  }
+
+  // TODO: This should just be a generator like any other, but it's currently hard to do one
+  //       command with several different combinations of required arguments. So just a separate
+  //       command for now.
+  public function migrate($old, $new) {
+    $this->options = new stdClass();
+    $this->options->old = $old;
+    $this->options->new = $new;
+
+    (new Generate())->start("migration", $this->options);
   }
 };
