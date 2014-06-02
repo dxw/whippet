@@ -20,8 +20,14 @@ Whippet is under development and should be considered pre-alpha software.
 
 ## Reminders
 
+- Deploy will use latest master WP if application.json specifies master, not whatever was current at time of last commit. That is probably bad?
+
 - Cucumber - am now blocked on WP integration. It just sucks without that.
   - Test environment
+  - Seeds
+    - Seeds (or something) for clean install
+      - whippet db reset?
+      - At what point are we duplicating wp-cli? Should that be bundled in?
   - Database cleanup (database-cleaner)
   - WP integration (ruby-wpdb)
   - Can we avoid HTTP requests/whippet-server when running tests?
@@ -39,7 +45,9 @@ Whippet is under development and should be considered pre-alpha software.
 - Refactor console I/O
 - Sort out whippet-server
 - whippet console (using php --auto-prepend-file=init.php -a?)
-  - NB easier to do after we've sorted out whippet-server
+  - easier to do after we've sorted out whippet-server
+  - No wait. wpcli does this. wp shell!
+
 
 
 ## Later
