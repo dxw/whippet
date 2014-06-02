@@ -253,7 +253,9 @@ class Deploy {
       }
     }
     catch(Exception $e) {
-      die($e->getMessage());
+      echo $e->getMessage();
+
+      exit(1);
     }
   }
 

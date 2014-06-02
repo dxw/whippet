@@ -1,0 +1,6 @@
+{
+    "wordpress": {
+        "repository": "git@git.dxw.net:wordpress/snapshot",
+        "revision": "master"
+    }
+}
