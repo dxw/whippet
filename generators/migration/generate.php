@@ -196,7 +196,6 @@ class MigrationGenerator {
         system("mkdir -p $new_theme_dir"); // For themes within subdirs
       }
 
-      echo("cp -a '{$old}/themes/{$theme_dir}' '{$new_theme_dir}'\n");
       system("cp -a '{$old}/themes/{$theme_dir}' '{$new_theme_dir}'");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";

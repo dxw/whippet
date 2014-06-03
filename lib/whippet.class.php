@@ -15,7 +15,7 @@ require WHIPPET_ROOT . "/lib/modules/generate.class.php";
 
 class Whippet extends RubbishThorClone {
   public function commands() {
-    $this->command('plugin PLUGIN_COMMAND', '');
+    $this->command('plugins PLUGIN_COMMAND', '');
 
     $this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository", function($option_parser) {
       $option_parser->addRule('f|force', "Force Whippet to deploy, even if a release already exists for this commit");
@@ -31,7 +31,7 @@ class Whippet extends RubbishThorClone {
     $this->command('migrate OLDPATH NEWPATH', "Examines an existing wp-content directory and attempts to create an identical Whippet application.");
   }
 
-  public function plugin($plugin_command) {
+  public function plugins($plugin_command) {
     (new Plugin)->start(array_slice($this->argv, 1));
   }
 
