@@ -89,13 +89,13 @@ class Git {
     foreach($output as $line) {
       if(preg_match('/(\+?U?-?)([a-z0-9]{40}) ([^\(]+)([^\)]*)/', trim($line), $matches)) {
         $submodule = new stdClass();
-        $submodule->status = $matches[1];
+        $submodule->status = trim($matches[1]);
         $submodule->commit = trim($matches[2]);
         $submodule->dir    = trim($matches[3]);
         $submodule->description = preg_replace('/^[\s\(]*/', '', $matches[4]);
         $submodule-> remotes = (new git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
 
-        $submodules[] = $submodule;
+        $submodules[$submodule->dir] = $submodule;
       }
       else {
         echo "Failed to parse: {$line}\n";
@@ -105,6 +105,16 @@ class Git {
     }
 
     return $submodules;
+  }
+
+  function submodule_add($repo, $path) {
+    list($output, $return) = $this->run_command("git submodule add {$repo} {$path}");
+
+    if(!$this->check_git_return("submodule status failed", $return, $output)) {
+      return false;
+    }
+
+    return true;
   }
 
   function delete_repo() {
