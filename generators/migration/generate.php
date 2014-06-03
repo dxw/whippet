@@ -65,10 +65,16 @@ class MigrationGenerator {
       }
     }
 
+
     // Fetch all the plugins and themes from the old project
+    echo "Loading plugins\n";
+
     $plugins = $this->get_plugins("{$old}/plugins");
+
+    echo "Loading themes\n";
     $themes = $this->get_themes("{$old}/themes");
 
+    echo "Loading everything else\n";
     $other_files = $this->get_rogue_files($old, $plugins, $themes);
 
     // Find out which ones are submoduled
@@ -275,6 +281,8 @@ class MigrationGenerator {
     foreach(new DirectoryIterator($dir) as $file) {
       if($file->isDot() || !$file->isDir()) continue;
 
+      $got_one = false;
+
       $styles = "{$dir}/" . $file->getFilename() . "/style.css";
 
       if(file_exists($styles)) {
@@ -282,6 +290,7 @@ class MigrationGenerator {
 
         if(!empty($theme_data['Theme Name'])) {
           $themes[$file->getFilename()] = $theme_data;
+          $got_one = true;
         }
       }
       else {
@@ -295,9 +304,15 @@ class MigrationGenerator {
 
             if(!empty($theme_data['Theme Name'])) {
               $themes[$file->getFilename() . '/' . $sub_file->getFilename()] = $theme_data;
+
+              $got_one = true;
             }
           }
         }
+      }
+
+      if(!$got_one) {
+        $this->manual_fixes[] = "Unable to find a theme in " . $file->getPathname() . ". Is there one there?";
       }
     }
 
@@ -400,12 +415,14 @@ class MigrationGenerator {
       $ignore_paths[] = "plugins/" . $path;
     }
 
+    foreach($ignores as $k => $path) {
+      $ignores[$k] = realpath("{$directory}/{$path}");
+    }
+
     $iterator = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS);
     foreach(new RecursiveIteratorIterator($iterator) as $filename => $file) {
       $match = false;
       foreach($ignore_paths as $path) {
-        $path = realpath("{$directory}/{$path}");
-
         if(substr(realpath($file->getPathname()), 0, strlen($path)) == $path) {
           $match = true;
           break;
