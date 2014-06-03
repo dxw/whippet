@@ -174,12 +174,12 @@ class MigrationGenerator {
     echo "Copying project plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(dirname($plugin_file) != '.') {
-        system("cp -a {$old}/plugins/" . dirname($plugin_file) . " {$new}/wp-content/plugins/");
+        system("cp -a '{$old}/plugins/" . dirname($plugin_file) . "' '{$new}/wp-content/plugins/'");
 
         $this->automatic_fixes[] = "Copied plugin directory " . dirname($plugin_file) . " into the project";
       }
       else {
-        system("cp -a {$old}/plugins/{$plugin_file} {$new}/wp-content/plugins/");
+        system("cp -a '{$old}/plugins/{$plugin_file}' '{$new}/wp-content/plugins/'");
 
         $this->automatic_fixes[] = "Copied plugin file {$plugin_file} into the project";
       }
@@ -193,14 +193,15 @@ class MigrationGenerator {
       $new_theme_dir = "{$new}/wp-content/themes/" . dirname($theme_dir);
 
       if(!file_exists($new_theme_dir)) {
-        mkdir($new_theme_dir); // For themes within subdirs
+        system("mkdir -p $new_theme_dir"); // For themes within subdirs
       }
 
-      system("cp -a {$old}/themes/" . dirname($theme_dir) . " {$new_theme_dir}");
+      echo("cp -a '{$old}/themes/{$theme_dir}' '{$new_theme_dir}'\n");
+      system("cp -a '{$old}/themes/{$theme_dir}' '{$new_theme_dir}'");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
 
-      if(preg_match('/^twenty/', $theme_dir)) {
+      if(array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
         $this->manual_fixes[] = "Copied a default theme into the project: {$theme_dir}. Don't keep it unless it's actually being used.";
       }
 
@@ -231,7 +232,7 @@ class MigrationGenerator {
       echo "Copying language files\n";
 
       mkdir("{$new}/wp-content/languages/");
-      system("cp -a {$old}/languages/*.mo {$new}/wp-content/languages/");
+      system("cp {$old}/languages/*.mo {$new}/wp-content/languages/");
 
       $this->automatic_fixes[] = "Copied language directory into the project";
     }
@@ -249,7 +250,7 @@ class MigrationGenerator {
     }
 
 
-    echo "\n\nPossible Manual fixes required:\n";
+    echo "\n\nPossible manual fixes required:\n";
     echo "===============================\n";
 
     if(!count($this->manual_fixes)) {
@@ -335,7 +336,7 @@ class MigrationGenerator {
           }
         }
       }
-      if(preg_match('/\.php$/', $file->getFilename())) {
+      else if(preg_match('/\.php$/', $file->getFilename())) {
         $the_file = $file->getFilename();
 
         $plugin_data = $this->get_file_data("{$dir}/" . $the_file);
@@ -415,15 +416,15 @@ class MigrationGenerator {
       $ignore_paths[] = "plugins/" . $path;
     }
 
-    foreach($ignores as $k => $path) {
-      $ignores[$k] = realpath("{$directory}/{$path}");
+    foreach($ignore_paths as $k => $path) {
+      $ignore_paths[$k] = realpath("{$directory}/{$path}");
     }
 
     $iterator = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS);
     foreach(new RecursiveIteratorIterator($iterator) as $filename => $file) {
       $match = false;
       foreach($ignore_paths as $path) {
-        if(substr(realpath($file->getPathname()), 0, strlen($path)) == $path) {
+        if(strpos($file->getRealPath(), $path) === 0) {
           $match = true;
           break;
         }
