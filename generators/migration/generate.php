@@ -54,6 +54,16 @@ class MigrationGenerator {
     // PLUGINS & THEMES
     //
 
+    // Fetch submodules first, because we need to bail if any are not in the correct state
+    $submodules = $git->submodule_status();
+
+    foreach($submodules as $submodule_dir => $submodule) {
+      if(!empty($submodule->status)) {
+        echo "Submodule {$submodule->dir} has unmerged changes, is uninitialised, or is not on the index commit. Aborting.\n";
+        exit(1);
+      }
+    }
+
     // Fetch all the plugins and themes from the old project
     $plugins = $this->get_plugins("{$old}/plugins");
     $themes = $this->get_themes("{$old}/themes");
@@ -62,15 +72,8 @@ class MigrationGenerator {
 
     // Find out which ones are submoduled
     // No need to worry about themes here, because they're not whippet managed. They're dealt with below.
-    $submodules = $git->submodule_status();
-
     foreach($plugins as $plugin_file => $plugin_data) {
       foreach($submodules as $submodule_dir => $submodule) {
-        if(!empty($submodule->status)) {
-          echo "Submodule {$submodule->dir} has unmerged changes, is uninitialised, or is not on the index commit. Aborting.\n";
-          exit(1);
-        }
-
         // If it looks like a theme, make a note of that for later
         if(dirname($submodule->dir) == "themes") {
           $submodule->theme_dir = basename($submodule->dir);
@@ -101,10 +104,25 @@ class MigrationGenerator {
       $this->automatic_fixes[] = "Added plugin {$plugin_file} to the Plugins file";
     }
 
+    // Anything left over will not be Whippet managed. Let's just check that they're all not in wordpress-plugins.
+    $available_plugins = file(dirname(__FILE__) . "/share/available-plugins");
+
+    foreach($plugins as $plugin_file => $plugin_data) {
+      if(array_search(dirname($plugin_file) . "\n", $available_plugins) !== false) {
+        $this->manual_fixes[] = "Non-whippet-managed plugin is available in wordpress-plugins: $plugin_file. If the local version is not modified, consider moving it to the Plugins file";
+      } else {
+        $directory_headers = get_headers("http://www.wordpress.org/plugins/" . dirname($plugin_file) . "/");
+
+        if(preg_match('/200 OK/', $directory_headers[0])) {
+          $this->manual_fixes[] = "Non-whippet-managed plugin might be available on the Directory: $plugin_file. Consider making a repo, and adding to the Plugins file.";
+        }
+      }
+    }
+
     // Re-add submodules that are left-over, and if any are plugins, remove the matching plugin entry
     foreach($submodules as $dir => $submodule) {
       if(count($submodule->remotes['origin']) != 1) {
-        $this->manual_fixes[] = "Skipped submodule {$submodule->dir}, because it does not have exactly 1 remote. You'll need to add the one you want.";
+        $this->manual_fixes[] = "Skipped submodule {$submodule->dir}, because it does not have exactly 1 remote. You'll need to manually add the one you want.";
 
         unset($submodules[$dir]);
 
@@ -122,12 +140,16 @@ class MigrationGenerator {
       if(isset($submodule->plugin_file)) {
         unset($plugins[$submodule->plugin_file]);
 
-        $this->automatic_fixes[] = "Submoduled plugin {$submodule->plugin_file} at: wp-content/" . $submodule->dir;
+        $this->automatic_fixes[] = "Submoduled plugin " . dirname($submodule->plugin_file) . " at: wp-content/" . $submodule->dir;
       }
       else if(isset($submodule->theme_dir)) {
        unset($themes[$submodule->theme_dir]);
 
        $this->automatic_fixes[] = "Submoduled theme {$submodule->theme_dir} at: wp-content/" . $submodule->dir;
+
+       if(preg_match('/^twenty/', $submodule->theme_dir)) {
+         $this->manual_fixes[] = "Submoduled a default theme: {$submodule->theme_dir}. Don't keep it unless it's actually being used.";
+       }
       }
       else {
         $this->automatic_fixes[] = "Submodule added at: wp-content/" . $submodule->dir;
@@ -157,6 +179,10 @@ class MigrationGenerator {
       system("cp -a {$old}/themes/" . dirname($theme_dir) . " {$new}/wp-content/themes/");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
+
+      if(preg_match('/^twenty/', $theme_dir)) {
+        $this->manual_fixes[] = "Copied a default theme into the project: {$theme_dir}. Don't keep it unless it's actually being used.";
+      }
 
       unset($themes[$theme_dir]);
     }
@@ -199,8 +225,8 @@ class MigrationGenerator {
     }
 
 
-    echo "\n\nManual fixes required:\n";
-    echo "======================\n";
+    echo "\n\nPossible Manual fixes required:\n";
+    echo "===============================\n";
 
     if(!count($this->manual_fixes)) {
       echo "  None.\n";
@@ -340,9 +366,9 @@ class MigrationGenerator {
     foreach(new RecursiveIteratorIterator($iterator) as $filename => $file) {
       $match = false;
       foreach($ignore_paths as $path) {
-        $path = "{$directory}/{$path}";
+        $path = realpath("{$directory}/{$path}");
 
-        if(substr($file->getPathname(), 0, strlen($path)) == $path) {
+        if(substr(realpath($file->getPathname()), 0, strlen($path)) == $path) {
           $match = true;
           break;
         }
