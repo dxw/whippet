@@ -88,14 +88,12 @@ class Git {
 
     foreach($output as $line) {
       if(preg_match('/(\+?U?-?)([a-z0-9]{40}) ([^\(]+)([^\)]*)/', trim($line), $matches)) {
-        $submodule = array(
-          "status" => $matches[1],
-          "commit" => trim($matches[2]),
-          "dir"    => trim($matches[3]),
-          "description" => preg_replace('/^[\s\(]*/', '', $matches[4])
-        );
-
-        $submodule['remotes'] = (new git("{$this->repo_path}/{$submodule['dir']}"))->get_remotes();
+        $submodule = new stdClass();
+        $submodule->status = $matches[1];
+        $submodule->commit = trim($matches[2]);
+        $submodule->dir    = trim($matches[3]);
+        $submodule->description = preg_replace('/^[\s\(]*/', '', $matches[4]);
+        $submodule-> remotes = (new git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
 
         $submodules[] = $submodule;
       }
