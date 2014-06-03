@@ -77,6 +77,38 @@ class Git {
     return true;
   }
 
+  function submodule_status() {
+    list($output, $return) = $this->run_command("git submodule status");
+
+    if(!$this->check_git_return("submodule status failed", $return, $output)) {
+      return false;
+    }
+
+    $submodules = array();
+
+    foreach($output as $line) {
+      if(preg_match('/(\+?U?-?)([a-z0-9]{40}) ([^\(]+)([^\)]*)/', trim($line), $matches)) {
+        $submodule = array(
+          "status" => $matches[1],
+          "commit" => trim($matches[2]),
+          "dir"    => trim($matches[3]),
+          "description" => preg_replace('/^[\s\(]*/', '', $matches[4])
+        );
+
+        $submodule['remotes'] = (new git("{$this->repo_path}/{$submodule['dir']}"))->get_remotes();
+
+        $submodules[] = $submodule;
+      }
+      else {
+        echo "Failed to parse: {$line}\n";
+
+        return false;
+      }
+    }
+
+    return $submodules;
+  }
+
   function delete_repo() {
     $this->run_command("rm -rf {$this->repo_path}", false);
   }
@@ -94,6 +126,10 @@ class Git {
   function local_revision_commit($revision) {
     list($output, $return) = $this->run_command("git show-ref");
 
+    if(!$this->check_git_return("show-ref failed", $return, $output)) {
+      return false;
+    }
+
     foreach($this->parse_ref_list($output) as $ref) {
       if($ref->name == $revision) {
         return $ref->commit;
@@ -103,8 +139,35 @@ class Git {
     return false;
   }
 
+  function get_remotes() {
+    list($output, $return) = $this->run_command("git remote -v");
+
+    if(!$this->check_git_return("git remote failed", $return, $output)) {
+      return false;
+    }
+
+    $remotes = array();
+
+    foreach($output as $line) {
+      if(preg_match('/^([^\s]+)\s+([^\s]+)/', trim($line), $matches)) {
+        $remotes[$matches[1]] = $matches[2];
+      }
+      else {
+        echo "Failed to parse: {$line}\n";
+
+        return false;
+      }
+    }
+
+    return $remotes;
+  }
+
   function remote_revision_commit($revision) {
     list($output, $return) = $this->run_command("git ls-remote");
+
+    if(!$this->check_git_return("ls-remote failed", $return, $output)) {
+      return false;
+    }
 
     foreach($this->parse_ref_list($output) as $ref) {
       if($ref->name == $revision) {
