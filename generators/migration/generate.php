@@ -122,7 +122,13 @@ class MigrationGenerator {
       if(array_search(dirname($plugin_file) . "\n", $available_plugins) !== false) {
         $this->manual_fixes[] = "Non-whippet-managed plugin is available in wordpress-plugins: $plugin_file. If the local version is not modified, consider moving it to the Plugins file";
       } else {
-        $directory_headers = get_headers("http://www.wordpress.org/plugins/" . dirname($plugin_file) . "/");
+        $plugin_slug = dirname($plugin_file);
+
+        if($plugin_slug == '.') {
+          $plugin_slug = preg_replace("/\.php$/", '', $plugin_file);
+        }
+
+        $directory_headers = get_headers("http://www.wordpress.org/plugins/{$plugin_slug}/");
 
         if(preg_match('/200 OK/', $directory_headers[0])) {
           $this->manual_fixes[] = "Non-whippet-managed plugin might be available on the Directory: $plugin_file. Consider making a repo, and adding to the Plugins file.";
@@ -147,6 +153,10 @@ class MigrationGenerator {
       if(!$git->submodule_add($remote, "wp-content/" . $submodule->dir)) {
         // This error will be added to manual fixes later, by seeing if anything is left over in $submodules.
         continue;
+      }
+
+      if(strpos($remote, "git@git.dxw.net") === false) {
+        $this->manual_fixes[] = "Non-dxw git repo submoduled: {$remote} at {$submodule->dir}";
       }
 
       if(isset($submodule->plugin_file)) {
@@ -249,8 +259,8 @@ class MigrationGenerator {
     }
 
 
-    echo "\n\nPossible manual fixes required:\n";
-    echo "===============================\n";
+    echo "\n\nNotices/possible manual fixes:\n";
+    echo "==============================\n";
 
     if(!count($this->manual_fixes)) {
       echo "  None.\n";
