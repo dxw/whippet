@@ -55,6 +55,7 @@ class MigrationGenerator {
     //
 
     // Fetch submodules first, because we need to bail if any are not in the correct state
+    echo "Loading submodules\n";
     $submodules = $git->submodule_status();
 
     foreach($submodules as $submodule_dir => $submodule) {
@@ -64,14 +65,21 @@ class MigrationGenerator {
       }
     }
 
+
     // Fetch all the plugins and themes from the old project
+    echo "Loading plugins\n";
+
     $plugins = $this->get_plugins("{$old}/plugins");
+
+    echo "Loading themes\n";
     $themes = $this->get_themes("{$old}/themes");
 
+    echo "Loading everything else\n";
     $other_files = $this->get_rogue_files($old, $plugins, $themes);
 
     // Find out which ones are submoduled
     // No need to worry about themes here, because they're not whippet managed. They're dealt with below.
+    echo "Looking for Whippet manageable plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       foreach($submodules as $submodule_dir => $submodule) {
         // If it looks like a theme, make a note of that for later
@@ -91,6 +99,7 @@ class MigrationGenerator {
     }
 
     // Add submoduled plugins to Plugins file. Remove those submodule & plugin entries.
+    echo "Updating Plugins file\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(!isset($plugin_data['is_submodule']) || !$plugin_data['is_submodule']) {
         continue;
@@ -109,11 +118,19 @@ class MigrationGenerator {
     // Anything left over will not be Whippet managed. Let's just check that they're all not in wordpress-plugins.
     $available_plugins = file(dirname(__FILE__) . "/share/available-plugins");
 
+    echo "Sanity-checking left over plugins\n";
+
     foreach($plugins as $plugin_file => $plugin_data) {
       if(array_search(dirname($plugin_file) . "\n", $available_plugins) !== false) {
         $this->manual_fixes[] = "Non-whippet-managed plugin is available in git: $plugin_file. Should it be Whippet-managed?";
       } else {
-        $directory_headers = get_headers("http://www.wordpress.org/plugins/" . dirname($plugin_file) . "/");
+        $plugin_slug = dirname($plugin_file);
+
+        if($plugin_slug == '.') {
+          $plugin_slug = preg_replace("/\.php$/", '', $plugin_file);
+        }
+
+        $directory_headers = get_headers("http://www.wordpress.org/plugins/{$plugin_slug}/");
 
         if(preg_match('/200 OK/', $directory_headers[0])) {
           $this->manual_fixes[] = "Non-whippet-managed plugin might be available on the Directory: " . dirname($plugin_file);
@@ -122,6 +139,7 @@ class MigrationGenerator {
     }
 
     // Re-add submodules that are left-over, and if any are plugins, remove the matching plugin entry
+    echo "Adding submodules\n";
     foreach($submodules as $dir => $submodule) {
       if(count($submodule->remotes['origin']) != 1) {
         $this->manual_fixes[] = "Skipped submodule {$submodule->dir}, because it does not have exactly 1 remote. You'll need to manually add the one you want.";
@@ -137,6 +155,10 @@ class MigrationGenerator {
       if(!$git->submodule_add($remote, "wp-content/" . $submodule->dir)) {
         // This error will be added to manual fixes later, by seeing if anything is left over in $submodules.
         continue;
+      }
+
+      if(strpos($remote, "git@git.dxw.net") === false) {
+        $this->manual_fixes[] = "Non-dxw git repo submoduled: {$remote} at {$submodule->dir}";
       }
 
       if(isset($submodule->plugin_file)) {
@@ -161,14 +183,15 @@ class MigrationGenerator {
     }
 
     // Copy over any plugins that are left over
+    echo "Copying project plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(dirname($plugin_file) != '.') {
-        system("cp -a {$old}/plugins/" . dirname($plugin_file) . " {$new}/wp-content/plugins/");
+        system("cp -a '{$old}/plugins/" . dirname($plugin_file) . "' '{$new}/wp-content/plugins/'");
 
         $this->automatic_fixes[] = "Copied plugin directory " . dirname($plugin_file) . " into the project";
       }
       else {
-        system("cp -a {$old}/plugins/{$plugin_file} {$new}/wp-content/plugins/");
+        system("cp -a '{$old}/plugins/{$plugin_file}' '{$new}/wp-content/plugins/'");
 
         $this->automatic_fixes[] = "Copied plugin file {$plugin_file} into the project";
       }
@@ -177,17 +200,26 @@ class MigrationGenerator {
     }
 
     // Copy over any themes that are left over
+    echo "Copying project themes\n";
     foreach($themes as $theme_dir => $theme_data) {
-      system("cp -a {$old}/themes/" . dirname($theme_dir) . " {$new}/wp-content/themes/");
+      $new_theme_dir = "{$new}/wp-content/themes/" . dirname($theme_dir);
+
+      if(!file_exists($new_theme_dir)) {
+        system("mkdir -p $new_theme_dir"); // For themes within subdirs
+      }
+
+      system("cp -a '{$old}/themes/{$theme_dir}' '{$new_theme_dir}'");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
 
-      if(preg_match('/^twenty/', $theme_dir)) {
+      if(array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
         $this->manual_fixes[] = "Copied a default theme into the project: {$theme_dir}. Don't keep it unless it's actually being used.";
       }
 
       unset($themes[$theme_dir]);
     }
+
+    echo "Checking for unhandled plugins, themes and submodules\n";
 
     // Make sure there's nothing left
     foreach($plugins as $plugin_file => $plugin_data) {
@@ -208,8 +240,10 @@ class MigrationGenerator {
     //
 
     if(file_exists("{$old}/languages")) {
+      echo "Copying language files\n";
+
       mkdir("{$new}/wp-content/languages/");
-      system("cp -a {$old}/languages/*.mo {$new}/wp-content/languages/");
+      system("cp {$old}/languages/*.mo {$new}/wp-content/languages/");
 
       $this->automatic_fixes[] = "Copied language directory into the project";
     }
@@ -227,8 +261,8 @@ class MigrationGenerator {
     }
 
 
-    echo "\n\nPossible Manual fixes required:\n";
-    echo "===============================\n";
+    echo "\n\nNotices/possible manual fixes:\n";
+    echo "==============================\n";
 
     if(!count($this->manual_fixes)) {
       echo "  None.\n";
@@ -258,10 +292,39 @@ class MigrationGenerator {
 
     foreach(new DirectoryIterator($dir) as $file) {
       if($file->isDot() || !$file->isDir()) continue;
-      $theme_data = $this->get_file_data("{$dir}/" . $file->getFilename() . "/style.css");
 
-      if(!empty($theme_data['Theme Name'])) {
-        $themes[$file->getFilename()] = $theme_data;
+      $got_one = false;
+
+      $styles = "{$dir}/" . $file->getFilename() . "/style.css";
+
+      if(file_exists($styles)) {
+        $theme_data = $this->get_file_data($styles);
+
+        if(!empty($theme_data['Theme Name'])) {
+          $themes[$file->getFilename()] = $theme_data;
+          $got_one = true;
+        }
+      }
+      else {
+        foreach(new DirectoryIterator($file->getPathname()) as $sub_file) {
+          if($sub_file->isDot() || !$sub_file->isDir()) continue;
+
+          $styles = "{$dir}/" . $file->getFilename() . "/" . $sub_file->getFilename() . "/style.css";
+
+          if(file_exists($styles)) {
+            $theme_data = $this->get_file_data($styles);
+
+            if(!empty($theme_data['Theme Name'])) {
+              $themes[$file->getFilename() . '/' . $sub_file->getFilename()] = $theme_data;
+
+              $got_one = true;
+            }
+          }
+        }
+      }
+
+      if(!$got_one) {
+        $this->manual_fixes[] = "Unable to find a theme in " . $file->getPathname() . ". Is there one there?";
       }
     }
 
@@ -284,7 +347,7 @@ class MigrationGenerator {
           }
         }
       }
-      if(preg_match('/\.php$/', $file->getFilename())) {
+      else if(preg_match('/\.php$/', $file->getFilename())) {
         $the_file = $file->getFilename();
 
         $plugin_data = $this->get_file_data("{$dir}/" . $the_file);
@@ -364,13 +427,15 @@ class MigrationGenerator {
       $ignore_paths[] = "plugins/" . $path;
     }
 
+    foreach($ignore_paths as $k => $path) {
+      $ignore_paths[$k] = realpath("{$directory}/{$path}");
+    }
+
     $iterator = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS);
     foreach(new RecursiveIteratorIterator($iterator) as $filename => $file) {
       $match = false;
       foreach($ignore_paths as $path) {
-        $path = realpath("{$directory}/{$path}");
-
-        if(substr(realpath($file->getPathname()), 0, strlen($path)) == $path) {
+        if(strpos($file->getRealPath(), $path) === 0) {
           $match = true;
           break;
         }
