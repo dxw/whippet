@@ -93,7 +93,7 @@ class Git {
         $submodule->commit = trim($matches[2]);
         $submodule->dir    = trim($matches[3]);
         $submodule->description = preg_replace('/^[\s\(]*/', '', $matches[4]);
-        $submodule-> remotes = (new git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
+        $submodule->remotes = (new git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
 
         $submodules[$submodule->dir] = $submodule;
       }
