@@ -96,12 +96,14 @@ class MigrationGenerator {
         continue;
       }
 
-      file_put_contents("{$new}/Plugins", dirname($plugin_file) . "=\n", FILE_APPEND);
+      $plugin_dir = dirname($plugin_file);
+
+      file_put_contents("{$new}/Plugins", "{$plugin_dir}=\n", FILE_APPEND);
 
       unset($plugins[$plugin_file]);
-      unset($submodules['plugins/' . dirname($plugin_file)]);
+      unset($submodules["plugins/{$plugin_dir}"]);
 
-      $this->automatic_fixes[] = "Added plugin {$plugin_file} to the Plugins file";
+      $this->automatic_fixes[] = "Added plugin {$plugin_dir} to the Plugins file";
     }
 
     // Anything left over will not be Whippet managed. Let's just check that they're all not in wordpress-plugins.
@@ -109,12 +111,12 @@ class MigrationGenerator {
 
     foreach($plugins as $plugin_file => $plugin_data) {
       if(array_search(dirname($plugin_file) . "\n", $available_plugins) !== false) {
-        $this->manual_fixes[] = "Non-whippet-managed plugin is available in wordpress-plugins: $plugin_file. If the local version is not modified, consider moving it to the Plugins file";
+        $this->manual_fixes[] = "Non-whippet-managed plugin is available in git: $plugin_file. Should it be Whippet-managed?";
       } else {
         $directory_headers = get_headers("http://www.wordpress.org/plugins/" . dirname($plugin_file) . "/");
 
         if(preg_match('/200 OK/', $directory_headers[0])) {
-          $this->manual_fixes[] = "Non-whippet-managed plugin might be available on the Directory: $plugin_file. Consider making a repo, and adding to the Plugins file.";
+          $this->manual_fixes[] = "Non-whippet-managed plugin might be available on the Directory: " . dirname($plugin_file);
         }
       }
     }
@@ -140,15 +142,15 @@ class MigrationGenerator {
       if(isset($submodule->plugin_file)) {
         unset($plugins[$submodule->plugin_file]);
 
-        $this->automatic_fixes[] = "Submoduled plugin " . dirname($submodule->plugin_file) . " at: wp-content/" . $submodule->dir;
+        $this->automatic_fixes[] = "Submoduled plugin from {$remote} at: wp-content/" . $submodule->dir;
       }
       else if(isset($submodule->theme_dir)) {
        unset($themes[$submodule->theme_dir]);
 
-       $this->automatic_fixes[] = "Submoduled theme {$submodule->theme_dir} at: wp-content/" . $submodule->dir;
+       $this->automatic_fixes[] = "Submoduled theme from {$remote} at: wp-content/" . $submodule->dir;
 
        if(preg_match('/^twenty/', $submodule->theme_dir)) {
-         $this->manual_fixes[] = "Submoduled a default theme: {$submodule->theme_dir}. Don't keep it unless it's actually being used.";
+         $this->manual_fixes[] = "Submoduled a default theme from {$remote} at wp-content/{$submodule->dir}. Don't keep it unless it's actually being used.";
        }
       }
       else {
