@@ -6,12 +6,16 @@ akismet
 audit-trail
 authors
 autochimp
+auto-join-groups
 addthis
 better-anchor-links
 better-rss-widget
 breadcrumb-navxt
 broken-link-checker
 bbpress
+bp-export-users
+bp-external-activity
+bp-password-strength
 bp-group-hierarchy
 bp-group-management
 buddypress
