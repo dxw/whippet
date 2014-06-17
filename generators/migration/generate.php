@@ -99,6 +99,10 @@ class MigrationGenerator {
     }
 
     // Add submoduled plugins to Plugins file. Remove those submodule & plugin entries.
+
+    // Always start with a fresh file
+    file_put_contents("{$new}/Plugins", "source = \"git@git.dxw.net:wordpress-plugins/\"\n");
+
     echo "Updating Plugins file\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(!isset($plugin_data['is_submodule']) || !$plugin_data['is_submodule']) {
