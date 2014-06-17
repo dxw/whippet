@@ -21,8 +21,6 @@ class MigrationGenerator {
       echo "Unable to find directory: {$new}\n";
     }
 
-    $new_git = new Git($new);
-
     // TODO: sanity checks
     //  Does $old look like a wp-content?
     //  Does $new look like a whippet app?

@@ -5,6 +5,15 @@ class Git {
     $this->repo_path = $repo_path;
   }
 
+  static function init($dir) {
+    $output = array();
+    $return = '';
+
+    exec("git init {$dir}", $output, $return);
+
+    return array($output, $return);
+  }
+
   function is_repo() {
     return file_exists("{$this->repo_path}/.git");
   }

@@ -21,6 +21,11 @@ class WhippetGenerator { // extends Generator?
       mkdir($this->target_dir);
     }
 
+    // Make the target dir a git repo, if it isn't already
+    if(!(new Git($this->target_dir))->is_repo()) {
+      Git::init($this->target_dir);
+    }
+
     // The . is necessary for this command to work in Linux
     system("cp -a " . dirname(__FILE__) . "/template/. {$this->target_dir}");
    }
