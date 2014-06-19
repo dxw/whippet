@@ -149,11 +149,18 @@ class MigrationGenerator {
         $this->manual_fixes[] = "Skipped submodule {$submodule->dir}, because it does not have exactly 1 remote. You'll need to manually add the one you want.";
 
         unset($submodules[$dir]);
-
         continue;
       }
 
       $remote = array_pop($submodule->remotes);
+
+      if(array_search($submodule->theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
+        $this->manual_fixes[] = "Refusing to submodule a default theme from {$remote} at wp-content/{$submodule->dir}. Add a submodule for this theme manually if it is required.";
+
+        unset($submodules[$dir]);
+        unset($themes[$submodule->theme_dir]);
+        continue;
+      }
 
       $git = new Git($new);
       if(!$git->submodule_add($remote, "wp-content/" . $submodule->dir)) {
@@ -171,13 +178,9 @@ class MigrationGenerator {
         $this->automatic_fixes[] = "Submoduled plugin from {$remote} at: wp-content/" . $submodule->dir;
       }
       else if(isset($submodule->theme_dir)) {
-       unset($themes[$submodule->theme_dir]);
+        unset($themes[$submodule->theme_dir]);
 
-       $this->automatic_fixes[] = "Submoduled theme from {$remote} at: wp-content/" . $submodule->dir;
-
-       if(preg_match('/^twenty/', $submodule->theme_dir)) {
-         $this->manual_fixes[] = "Submoduled a default theme from {$remote} at wp-content/{$submodule->dir}. Don't keep it unless it's actually being used.";
-       }
+        $this->automatic_fixes[] = "Submoduled theme from {$remote} at: wp-content/" . $submodule->dir;
       }
       else {
         $this->automatic_fixes[] = "Submodule added at: wp-content/" . $submodule->dir;
@@ -206,6 +209,13 @@ class MigrationGenerator {
     // Copy over any themes that are left over
     echo "Copying project themes\n";
     foreach($themes as $theme_dir => $theme_data) {
+      if(array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
+        $this->manual_fixes[] = "Refusing to copy a default theme into the project: {$theme_dir}. Copy it manually if you need it.";
+
+        unset($themes[$theme_dir]);
+        continue;
+      }
+
       $new_theme_dir = "{$new}/wp-content/themes/" . dirname($theme_dir);
 
       if(!file_exists($new_theme_dir)) {
@@ -215,10 +225,6 @@ class MigrationGenerator {
       system("cp -a '{$old}/themes/{$theme_dir}/.' '{$new_theme_dir}'");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
-
-      if(array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
-        $this->manual_fixes[] = "Copied a default theme into the project: {$theme_dir}. Don't keep it unless it's actually being used.";
-      }
 
       unset($themes[$theme_dir]);
     }
