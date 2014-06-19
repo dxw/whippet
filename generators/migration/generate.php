@@ -193,12 +193,12 @@ class MigrationGenerator {
     echo "Copying project plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(dirname($plugin_file) != '.') {
-        system("cp -a '{$old}/plugins/" . dirname($plugin_file) . "/.' '{$new}/wp-content/plugins/'");
+        system("cp -a '{$old}/plugins/" . dirname($plugin_file) . "/.' '{$new}/wp-content/plugins/" . dirname($plugin_file)  . "'");
 
         $this->automatic_fixes[] = "Copied plugin directory " . dirname($plugin_file) . " into the project";
       }
       else {
-        system("cp -a '{$old}/plugins/{$plugin_file}/.' '{$new}/wp-content/plugins/'");
+        system("cp '{$old}/plugins/{$plugin_file}' '{$new}/wp-content/plugins/'");
 
         $this->automatic_fixes[] = "Copied plugin file {$plugin_file} into the project";
       }
@@ -222,7 +222,7 @@ class MigrationGenerator {
         system("mkdir -p $new_theme_dir"); // For themes within subdirs
       }
 
-      system("cp -a '{$old}/themes/{$theme_dir}/.' '{$new_theme_dir}'");
+      system("cp -a '{$old}/themes/{$theme_dir}/.' '{$new_theme_dir}/{$theme_dir}'");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
 
