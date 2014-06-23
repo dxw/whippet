@@ -263,38 +263,43 @@ class MigrationGenerator {
     // What happened?
     //
 
-    echo "\n\nApplied these automatic fixes:\n";
-    echo "==============================\n";
+    $results = "";
+
+    $results .= "\n\nApplied these automatic fixes:\n";
+    $results .= "==============================\n";
 
     foreach($this->automatic_fixes as $fix) {
-      echo "  $fix\n";
+      $results .= "  $fix\n";
     }
 
 
-    echo "\n\nNotices/possible manual fixes:\n";
-    echo "==============================\n";
+    $results .= "\n\nNotices/possible manual fixes:\n";
+    $results .= "==============================\n";
 
     if(!count($this->manual_fixes)) {
-      echo "  None.\n";
+      $results .= "  None.\n";
     }
     else {
       foreach($this->manual_fixes as $fix) {
-        echo "  $fix\n";
+        $results .= "  $fix\n";
       }
     }
 
 
-    echo "\n\nLeft-over files:\n";
-    echo "================\n";
+    $results .= "\n\nLeft-over files:\n";
+    $results .= "================\n";
 
     if(!count($other_files)) {
-      echo "  None.\n";
+      $results .= "  None.\n";
     }
     else {
       foreach($other_files as $file) {
-        echo "  $file\n";
+        $results .= "  $file\n";
       }
     }
+
+    file_put_contents("{$new}/migration.log", $results);
+    echo $results;
   }
 
   function get_themes($dir) {
