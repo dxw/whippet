@@ -14,9 +14,11 @@ trait whippet_helpers {
   }
 
   function whippet_init(){
-    if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
-      echo "Unable to find Plugins file";
-      exit(1);
+    if(!$this->plugins_manifest_file = $this->find_file('plugins')) {
+      if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
+        echo "Unable to find plugins file";
+        exit(1);
+      }
     }
 
     $this->plugins_lock_file = $this->find_file("plugins.lock");
