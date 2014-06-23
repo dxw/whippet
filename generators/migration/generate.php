@@ -51,10 +51,9 @@ class MigrationGenerator {
     //
 
     //
-    // PLUGINS & THEMES
+    // Check that all submodules are well formed
     //
 
-    // Fetch submodules first, because we need to bail if any are not in the correct state
     echo "Loading submodules\n";
     $submodules = $git->submodule_status();
 
@@ -66,7 +65,10 @@ class MigrationGenerator {
     }
 
 
-    // Fetch all the plugins and themes from the old project
+    //
+    // Fetch all the files, plugins and themes from the old project, and work out which are submoduled
+    //
+
     echo "Loading plugins\n";
 
     $plugins = $this->get_plugins("{$old}/plugins");
@@ -98,9 +100,13 @@ class MigrationGenerator {
       }
     }
 
+
+    //
     // Add submoduled plugins to Plugins file. Remove those submodule & plugin entries.
+    //
 
     // Always start with a fresh file
+    // Whippet init adds akismet (as it is part of the WP distro) but we only want it now if it's in $old
     file_put_contents("{$new}/Plugins", "source = \"git@git.dxw.net:wordpress-plugins/\"\n");
 
     echo "Updating Plugins file\n";
@@ -119,7 +125,11 @@ class MigrationGenerator {
       $this->automatic_fixes[] = "Added plugin {$plugin_dir} to the Plugins file";
     }
 
-    // Anything left over will not be Whippet managed. Let's just check that they're all not in wordpress-plugins.
+
+    //
+    // Check non-Whippet-managed plugins so we can warn if they are on directory or in auto-wordpress
+    //
+
     $available_plugins = file(dirname(__FILE__) . "/share/available-plugins");
 
     echo "Sanity-checking left over plugins\n";
@@ -142,7 +152,11 @@ class MigrationGenerator {
       }
     }
 
+
+    //
     // Re-add submodules that are left-over, and if any are plugins, remove the matching plugin entry
+    //
+
     echo "Adding submodules\n";
     foreach($submodules as $dir => $submodule) {
       if(count($submodule->remotes['origin']) != 1) {
@@ -154,12 +168,15 @@ class MigrationGenerator {
 
       $remote = array_pop($submodule->remotes);
 
-      if(array_search($submodule->theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
+      if(!$this->is_parent_theme($themes[$submodule->theme_dir]) && array_search($submodule->theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
         $this->manual_fixes[] = "Refusing to submodule a default theme from {$remote} at wp-content/{$submodule->dir}. Add a submodule for this theme manually if it is required.";
 
         unset($submodules[$dir]);
         unset($themes[$submodule->theme_dir]);
         continue;
+      }
+      else if($this->is_parent_theme($themes[$submodule->theme_dir])) {
+        $this->manual_fixes[] = "Submoduled a default theme from {$remote} at wp-content/{$submodule->dir}, because it is a parent of: " . implode(', ', $themes[$submodule->theme_dir]['children']);
       }
 
       $git = new Git($new);
@@ -189,7 +206,11 @@ class MigrationGenerator {
       unset($submodules[$dir]);
     }
 
+
+    //
     // Copy over any plugins that are left over
+    //
+
     echo "Copying project plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(dirname($plugin_file) != '.') {
@@ -206,14 +227,21 @@ class MigrationGenerator {
       unset($plugins[$plugin_file]);
     }
 
+
+    //
     // Copy over any themes that are left over
+    //
+
     echo "Copying project themes\n";
     foreach($themes as $theme_dir => $theme_data) {
-      if(array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
+      if(!$this->is_parent_theme($theme_data) && array_search($theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
         $this->manual_fixes[] = "Refusing to copy a default theme into the project: {$theme_dir}. Copy it manually if you need it.";
 
         unset($themes[$theme_dir]);
         continue;
+      }
+      else if($this->is_parent_theme($theme_data)) {
+        $this->manual_fixes[] = "Copied theme directory {$theme_dir} into the project, because it is a parent of: " . implode(', ', $theme_data['children']);
       }
 
       $new_theme_dir = "{$new}/wp-content/themes/" . dirname($theme_dir);
@@ -228,6 +256,11 @@ class MigrationGenerator {
 
       unset($themes[$theme_dir]);
     }
+
+
+    //
+    // Check that we don't have any themes, plugins or submodules left over.
+    //
 
     echo "Checking for unhandled plugins, themes and submodules\n";
 
@@ -302,6 +335,10 @@ class MigrationGenerator {
     echo $results;
   }
 
+  function is_parent_theme($theme) {
+    return count($theme['children']) !== 0;
+  }
+
   function get_themes($dir) {
     $themes = array();
 
@@ -340,6 +377,16 @@ class MigrationGenerator {
 
       if(!$got_one) {
         $this->manual_fixes[] = "Unable to find a theme in " . $file->getPathname() . ". Is there one there?";
+      }
+    }
+
+    foreach($themes as $parent_theme_dir => $parent_theme_data) {
+      $themes[$parent_theme_dir]['children'] = array();
+
+      foreach($themes as $theme_dir => $theme_data) {
+        if($parent_theme_dir == $theme_data['Template']) {
+          $themes[$parent_theme_dir]['children'][] = $theme_dir;
+        }
       }
     }
 
@@ -382,6 +429,7 @@ class MigrationGenerator {
       'Theme Name' => 'Theme Name',
       'PluginURI' => 'Plugin URI',
       'Theme URI' => 'Theme URI',
+      'Template' => 'Template',
       'Version' => 'Version',
       'Description' => 'Description',
       'Author' => 'Author',
