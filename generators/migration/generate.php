@@ -168,15 +168,17 @@ class MigrationGenerator {
 
       $remote = array_pop($submodule->remotes);
 
-      if(!$this->is_parent_theme($themes[$submodule->theme_dir]) && array_search($submodule->theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
-        $this->manual_fixes[] = "Refusing to submodule a default theme from {$remote} at wp-content/{$submodule->dir}. Add a submodule for this theme manually if it is required.";
+      if(!empty($submodule->theme_dir)) {
+        if(!$this->is_parent_theme($themes[$submodule->theme_dir]) && array_search($submodule->theme_dir, array("twentyten", "twentyeleven", "twentytwelve", "twentythirteen", "twentyfourteen")) !== false) {
+          $this->manual_fixes[] = "Refusing to submodule a default theme from {$remote} at wp-content/{$submodule->dir}. Add a submodule for this theme manually if it is required.";
 
-        unset($submodules[$dir]);
-        unset($themes[$submodule->theme_dir]);
-        continue;
-      }
-      else if($this->is_parent_theme($themes[$submodule->theme_dir])) {
-        $this->manual_fixes[] = "Submoduled a default theme from {$remote} at wp-content/{$submodule->dir}, because it is a parent of: " . implode(', ', $themes[$submodule->theme_dir]['children']);
+          unset($submodules[$dir]);
+          unset($themes[$submodule->theme_dir]);
+          continue;
+        }
+        else if($this->is_parent_theme($themes[$submodule->theme_dir])) {
+          $this->manual_fixes[] = "Submoduled a default theme from {$remote} at wp-content/{$submodule->dir}, because it is a parent of: " . implode(', ', $themes[$submodule->theme_dir]['children']);
+        }
       }
 
       $git = new Git($new);
