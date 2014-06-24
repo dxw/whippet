@@ -117,7 +117,7 @@ class MigrationGenerator {
 
       $plugin_dir = dirname($plugin_file);
 
-      file_put_contents("{$new}/Plugins", "{$plugin_dir}=\n", FILE_APPEND);
+      file_put_contents("{$new}/plugins", "{$plugin_dir}=\n", FILE_APPEND);
 
       unset($plugins[$plugin_file]);
       unset($submodules["plugins/{$plugin_dir}"]);
