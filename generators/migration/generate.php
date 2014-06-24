@@ -107,7 +107,7 @@ class MigrationGenerator {
 
     // Always start with a fresh file
     // Whippet init adds akismet (as it is part of the WP distro) but we only want it now if it's in $old
-    file_put_contents("{$new}/Plugins", "source = \"git@git.dxw.net:wordpress-plugins/\"\n");
+    file_put_contents("{$new}/plugins", "source = \"git@git.dxw.net:wordpress-plugins/\"\n");
 
     echo "Updating Plugins file\n";
     foreach($plugins as $plugin_file => $plugin_data) {
