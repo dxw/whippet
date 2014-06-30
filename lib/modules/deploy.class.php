@@ -128,9 +128,17 @@ class Deploy {
       // Make sure the environment is sane
       //
 
+      // Got all the deploy directories?
+
       $this->check_and_create_dir($this->deploy_dir);
       $this->check_and_create_dir($this->releases_dir);
       $this->check_and_create_dir($this->shared_dir);
+
+      // Got plugins.lock?
+      if(!$this->plugins_lock_file || !file_exists($this->plugins_lock_file)) {
+        echo "Couldn't find plugins.lock in the project directory. (Did you run whippet plugins install?)\n";
+        die(1);
+      }
 
 
       //
@@ -216,7 +224,7 @@ class Deploy {
 
         echo "Problems:\n";
         echo implode($messages, "\n");
-        echo "Release did not validate; it has been moved to: $broken_release";
+        echo "\n\nRelease did not validate; it has been moved to: $broken_release";
 
         exit(1);
       }
