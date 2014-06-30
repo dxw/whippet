@@ -113,7 +113,8 @@ class Deploy {
     $this->shared_dir   = "{$this->deploy_dir}/shared";
   }
 
-  function deploy($force) {
+  function deploy($force, $keep) {
+
     try {
       //
       // 1. Make sure the target directory does not exist (or exists and is empty)
@@ -264,6 +265,21 @@ class Deploy {
       echo $e->getMessage();
 
       exit(1);
+    }
+
+
+    //
+    // Delete old deploys
+    //
+    // This is a bit hacky. I would like to use the data from the releases manifest for this, but the moving around
+    // of directories on -f kinda screws that up. It needs to be made better, and then we can do this properly.
+    //
+
+    $releases = glob(realpath("{$this->releases_dir}") . "/*", GLOB_ONLYDIR);
+    uasort($releases, function($a, $b) { return filemtime($b) - filemtime($a); });
+
+    foreach(array_slice($releases, $keep) as $dir) {
+      system("rm -rf $dir");
     }
   }
 

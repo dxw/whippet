@@ -19,6 +19,7 @@ class Whippet extends RubbishThorClone {
 
     $this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository", function($option_parser) {
       $option_parser->addRule('f|force', "Force Whippet to deploy, even if a release already exists for this commit");
+      $option_parser->addRule('k|keep::', "Tells Whippet how many old release directories to keep. Default: 3");
     });
 
     $this->command('generate [THING]', 'Generates a thing', function($option_parser) {
@@ -36,7 +37,11 @@ class Whippet extends RubbishThorClone {
   }
 
   public function deploy($dir) {
-    (new Deploy($dir))->deploy(isset($this->options->force));
+    if(!isset($this->options->keep)) {
+      $this->options->keep = 3;
+    }
+
+    (new Deploy($dir))->deploy(isset($this->options->force), $this->options->keep);
   }
 
   public function init($path = false) {
