@@ -67,11 +67,17 @@ trait whippet_helpers {
 
     do {
       $file_path = $path . '/' . $file;
-      if(file_exists($file_path)) {
+      if(file_exists($file_path) and is_file($file_path)) {
         return $file_path;
+      } else {
+        $path = dirname($path);
       }
     }
-    while($path = dirname($path) != '.');
+    // FIXME: Should this stop earlier?
+    //   Bundler doesn't, but has a more robust ending condition:
+    //     until !File.directory?(current) || current == previous
+    //   https://github.com/bundler/bundler/blob/d61b1ac60227b82f451c0858f60558ecbc80ee54/lib/bundler/shared_helpers.rb
+    while($path != '/');
 
     return false;
   }
