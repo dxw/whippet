@@ -46,22 +46,6 @@ class Git {
     return true;
   }
 
-  function get_ignores($ignore_file = false) {
-    if(!$ignore_file) {
-      $ignore_file = "{$this->repo_path}/.gitignore";
-    }
-
-    return file($ignore_file);
-  }
-
-  function save_ignores($ignores, $ignore_file = false) {
-    if(!$ignore_file) {
-      $ignore_file = "{$this->repo_path}/.gitignore";
-    }
-
-    return file_put_contents($ignore_file, $ignores);
-  }
-
   function clone_no_checkout($repository) {
     $tmpdir = $this->get_tmpdir();
 

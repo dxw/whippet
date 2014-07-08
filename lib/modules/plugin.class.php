@@ -25,6 +25,9 @@ class Plugin extends RubbishThorClone {
     $this->load_plugins_manifest();
     $this->load_plugins_lock();
 
+    if (count(get_object_vars($this->plugins_manifest)) == 0) {
+      echo "The plugin manifest file is empty\n";
+    }
 
     //
     // If there is no lock file:
@@ -34,6 +37,7 @@ class Plugin extends RubbishThorClone {
     //
 
     if(!$this->plugins_lock_file) {
+
       foreach($this->plugins_manifest as $dir => $plugin) {
         $git = new Git("{$this->plugin_dir}/{$dir}");
 
@@ -42,6 +46,7 @@ class Plugin extends RubbishThorClone {
           echo "[Adding {$dir}] ";
           // We don't have the repo. Clone it.
           if(!$git->clone_repo($plugin->repository)) {
+            echo "Aborting...\n";
             die();
           }
         }
@@ -49,11 +54,13 @@ class Plugin extends RubbishThorClone {
         // Make sure repo is up to date.
         echo "[Checking {$dir}] ";
         if(!$git->checkout($plugin->revision)) {
+          echo "Aborting...\n";
           die();
         }
 
         $git->checkout($git->current_commit());
         if(!$git->submodule_update()) {
+          echo "Aborting...\n";
           die();
         }
       }
@@ -84,29 +91,27 @@ class Plugin extends RubbishThorClone {
         }
       }
 
-      // Delete the ones that don't
+      // Delete the ones that don't:
+      $gitignore = new Gitignore($this->project_dir);
+      $ignores = $gitignore->get_ignores();
+
       foreach($plugins_to_delete as $dir) {
         echo "[Removing {$dir}]\n";
         $git = new Git("{$this->plugin_dir}/{$dir}");
         $git->delete_repo();
 
-        // Remove from ignores
-        $ignore_file = "{$this->project_dir}/.gitignore";
-        $ignores = $git->get_ignores($ignore_file);
+        // remove from ignores:
+        $plugin_dir = "/wp-content/plugins/{$dir}\n";
 
-        foreach($plugins_to_delete as $dir) {
-          $plugin_dir = "/wp-content/plugins/{$dir}\n";
-
-          if(($index = array_search($plugin_dir, $ignores)) !== false) {
-            unset($ignores[$index]);
-          }
+        if(($index = array_search($plugin_dir, $ignores)) !== false) {
+          unset($ignores[$index]);
         }
-
-        $git->save_ignores($ignores, $ignore_file);
 
         // Remove from the lockfile
         unset($this->plugins_locked->$dir);
       }
+
+      $gitignore->save_ignores($ignores);
 
 
       //
@@ -141,6 +146,7 @@ class Plugin extends RubbishThorClone {
         }
 
         if(!$git->submodule_update()) {
+          echo "Aborting...\n";
           die();
         }
       }
@@ -172,16 +178,19 @@ class Plugin extends RubbishThorClone {
         if(!$git->is_repo()) {
           // We don't have the repo. Clone it.
           if(!$git->clone_repo($plugin->repository)) {
+            echo "Aborting...\n";
             die();
           }
         }
 
         // Make sure repo is up to date.
         if(!$git->checkout($plugin->revision)) {
+          echo "Aborting...\n";
           die();
         }
 
         if(!$git->submodule_update()) {
+          echo "Aborting...\n";
           die();
         }
       }
@@ -197,9 +206,8 @@ class Plugin extends RubbishThorClone {
     //
     // Make sure that Whippet-managed plugins are gitignored
     //
-
-    $ignore_file = "{$this->project_dir}/.gitignore";
-    $ignores = $git->get_ignores($ignore_file);
+    $gitignore = new Gitignore($this->project_dir);
+    $ignores = $gitignore->get_ignores();
 
     foreach($this->plugins_locked as $dir => $plugin) {
       $plugin_dir = "/wp-content/plugins/{$dir}\n";
@@ -209,7 +217,9 @@ class Plugin extends RubbishThorClone {
       }
     }
 
-    $git->save_ignores($ignores, $ignore_file);
+    $gitignore->save_ignores($ignores);
+
+    echo "Completed successfully\n";
   }
 
   /*
