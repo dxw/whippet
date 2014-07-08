@@ -113,7 +113,8 @@ class Deploy {
     $this->shared_dir   = "{$this->deploy_dir}/shared";
   }
 
-  function deploy($force) {
+  function deploy($force, $keep) {
+
     try {
       //
       // 1. Make sure the target directory does not exist (or exists and is empty)
@@ -128,9 +129,17 @@ class Deploy {
       // Make sure the environment is sane
       //
 
+      // Got all the deploy directories?
+
       $this->check_and_create_dir($this->deploy_dir);
       $this->check_and_create_dir($this->releases_dir);
       $this->check_and_create_dir($this->shared_dir);
+
+      // Got plugins.lock?
+      if(!$this->plugins_lock_file || !file_exists($this->plugins_lock_file)) {
+        echo "Couldn't find plugins.lock in the project directory. (Did you run whippet plugins install?)\n";
+        die(1);
+      }
 
 
       //
@@ -216,7 +225,7 @@ class Deploy {
 
         echo "Problems:\n";
         echo implode($messages, "\n");
-        echo "Release did not validate; it has been moved to: $broken_release";
+        echo "\n\nRelease did not validate; it has been moved to: $broken_release";
 
         exit(1);
       }
@@ -256,6 +265,21 @@ class Deploy {
       echo $e->getMessage();
 
       exit(1);
+    }
+
+
+    //
+    // Delete old deploys
+    //
+    // This is a bit hacky. I would like to use the data from the releases manifest for this, but the moving around
+    // of directories on -f kinda screws that up. It needs to be made better, and then we can do this properly.
+    //
+
+    $releases = glob(realpath("{$this->releases_dir}") . "/*", GLOB_ONLYDIR);
+    uasort($releases, function($a, $b) { return filemtime($b) - filemtime($a); });
+
+    foreach(array_slice($releases, $keep) as $dir) {
+      system("rm -rf $dir");
     }
   }
 
