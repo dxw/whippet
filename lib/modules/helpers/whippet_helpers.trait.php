@@ -20,32 +20,17 @@ trait whippet_helpers {
         exit(1);
       }
     }
-
-    $this->plugins_lock_file = $this->find_file("plugins.lock");
-
     $this->project_dir = dirname($this->plugins_manifest_file);
 
-    if(!file_exists("{$this->project_dir}/wp-content/")) {
-      echo "Couldn't find a /wp-content directory. Is this definitely a whippet application?\n";
-      exit(1);
-    }
+    $this->check_for_missing_whippet_files($this->project_dir);
 
+    $this->plugins_lock_file = $this->find_file("plugins.lock");
     $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
-
-    if(!file_exists("{$this->plugin_dir}")) {
-      echo "Couldn't find a /wp-content/plugins directory. Is this definitely a whippet application?\n";
-      exit(1);
-    }
 
     $this->load_application_config();
   }
 
   function load_application_config() {
-    if(!file_exists("{$this->project_dir}/config/")) {
-      echo "Couldn't find a /config directory. Is this definitely a whippet application?\n";
-      exit(1);
-    }
-
     $application_config_file = "{$this->project_dir}/config/application.json";
 
     if(file_exists($application_config_file)) {
@@ -94,5 +79,29 @@ trait whippet_helpers {
     while($path !== '/');
 
     return false;
+  }
+
+
+  private function check_for_missing_whippet_files($project_dir) {
+    $whippet_files = array(
+      "config/",
+      "wp-content/",
+      "wp-content/plugins/",
+      ".gitignore",
+    );
+    $missing = array();
+    foreach ($whippet_files as $file) {
+      if(!file_exists("{$project_dir}/{$file}")) {
+        $missing[]= $file;
+      }
+    }
+
+    if (count($missing) > 0) {
+      echo "The following files and directories are required but could not be found:\n";
+      foreach ($missing as $file) {
+        echo "  {$file}\n";
+      }
+      exit(1);
+    }
   }
 };
