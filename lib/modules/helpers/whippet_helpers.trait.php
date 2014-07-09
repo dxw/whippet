@@ -26,11 +26,15 @@ trait whippet_helpers {
     $this->project_dir = dirname($this->plugins_manifest_file);
     $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
 
-
     $this->load_application_config();
   }
 
   function load_application_config() {
+    if(!file_exists("{$this->project_dir}/config/")) {
+      echo "Couldn't find a /config directory. Is this definitely a whippet application?\n";
+      exit(1);
+    }
+
     $application_config_file = "{$this->project_dir}/config/application.json";
 
     if(file_exists($application_config_file)) {
