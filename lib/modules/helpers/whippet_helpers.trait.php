@@ -24,7 +24,18 @@ trait whippet_helpers {
     $this->plugins_lock_file = $this->find_file("plugins.lock");
 
     $this->project_dir = dirname($this->plugins_manifest_file);
+
+    if(!file_exists("{$this->project_dir}/wp-content/")) {
+      echo "Couldn't find a /wp-content directory. Is this definitely a whippet application?\n";
+      exit(1);
+    }
+
     $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
+
+    if(!file_exists("{$this->plugin_dir}")) {
+      echo "Couldn't find a /wp-content/plugins directory. Is this definitely a whippet application?\n";
+      exit(1);
+    }
 
     $this->load_application_config();
   }
