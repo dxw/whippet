@@ -16,7 +16,7 @@ trait whippet_helpers {
   function whippet_init(){
     if(!$this->plugins_manifest_file = $this->find_file('plugins')) {
       if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
-        echo "Unable to find plugins file";
+        echo "Unable to find plugins manifest file\n";
         exit(1);
       }
     }
@@ -62,22 +62,21 @@ trait whippet_helpers {
   }
 
   function find_file($file){
-    // Starting in the current dir, walk up until we find a plugins.json
+    // Starting in the current dir, walk up until we find a plugins file
     $path = getcwd();
 
     do {
       $file_path = $path . '/' . $file;
-      if(file_exists($file_path) and is_file($file_path)) {
+      if(file_exists($file_path) && is_file($file_path)) {
         return $file_path;
-      } else {
-        $path = dirname($path);
       }
+      $path = dirname($path);
     }
     // FIXME: Should this stop earlier?
     //   Bundler doesn't, but has a more robust ending condition:
     //     until !File.directory?(current) || current == previous
     //   https://github.com/bundler/bundler/blob/d61b1ac60227b82f451c0858f60558ecbc80ee54/lib/bundler/shared_helpers.rb
-    while($path != '/');
+    while($path !== '/');
 
     return false;
   }
