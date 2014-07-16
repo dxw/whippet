@@ -62,7 +62,7 @@ trait whippet_helpers {
   }
 
   function find_file($file){
-    // Starting in the current dir, walk up until we find a plugins.json
+    // Starting in the current dir, walk up until we find the file
     $path = getcwd();
 
     do {
