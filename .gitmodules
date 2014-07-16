@@ -1,3 +1,6 @@
 [submodule "lib/rubbish_thor_clone"]
 	path = lib/rubbish_thor_clone
 	url = https://github.com/dxw/RubbishThorClone.git
+[submodule "generators/theme/template"]
+	path = generators/theme/template
+	url = git@git.dxw.net:tools/theme-template
