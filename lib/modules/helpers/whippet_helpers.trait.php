@@ -16,16 +16,16 @@ trait whippet_helpers {
   function whippet_init(){
     if(!$this->plugins_manifest_file = $this->find_file('plugins')) {
       if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
-        echo "Unable to find plugins file";
+        echo "Unable to find plugins manifest file\n";
         exit(1);
       }
     }
+    $this->project_dir = dirname($this->plugins_manifest_file);
+
+    $this->check_for_missing_whippet_files($this->project_dir);
 
     $this->plugins_lock_file = $this->find_file("plugins.lock");
-
-    $this->project_dir = dirname($this->plugins_manifest_file);
     $this->plugin_dir = "{$this->project_dir}/wp-content/plugins";
-
 
     $this->load_application_config();
   }
@@ -67,12 +67,41 @@ trait whippet_helpers {
 
     do {
       $file_path = $path . '/' . $file;
-      if(file_exists($file_path)) {
+      if(file_exists($file_path) && is_file($file_path)) {
         return $file_path;
       }
+      $path = dirname($path);
     }
-    while($path = dirname($path) != '.');
+    // FIXME: Should this stop earlier?
+    //   Bundler doesn't, but has a more robust ending condition:
+    //     until !File.directory?(current) || current == previous
+    //   https://github.com/bundler/bundler/blob/d61b1ac60227b82f451c0858f60558ecbc80ee54/lib/bundler/shared_helpers.rb
+    while($path !== '/');
 
     return false;
+  }
+
+
+  private function check_for_missing_whippet_files($project_dir) {
+    $whippet_files = array(
+      "config/",
+      "wp-content/",
+      "wp-content/plugins/",
+      ".gitignore",
+    );
+    $missing = array();
+    foreach ($whippet_files as $file) {
+      if(!file_exists("{$project_dir}/{$file}")) {
+        $missing[]= $file;
+      }
+    }
+
+    if (count($missing) > 0) {
+      echo "The following files and directories are required but could not be found:\n";
+      foreach ($missing as $file) {
+        echo "  {$file}\n";
+      }
+      exit(1);
+    }
   }
 };
