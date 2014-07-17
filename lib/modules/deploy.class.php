@@ -33,6 +33,12 @@ class Release {
       $force = false;
     }
 
+    // Got plugins.lock?
+    if(!$this->plugins_lock_file || !file_exists($this->plugins_lock_file)) {
+      echo "Couldn't find plugins.lock in the project directory. (Did you run whippet plugins install?)\n";
+      die(1);
+    }
+
     //
     // If we're here, we must deploy
     //
@@ -134,12 +140,6 @@ class Deploy {
       $this->check_and_create_dir($this->deploy_dir);
       $this->check_and_create_dir($this->releases_dir);
       $this->check_and_create_dir($this->shared_dir);
-
-      // Got plugins.lock?
-      if(!$this->plugins_lock_file || !file_exists($this->plugins_lock_file)) {
-        echo "Couldn't find plugins.lock in the project directory. (Did you run whippet plugins install?)\n";
-        die(1);
-      }
 
 
       //
