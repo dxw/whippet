@@ -4,9 +4,9 @@ class Theme extends RubbishThorClone {
   use whippet_helpers;
 
   public function commands() {
-    $this->command('grunt *arguments', 'Runs the specified grunt command in the context of your theme', function($option_parser) {
+    $this->command('grunt *arguments', 'Runs the specified grunt command in the context of your theme');/*, function($option_parser) {
       $option_parser->addRule('t|theme::', "Specify theme. Default: the theme directory you're in");
-    });
+    });*/
   }
 
   /*
