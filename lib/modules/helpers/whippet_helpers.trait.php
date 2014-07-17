@@ -74,8 +74,8 @@ trait whippet_helpers {
 
       $path = dirname($path);
     }
-    // dirname returns . if you call it on /
-    while($path !== '.');
+    // dirname returns . or / if you call it on /, depending on platform
+    while($path !== '.' && $path !== '/');
 
     return false;
   }
