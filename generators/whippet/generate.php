@@ -10,7 +10,7 @@ class WhippetGenerator { // extends Generator?
       $this->target_dir = $this->options->directory;
     }
     else {
-      $this->target_dir = realpath(getcwd() . "/whippet-app");
+      $this->target_dir = getcwd() . "/whippet-app";
     }
   }
 
