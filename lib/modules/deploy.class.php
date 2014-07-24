@@ -83,10 +83,16 @@ class Release {
     // Remove unwanted gitfoo
     //
 
-    foreach($this->plugins_locked as $dir => $plugin) {
+    $plugins = scandir("{$this->release_dir}/wp-content/plugins");
+    foreach($plugins as $dir) {
+      $path = "{$this->release_dir}/wp-content/plugins/{$dir}";
+      if ($dir === '.' || $dir === '..' || !is_dir($path)) {
+        continue;
+      }
+
       foreach(['.git', '.gitmodules', '.gitignore'] as $delete) {
         // TODO: Sorry, Windows devs
-        system("rm -rf {$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        system("rm -rf {$path}/{$delete}");
       }
     }
 
