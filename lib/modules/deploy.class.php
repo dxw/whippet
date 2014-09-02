@@ -82,7 +82,7 @@ class Release {
 
 
     //
-    // Remove unwanted gitfoo
+    // Remove unwanted git/test foo
     //
 
     $plugins = scandir("{$this->release_dir}/wp-content/plugins");
@@ -92,13 +92,20 @@ class Release {
         continue;
       }
 
+      // Remove git files from all plugins
+
       foreach(['.git', '.gitmodules', '.gitignore'] as $delete) {
-        if(is_dir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
-          $this->recurse_rmdir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
-        } elseif(file_exists("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
-          unlink("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        $this->recurse_rm("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+      }
+
+      // Remove test files from whippet plugins
+
+      if ($this->is_whippet_plugin($path)) {
+        foreach(['tests', 'Makefile', '.drone.yml'] as $delete) {
+          $this->recurse_rm("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
         }
       }
+
     }
 
     //
@@ -119,6 +126,21 @@ class Release {
     symlink(realpath("{$this->release_dir}/../../shared/uploads"),"{$this->release_dir}/wp-content/uploads");
 
     // FIN
+  }
+
+  function is_whippet_plugin($path) {
+    $files = glob($path.'/*.php');
+    foreach ($files as $file) {
+      if (is_file($file)) {
+        //TODO: This is probably okay in most cases but if we come across a 1GB .php file PHP might run out of memory
+        $f = file_get_contents($file);
+        if (strpos($f, 'Whippet: yes') !== false) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 };
 
