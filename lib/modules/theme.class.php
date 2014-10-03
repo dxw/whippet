@@ -21,7 +21,7 @@ class Theme extends RubbishThorClone {
 
     // Look for the theme base
     if(!isset($this->options->theme)) {
-      if(!$vendor = $this->find_file("vendor")) {
+      if(!$vendor = $this->find_file("vendor", true)) {
         echo "Unable to find the theme's vendor directory\n";
         exit(1);
       }

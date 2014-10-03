@@ -61,14 +61,14 @@ trait whippet_helpers {
     }
   }
 
-  function find_file($file){
+  function find_file($file, $include_dir = false){
     // Starting in the current dir, walk up until we find the file
     $path = getcwd();
 
     do {
       $file_path = $path . '/' . $file;
 
-      if(file_exists($file_path)) {
+      if(file_exists($file_path) && (!$include_dir && is_file($file_path))) {
         return $file_path;
       }
 
