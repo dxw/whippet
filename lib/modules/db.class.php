@@ -32,7 +32,14 @@ class Db extends RubbishThorClone {
     define('NEW_MEMBERS_ONLY_PASSTHROUGH', true);
 
     include('web/wp/wp-load.php');
-    include('web/wp/wp-content/plugins/advanced-custom-fields/acf.php');
+    include('web/wp/wp-admin/includes/upgrade.php');
+
+    global $wpdb;
+    $tables = $wpdb->get_col('SHOW TABLES');
+    foreach ($tables as $table) {
+      $wpdb->query('drop table '.$table);
+      echo "dropped $table\n";
+    }
 
     include('seeds/'.$environment.'/seed.php');
 
