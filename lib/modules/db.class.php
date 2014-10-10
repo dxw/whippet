@@ -12,7 +12,12 @@ class Db extends RubbishThorClone {
    * Commands
    */
 
-  public function seed() {
+  public function seed($environment) {
+    if (!is_string($environment)) {
+      echo "Usage: whippet db seed testing\n";
+      exit(1);
+    }
+
     $this->whippet_init();
 
     $this->writeWhippetWpConfig([
@@ -22,7 +27,16 @@ class Db extends RubbishThorClone {
       'DB_PASSWORD' => '',
     ]);
 
-    echo "hello\n";
+    // Load WP
+    define('WP_INSTALLING', true);
+    define('NEW_MEMBERS_ONLY_PASSTHROUGH', true);
+
+    include('web/wp/wp-load.php');
+    include('web/wp/wp-content/plugins/advanced-custom-fields/acf.php');
+
+    include('seeds/'.$environment.'/seed.php');
+
+    echo "Database seeding complete\n";
   }
 
   function writeWhippetWpConfig($parameters) {
