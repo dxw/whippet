@@ -23,11 +23,10 @@ class Db extends RubbishThorClone {
     $yaml = \Symfony\Component\Yaml\Yaml::parse('whippet.yml');
     $parameters = $yaml['whippet'][$environment];
 
-    $this->writeWhippetWpConfig($parameters);
+    $this->writeWhippetWpConfig($parameters['db']);
 
     // Load WP
     define('WP_INSTALLING', true);
-    define('NEW_MEMBERS_ONLY_PASSTHROUGH', true);
 
     include('web/wp/wp-load.php');
     include('web/wp/wp-admin/includes/upgrade.php');
