@@ -36,8 +36,8 @@ class Db extends RubbishThorClone {
     // Load WP
     define('WP_INSTALLING', true);
 
-    include('web/wp/wp-load.php');
-    include('web/wp/wp-admin/includes/upgrade.php');
+    include($parameters['path'].'/wp-load.php');
+    include($parameters['path'].'/wp-admin/includes/upgrade.php');
 
     include('seeds/'.$environment.'/seed.php');
 
@@ -54,7 +54,7 @@ class Db extends RubbishThorClone {
 
     $s .= "define('WP_CONTENT_DIR', __DIR__.'/../../wp-content');\n";
 
-    file_put_contents('web/wp/whippet-wp-config.php', $s);
+    file_put_contents($parameters['path'].'/whippet-wp-config.php', $s);
 
     $s .= "define('WP_HOME', 'http://localhost:".$parameters['port']."' );\n";
     $s .= "define('WP_SITEURL', WP_HOME);\n";
@@ -63,6 +63,6 @@ class Db extends RubbishThorClone {
     $s .= "if ( !defined('ABSPATH') ) define('ABSPATH', dirname(__FILE__) . '/');\n";
     $s .= "require_once(ABSPATH . 'wp-settings.php');\n";
 
-    file_put_contents('web/wp/wp-config.php', $s);
+    file_put_contents($parameters['path'].'/wp-config.php', $s);
   }
 };
