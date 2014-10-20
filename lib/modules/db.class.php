@@ -25,18 +25,19 @@ class Db extends RubbishThorClone {
 
     $this->writeWhippetWpConfig($parameters['db']);
 
+    // Drop tables
+    $db = new PDO('mysql:host='.$parameters['db']['host'].';dbname='.$parameters['db']['name'], $parameters['db']['user'], $parameters['db']['pass']);
+    foreach ($db->query('SHOW TABLES') as $row) {
+      $table = $row[0];
+      $db->exec('DROP TABLE `'.$table.'`');
+      echo "dropped $table\n";
+    }
+
     // Load WP
     define('WP_INSTALLING', true);
 
     include('web/wp/wp-load.php');
     include('web/wp/wp-admin/includes/upgrade.php');
-
-    global $wpdb;
-    $tables = $wpdb->get_col('SHOW TABLES');
-    foreach ($tables as $table) {
-      $wpdb->query('drop table '.$table);
-      echo "dropped $table\n";
-    }
 
     include('seeds/'.$environment.'/seed.php');
 
