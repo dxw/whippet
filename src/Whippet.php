@@ -22,6 +22,7 @@ class Whippet extends \RubbishThorClone
         $this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.');
 
         $this->command('migrate OLDPATH NEWPATH', 'Examines an existing wp-content directory and attempts to create an identical Whippet application.');
+        $this->command('server SERVER_COMMAND', '');
     }
 
     public function plugins($plugin_command)
@@ -68,5 +69,9 @@ class Whippet extends \RubbishThorClone
         $this->options->new = $new;
 
         (new Modules\Generate())->start('migration', $this->options);
+    }
+
+    public function server($plugin_command) {
+        (new Modules\Server())->start(array_slice($this->argv, 1));
     }
 };
