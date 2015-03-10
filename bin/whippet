@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+require __DIR__.'/../vendor/autoload.php';
+
 define('WHIPPET_ROOT', dirname(dirname(__FILE__)));
 
 require WHIPPET_ROOT . "/lib/whippet.class.php";
