@@ -88,12 +88,12 @@ If you're using any plugins from the codex, you should add them to your ```plugi
 
 ### Give yourself some credit!
 
-Whippet contains a ```/wp-content/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/wp-content/public``` that you'd like to
+Whippet contains a ```/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/public/``` that you'd like to
 see in the root directory of your website, like the Google webmaster tools file, or a favicon.
 
 ### Add or generate a theme
 
-Finally, add a theme to ```/wp-content/themes``` (or generate one) and get devving!
+Finally, add a theme to ```/wp-content/themes/``` (or [generate one](Generators) and get devving!
 
 ## Run your application
 
