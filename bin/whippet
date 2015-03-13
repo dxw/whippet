@@ -5,6 +5,5 @@ define('WHIPPET_ROOT', dirname(dirname(__FILE__)));
 
 require WHIPPET_ROOT . "/lib/whippet.class.php";
 
-
 $whippet = new Whippet();
 $whippet->start($argv);
