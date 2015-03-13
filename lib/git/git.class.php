@@ -237,6 +237,15 @@ class Git {
     return $refs;
   }
 
+  /**
+   * This function checks to see whether git successfully ran. If so,
+   * it returns true. If not, it prints the supplied message along with
+   * git's output and returns false.
+   *
+   * $message An error message to display on failure
+   * $return Git's return code, as set by exec()
+   * $output Git's output code, as set by exec()
+   */
   protected function check_git_return($message, $return, $output) {
     if($return !== 0) {
       echo "{$message}:\n\n" . implode("\n", $output);
@@ -247,6 +256,15 @@ class Git {
     return true;
   }
 
+  /**
+   * Runs the specified git command, with some basic sanity checking to
+   * ensure that required repos and directories exist.
+   *
+   * $command The command to be run
+   * $cd If true, Whippet will change its working directory to repo_path before executing $command
+   *
+   * See also: this::__construct.
+   */
   protected function run_command($command, $cd = true) {
     $output = array();
     $return = 0;
@@ -269,6 +287,11 @@ class Git {
     return array($output, $return);
   }
 
+  /**
+   * Obtains a valid directory for temporary files on the current system, or in a specified location.
+   *
+   * $in_dir If supplied, the temporary directory will be created as a subdirectory of this path. If false or missing, the system's default temporary file location will be used.
+   */
   function get_tmpdir($in_dir = false) {
 
     if(!$in_dir) {
