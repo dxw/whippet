@@ -1,3 +1,4 @@
-source = "git@git.dxw.net:wordpress-plugins/"
+source = "https://github.com/wp-plugins/"
+append = ".git"
 
 akismet=

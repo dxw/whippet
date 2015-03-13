@@ -10,21 +10,36 @@ trait manifest_io {
     }
 
     // Got plugins - turn names to sources
-    $source = '';
+    $source = $append = '';
     $this->plugins_manifest = new stdClass();
     foreach($plugins as $plugin => $data) {
+      //
+      // Special lines
+      //
+
       if($plugin == 'source') {
         if(empty($data)) {
           echo "Source is empty. It should just specify a repo root:\n\n  source = 'git@git.dxw.net:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.";
           exit(1);
         }
+
         $source = $data;
+        continue;
+      }
+
+      if($plugin == 'append') {
+
+        $append = $data;
         continue;
       }
 
       $repository = $revision = '';
 
+
+      //
       // Everything else should be a plugin
+      //
+
       // First see if there is data.
       if(!empty($data)) {
         // Format: LABEL[, REPO]
@@ -37,7 +52,7 @@ trait manifest_io {
       }
 
       if(empty($repository)) {
-        $repository = "{$source}{$plugin}";
+        $repository = "{$source}{$plugin}{$append}";
       }
 
       if (empty($revision)) {
