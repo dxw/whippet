@@ -17,7 +17,7 @@ At the moment, Whippet can manages plugins and releases and compile stylesheets 
 
 During development, whippet is designed to be used in conjunction with [Whippet Server](https://github.com/dxw/whippet-server). These projects will be combined at some point in the future.
 
-Whippet is under development and should be considered alpha software.
+*Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
 # Getting started
 
