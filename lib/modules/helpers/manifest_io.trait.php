@@ -1,6 +1,12 @@
 <?php
 
+/**
+ * This trait contains methods for loading, saving and updating the plugins manifest and lock file.
+ */
 trait manifest_io {
+  /**
+   * This method loads the current app's plugins manifest into $this->plugins_manifest.
+   */
   protected function load_plugins_manifest() {
     $plugins = parse_ini_file($this->plugins_manifest_file);
 
@@ -12,6 +18,7 @@ trait manifest_io {
     // Got plugins - turn names to sources
     $source = $append = '';
     $this->plugins_manifest = new stdClass();
+
     foreach($plugins as $plugin => $data) {
       //
       // Special lines
@@ -66,6 +73,9 @@ trait manifest_io {
     }
   }
 
+  /**
+   * Loads the current app's plugins.lock into $this->plugins_locked
+   */
   protected function load_plugins_lock(){
     if(!$this->plugins_lock_file) {
       return false;
@@ -81,6 +91,11 @@ trait manifest_io {
     }
   }
 
+  /**
+   * Updates plugins.lock based on the contents of the current plugins manifest.
+   *
+   * This method works because $this->plugins_manifest is updated as Whippet carries out plugin installations, updates and deletions.
+   */
   private function update_plugins_lock()
   {
     if(!empty($this->plugins_locked)) {
