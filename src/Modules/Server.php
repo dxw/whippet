@@ -12,6 +12,7 @@ class Server extends \RubbishThorClone {
     $this->command('start', 'Run wordpress in docker containers');
     $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
     $this->command('ps', 'List status of containers');
+    $this->command('logs [wordpress|mysql|mailcatcher]', 'Show logs for container');
   }
 
   private function whippet_init() {
@@ -68,5 +69,14 @@ class Server extends \RubbishThorClone {
 
     $regexp = '(^CONTAINER ID|whippet_wordpress\s*$|whippet_mysql\s*$|whippet_mailcatcher\s*$|'.$this->mysql_data.'\s*$)';
     passthru('docker ps -a | grep -E '.escapeshellarg($regexp));
+  }
+
+  /*
+   * TODO: document
+   */
+  public function logs($container) {
+    $this->whippet_init();
+
+    passthru('docker logs -f whippet_'.escapeshellarg($container));
   }
 };
