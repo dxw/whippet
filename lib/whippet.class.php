@@ -3,7 +3,8 @@
 date_default_timezone_set("UTC");
 
 
-require "rubbish_thor_clone/rubbish_thor_clone.class.php";
+require WHIPPET_ROOT . "/lib/rubbish_thor_clone/rubbish_thor_clone.class.php";
+
 require WHIPPET_ROOT . "/lib/git/git.class.php";
 require WHIPPET_ROOT . "/lib/git/gitignore.class.php";
 
