@@ -1,6 +1,8 @@
 <?php
 
-class MigrationGenerator {
+require WHIPPET_ROOT . "/generators/whippet_generator.class.php";
+
+class MigrationGenerator extends WhippetGenerator {
   use whippet_helpers;
 
   function __construct($options) {
