@@ -8,7 +8,9 @@
   *
   * Most of these methods will return false on failure, and true (or some data) on success.
   *
-  * TODO: This is all pretty hacky. This file is a good candidate for some serious refactoring or replacement.
+  * TODO
+  * This is all pretty hacky. This file is a good candidate for some serious refactoring or replacement.
+  * In particular, it's very noisy, and the failure mechanisms make it hard to give users good errors.
   *
   **/
 class Git {
