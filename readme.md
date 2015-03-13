@@ -19,6 +19,25 @@ During development, whippet is designed to be used in conjunction with [Whippet 
 
 Whippet is under development and should be considered alpha software.
 
+# Getting started
+
+## Install whippet
+
+## Generate an application
+
+## Configure your application
+
+### Set your WordPress version
+/config/application.json
+
+### Add plugins
+/plugins
+
+### Give yourself some credit!
+/wp-content/public/humans.txt
+Add other things here (like webmaster tools or favicon)
+
+### Add or generate a theme
 
 # Application structure
 
