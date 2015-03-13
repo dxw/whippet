@@ -2,11 +2,19 @@
 
 class Server extends RubbishThorClone {
   use manifest_io;
-  use whippet_helpers;
+  use whippet_helpers {
+    whippet_init as _whippet_init;
+  }
 
   public function commands() {
     $this->command('start', 'Run wordpress in docker containers');
     $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
+    $this->command('ps', 'List status of containers');
+  }
+
+  private function whippet_init() {
+    $this->_whippet_init();
+    $this->mysql_data = 'whippet_mysql_data_'.preg_replace('/[^a-zA-Z0-9]/', '_', $this->project_dir);
   }
 
   /*
@@ -25,8 +33,7 @@ class Server extends RubbishThorClone {
 
     $this->whippet_init();
 
-    $mysql_data = 'whippet_mysql_data_'.preg_replace('/[^a-zA-Z0-9]/', '_', $this->project_dir);
-    system('docker run --name='.escapeshellarg($mysql_data).' -v /var/lib/mysql mysql /bin/true');
+    system('docker run --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true');
 
     # Stop/delete existing containers
     system('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress');
@@ -34,7 +41,7 @@ class Server extends RubbishThorClone {
 
     # Start other containers
     system('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher');
-    system('docker run -d --name=whippet_mysql --volumes-from='.$mysql_data.' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql');
+    system('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql');
     system('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -p 8000:8000 --link=whippet_mysql:db --link=whippet_mailcatcher:mailcatcher thedxw/whippet-server-custom');
   }
 
@@ -49,5 +56,15 @@ class Server extends RubbishThorClone {
     } else if ($command === 'dump') {
       passthru('docker run -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysqldump -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE"\'');
     }
+  }
+
+  /*
+   * TODO: document
+   */
+  public function ps() {
+    $this->whippet_init();
+
+    $regexp = '(^CONTAINER ID|whippet_wordpress\s*$|whippet_mysql\s*$|whippet_mailcatcher\s*$|'.$this->mysql_data.'\s*$)';
+    passthru('docker ps -a | grep -E '.escapeshellarg($regexp));
   }
 };
