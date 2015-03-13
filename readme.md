@@ -23,21 +23,83 @@ Whippet is under development and should be considered alpha software.
 
 ## Install whippet
 
+To install Whippet, clone this directory and install its submodules:
+
+```
+$ git clone https://github.com/dxw/whippet.git
+$ git submodule update --init --recursive
+```
+
+The following commands must be available on your system for Whippet to work correctly:
+
+* git
+* cp
+* mkdir
+* rm
+* ln
+
+If you intend to use the Whippet base theme, you will also need:
+
+* npm
+
+Using npm, you will need to install:
+
+* grunt-cli
+* bower
+
+Further instructions for getting started with the base theme can be found in its [readme](https://github.com/dxw/whippet-theme-template/blob/master/README.md)
+
 ## Generate an application
+
+To create a new application, run:
+
+```
+$ whippet generate app
+```
+
+This will create a new Whippet application in ```./whippet-app```. You can change the location with the -d option. The structure of this application is explained below.
 
 ## Configure your application
 
+There are a few configuration steps you'll need to follow when you create a new application.
+
 ### Set your WordPress version
-/config/application.json
+
+By default, Whippet uses the current development version of WordPress. If you want to specify a version to develop against, you'll need to edit ```/config/application.json```:
+
+```
+{
+    "wordpress": {
+        "repository": "https://github.com/WordPress/WordPress.git",
+        "revision": "master"
+    }
+}
+```
+
+To change the version, replace "master" with the version you'd like:
+
+```
+        "revision": "4.1.1"
+```
 
 ### Add plugins
-/plugins
+
+If you're using any plugins from the codex, you should add them to your ```plugins``` file. For more information, see the [Plugins section](#plugins).
 
 ### Give yourself some credit!
-/wp-content/public/humans.txt
-Add other things here (like webmaster tools or favicon)
+
+Whippet contains a ```/wp-content/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/wp-content/public``` that you'd like to
+see in the root directory of your website, like the Google webmaster tools file, or a favicon.
 
 ### Add or generate a theme
+
+Finally, add a theme to ```/wp-content/themes``` (or generate one) and get devving!
+
+## Run your application
+
+The recommended method for running a Whippet application is to use [Whippet Server](https://github.com/dxw/whippet-server).
+
+If you prefer, you can symlink ```/wp-content``` into a WordPress directory on your web server.
 
 # Application structure
 
