@@ -1,5 +1,16 @@
 <?php
 
+/**
+  * This class is a container for git commands. It would be very nice to replace it with
+  * a proper library for interacting with git repos but we couldn't find one.
+  *
+  * Most of the methods on this class correspond to a git command.
+  *
+  * Most of these methods will return false on failure, and true (or some data) on success.
+  *
+  * TODO: This is all pretty hacky. This file is a good candidate for some serious refactoring or replacement.
+  *
+  **/
 class Git {
   function __construct($repo_path) {
     $this->repo_path = $repo_path;
