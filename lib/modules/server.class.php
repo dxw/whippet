@@ -50,7 +50,7 @@ class Server extends RubbishThorClone {
     # Start other containers
     system('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher');
     system('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql');
-    system('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -p 8000:8000 --link=whippet_mysql:db --link=whippet_mailcatcher:mailcatcher thedxw/whippet-server-custom');
+    system('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress');
   }
 
   /*
