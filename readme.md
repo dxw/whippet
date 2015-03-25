@@ -168,7 +168,7 @@ akismet = master, git@my-git-server.com:akismet
 akismet = , git@my-git-server.com:akismet
 ```
 
-### whippet plugin install
+### whippet plugins install
 
 When run for the first time, this command will install all the plugins in your Plugins file, at the most
 recent commits that exist in the remote for branch or tag you specify (or master, if not specified.) The
@@ -184,7 +184,7 @@ Critically, if no changes have been made to the Plugins file, whippet plugin ins
 the commits specified in plugins.lock; ie, the most recent versions that were available at the time the
 plugins were last installed.
 
-### whippet plugins update <plugin>
+### whippet plugins upgrade <plugin>
 
 This command checks to see if the branch or tag in the Plugins file has a newer commit on the remote repo than
 is installed locally, and if so, updates the installed plugin to the newest one available on the remote.
