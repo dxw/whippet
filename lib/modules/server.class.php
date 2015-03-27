@@ -8,6 +8,7 @@ class Server extends RubbishThorClone {
 
   public function commands() {
     $this->command('start', 'Run wordpress in docker containers');
+    $this->command('stop', 'Stop all containers');
     $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
     $this->command('ps', 'List status of containers');
     $this->command('logs [wordpress|mysql|mailcatcher]', 'Show logs for container');
@@ -16,6 +17,13 @@ class Server extends RubbishThorClone {
   private function whippet_init() {
     $this->_whippet_init();
     $this->mysql_data = 'whippet_mysql_data_'.preg_replace('/[^a-zA-Z0-9]/', '_', $this->project_dir);
+  }
+
+  private function _stop() {
+    $this->whippet_init();
+
+    system('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress');
+    system('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress');
   }
 
   /*
@@ -37,13 +45,21 @@ class Server extends RubbishThorClone {
     system('docker run --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true');
 
     # Stop/delete existing containers
-    system('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress');
-    system('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress');
+    $this->_stop();
 
     # Start other containers
     system('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher');
     system('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql');
     system('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -p 8000:8000 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-server-custom');
+  }
+
+  /*
+   * TODO: document
+   */
+  public function stop() {
+    $this->whippet_init();
+
+    $this->_stop();
   }
 
   /*
