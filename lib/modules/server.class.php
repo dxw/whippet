@@ -22,8 +22,8 @@ class Server extends RubbishThorClone {
   private function _stop() {
     $this->whippet_init();
 
-    system('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress');
-    system('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress');
+    exec('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress 2>/dev/null');
+    exec('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress 2>/dev/null');
   }
 
   /*
@@ -42,15 +42,34 @@ class Server extends RubbishThorClone {
 
     $this->whippet_init();
 
-    system('docker run --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true');
+    # Ensure data container exists
+    exec('docker run --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true 2>/dev/null');
 
     # Stop/delete existing containers
+    echo "Stopping already-running containers\n";
     $this->_stop();
 
+    $output = null;
+    $return = null;
+
     # Start other containers
-    system('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher');
-    system('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql');
-    system('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress');
+    exec('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher 2>/dev/null', $output, $return);
+    if ($return !== 0) {
+      echo "Mailcatcher container failed to start\n";
+      exit(1);
+    }
+    exec('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql 2>/dev/null', $output, $return);
+    if ($return !== 0) {
+      echo "MySQL container failed to start\n";
+      exit(1);
+    }
+    exec('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress 2>/dev/null', $output, $return);
+    if ($return !== 0) {
+      echo "WordPress container failed to start\n";
+      exit(1);
+    }
+
+    echo "Started whippet containers\n";
   }
 
   /*
@@ -60,6 +79,8 @@ class Server extends RubbishThorClone {
     $this->whippet_init();
 
     $this->_stop();
+
+    echo "Stopped and removed all whippet non-data containers\n";
   }
 
   /*
