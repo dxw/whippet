@@ -98,9 +98,49 @@ Finally, add a theme to ```/wp-content/themes/``` (or [generate one](Generators)
 
 ## Run your application
 
-The recommended method for running a Whippet application is to use [Whippet Server](https://github.com/dxw/whippet-server).
+The recommended method for running a Whippet application is to use the ```server``` subcommand.
 
 If you prefer, you can symlink ```/wp-content``` into a WordPress directory on your web server.
+
+### ```whippet server``` usage
+
+    # run this in a separate pane/window/tab/VT - shows all logged output
+    $ whippet server run
+    # or, to just start the server without showing logs
+    $ whippet server start
+
+    # check everything's running as it should
+    $ whippet server ps
+    CONTAINER ID   IMAGE                                 COMMAND                CREATED         STATUS                     PORTS                              NAMES
+    f3ac460c4311   thedxw/whippet-server-custom:latest   "/bin/sh -c 'whippet   2 seconds ago   Up 2 seconds               80/tcp, 0.0.0.0:8000->8000/tcp     whippet_wordpress
+    0a48ee8bd7f2   mysql:latest                          "/entrypoint.sh mysq   2 seconds ago   Up 2 seconds               3306/tcp                           whippet_mysql
+    fc317cb34fb5   schickling/mailcatcher:latest         "mailcatcher -f --ip   2 seconds ago   Up 2 seconds               0.0.0.0:1080->1080/tcp, 1025/tcp   whippet_mailcatcher
+    476916fe1919   mysql:latest                          "/entrypoint.sh /bin   2 seconds ago   Exited (0) 2 seconds ago                                      whippet_mysql_data__path_to_my_app
+
+    # if there were any errors use this to debug
+    $ whippet server logs wordpress
+    $ whippet server logs mysql
+    $ whippet server logs mailcatcher
+
+    # view your application: http://localhost:8000/
+
+    # if you prefer to use a hostname like mymachine.local (WP_HOME is set automatically from WP_SITEURL)
+    $ echo "<?php define('WP_SITEURL', 'http://mymachine.local:8000');" > config/server-local.php
+
+    # "But wait, what about multisite?"
+    # simply forward port 80 to port 8000 using your preferred method and then update WP_SITEURL accordingly
+    $ echo "<?php define('WP_SITEURL', 'http://mymachine.local');" > config/server-local.php
+
+    # MySQL interactive prompt
+    $ whippet server db
+    # get a copy of your database
+    $ whippet server db dump
+
+    # By default whippet server "nerfs" passwords (allows any password for any account) for easier testing
+    # If you're working on a plugin that fiddles with authentication you may want to define this constant
+    $ echo "<?php define('DISABLE_PASSWORD_NERFING', true);" > config/server-local.php
+
+Note that if you're running docker inside a VM (for example with boot2docker or docker-machine) you may need to forward port 8000.
 
 # Application structure
 
