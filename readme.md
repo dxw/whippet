@@ -259,6 +259,38 @@ This command is essentially syntactic sugar for running Grunt. Execute it within
 
 In the future, it will also run automated tests.
 
+## Server
+
+Runs the whippet application locally (requires docker).
+
+### whippet server start
+
+Creates a data-only container, and starts the following:
+
+- Mailcatcher ([schickling/mailcatcher](https://registry.hub.docker.com/u/schickling/mailcatcher/)) - bound to port 1080
+- MySQL ([mysql](https://registry.hub.docker.com/_/mysql/))
+- WordPress ([Dockerfile](docker-images/whippet-wordpress/Dockerfile)) - bound to port 8000
+
+### whippet server stop
+
+Stops all running whippet containers.
+
+### whippet server db connect
+
+Drops you into a MySQL interactive session.
+
+### whippet server db dump
+
+Dumps the database.
+
+### whippet server ps
+
+Shows which of the containers are running (note that the data-only container with the long name shouldn't be running).
+
+### whippet server logs [mailcatcher|mysql|wordpress]
+
+Show the logs for a particular container.
+
 # Roadmap
 
 ## Reminders
