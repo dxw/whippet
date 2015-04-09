@@ -16,6 +16,7 @@ require WHIPPET_ROOT . "/lib/modules/theme.class.php";
 require WHIPPET_ROOT . "/lib/modules/deploy.class.php";
 require WHIPPET_ROOT . "/lib/modules/generate.class.php";
 require WHIPPET_ROOT . "/lib/modules/server.class.php";
+require WHIPPET_ROOT . "/lib/modules/build.class.php";
 
 class Whippet extends RubbishThorClone {
   public function commands() {
@@ -38,6 +39,8 @@ class Whippet extends RubbishThorClone {
     $this->command('migrate OLDPATH NEWPATH', "Examines an existing wp-content directory and attempts to create an identical Whippet application.");
 
     $this->command('server SERVER_COMMAND', '');
+
+    $this->command('build', 'Runs grunt watch in all directories with a Gruntfile.js');
   }
 
   public function plugins($plugin_command) {
@@ -82,5 +85,9 @@ class Whippet extends RubbishThorClone {
 
   public function server($plugin_command) {
     (new Server)->start(array_slice($this->argv, 1));
+  }
+
+  public function build() {
+    (new Build)->start(array_slice($this->argv, 1));
   }
 };
