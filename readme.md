@@ -272,6 +272,10 @@ Creates a data-only container, and starts the following:
 - MySQL ([mysql](https://registry.hub.docker.com/_/mysql/))
 - WordPress ([Dockerfile](docker-images/whippet-wordpress/Dockerfile)) - bound to port 8000
 
+By default it sets WP_SITEURL/WP_HOME to http://localhost:8000. You can override that with the following command (WP_HOME is set from the value of WP_SITEURL so you only have to define one constant):
+
+    echo "<?php define('WP_SITEURL', 'http://mymachine.local:8000');" > config/server-local.php
+
 ### whippet server stop
 
 Stops all running whippet containers.
