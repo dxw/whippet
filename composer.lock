@@ -1,0 +1,125 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "40adee8847ddc110458f8ff21f72c15a",
+    "packages": [
+        {
+            "name": "dxw/rubbishthorclone",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dxw/RubbishThorClone.git",
+                "reference": "9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dxw/RubbishThorClone/zipball/9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f",
+                "reference": "9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f",
+                "shasum": ""
+            },
+            "require": {
+                "mjackson/optionparser": "dev-master",
+                "pear/console_table": "1.2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "rubbish_thor_clone.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2015-03-26 13:05:39"
+        },
+        {
+            "name": "mjackson/optionparser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mjackson/optionparser.git",
+                "reference": "d6777ad1adb7d09eff1fad79a0f1abbd0761599f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mjackson/optionparser/zipball/d6777ad1adb7d09eff1fad79a0f1abbd0761599f",
+                "reference": "d6777ad1adb7d09eff1fad79a0f1abbd0761599f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/OptionParser.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2015-03-17 16:57:12"
+        },
+        {
+            "name": "pear/console_table",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RobLoach/Console_Table.git",
+                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RobLoach/Console_Table/zipball/10d89fbbe533351dcfe5dc1e84de25d9a8395950",
+                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=4.3.10"
+            },
+            "suggest": {
+                "pear/Console_Color2": ">=0.1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Table.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Schneider",
+                    "homepage": "http://pear.php.net/user/yunosh"
+                },
+                {
+                    "name": "Tal Peer",
+                    "homepage": "http://pear.php.net/user/tal"
+                },
+                {
+                    "name": "Xavier Noguer",
+                    "homepage": "http://pear.php.net/user/xnoguer"
+                },
+                {
+                    "name": "Richard Heyes",
+                    "homepage": "http://pear.php.net/user/richard"
+                }
+            ],
+            "description": "Library that makes it easy to build console style tables.",
+            "homepage": "http://pear.php.net/package/Console_Table/",
+            "keywords": [
+                "console"
+            ],
+            "time": "2014-10-27 10:04:49"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "dxw/rubbishthorclone": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

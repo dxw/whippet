@@ -23,11 +23,12 @@ During development, whippet is designed to be used in conjunction with [Whippet 
 
 ## Install whippet
 
-To install Whippet, clone this directory and install its submodules:
+To install Whippet, clone this directory and install its dependencies:
 
 ```
 $ git clone https://github.com/dxw/whippet.git
 $ git submodule update --init --recursive
+$ composer install
 ```
 
 The following commands must be available on your system for Whippet to work correctly:

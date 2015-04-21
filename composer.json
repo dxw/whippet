@@ -1,0 +1,7 @@
+{
+    "minimum-stability": "dev",
+    "require": {
+        "dxw/rubbishthorclone": "dev-master"
+    },
+    "bin": ["bin/whippet"]
+}
