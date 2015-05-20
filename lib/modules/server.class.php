@@ -86,10 +86,10 @@ class Server extends RubbishThorClone {
   /*
    * TODO: document
    */
-  public function db($command) {
+  public function db($command=null) {
     $this->whippet_init();
 
-    if ($command === 'connect') {
+    if ($command === 'connect' || $command === null) {
       passthru('docker run -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysql -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE"\'');
     } else if ($command === 'dump') {
       passthru('docker run -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysqldump -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE"\'');
