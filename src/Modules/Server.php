@@ -11,6 +11,7 @@ class Server extends \RubbishThorClone {
   public function commands() {
     $this->command('start', 'Run wordpress in docker containers');
     $this->command('stop', 'Stop all containers');
+    $this->command('run', 'Alias for whippet server start && whippet server logs wordpress');
     $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
     $this->command('ps', 'List status of containers');
     $this->command('logs [wordpress|mysql|mailcatcher]', 'Show logs for container');
@@ -31,6 +32,14 @@ class Server extends \RubbishThorClone {
   /*
    * Commands
    */
+
+  /*
+   * TODO: document
+   */
+  public function run() {
+    $this->start();
+    $this->logs('wordpress');
+  }
 
   /*
    * TODO: document
