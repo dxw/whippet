@@ -52,7 +52,7 @@ class Server extends RubbishThorClone {
     $this->whippet_init();
 
     # Ensure data container exists
-    exec('docker run --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true 2>/dev/null');
+    exec('docker run --label=com.dxw.whippet=true --label=com.dxw.data=true --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true 2>/dev/null');
 
     # Stop/delete existing containers
     echo "Stopping already-running containers\n";
@@ -62,17 +62,17 @@ class Server extends RubbishThorClone {
     $return = null;
 
     # Start other containers
-    exec('docker run -d --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher 2>/dev/null', $output, $return);
+    exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher 2>/dev/null', $output, $return);
     if ($return !== 0) {
       echo "Mailcatcher container failed to start\n";
       exit(1);
     }
-    exec('docker run -d --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql 2>/dev/null', $output, $return);
+    exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql 2>/dev/null', $output, $return);
     if ($return !== 0) {
       echo "MySQL container failed to start\n";
       exit(1);
     }
-    exec('docker run -d --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress 2>/dev/null', $output, $return);
+    exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress 2>/dev/null', $output, $return);
     if ($return !== 0) {
       echo "WordPress container failed to start\n";
       exit(1);
@@ -99,9 +99,9 @@ class Server extends RubbishThorClone {
     $this->whippet_init();
 
     if ($command === 'connect' || $command === null) {
-      passthru('docker run -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysql -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE"\'');
+      passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysql -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE"\'');
     } else if ($command === 'dump') {
-      passthru('docker run -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysqldump -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE" 2>/dev/null\'');
+      passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:db mysql sh -c \'exec mysqldump -h"$DB_PORT_3306_TCP_ADDR" -P"$DB_PORT_3306_TCP_PORT" -uroot -p"$DB_ENV_MYSQL_ROOT_PASSWORD" "$DB_ENV_MYSQL_DATABASE" 2>/dev/null\'');
     }
   }
 
