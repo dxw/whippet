@@ -73,7 +73,7 @@ class Server extends RubbishThorClone {
       echo "MySQL container failed to start\n";
       exit(1);
     }
-    exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-wordpress 2>/dev/null', $output, $return);
+    exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher thedxw/whippet-server-custom 2>/dev/null', $output, $return);
     if ($return !== 0) {
       echo "WordPress container failed to start\n";
       exit(1);
