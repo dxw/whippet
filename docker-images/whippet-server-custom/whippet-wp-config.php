@@ -19,7 +19,7 @@ if (!defined('DISABLE_PASSWORD_NERFING')) {
 define('WPMU_PLUGIN_DIR', '/usr/src/mu-plugins');
 
 // Database
-define('DB_HOST', getenv('DB_PORT_3306_TCP_ADDR').':'.getenv('DB_PORT_3306_TCP_PORT'));
-define('DB_NAME', getenv('DB_ENV_MYSQL_DATABASE'));
+define('DB_HOST', getenv('MYSQL_PORT_3306_TCP_ADDR').':'.getenv('MYSQL_PORT_3306_TCP_PORT'));
+define('DB_NAME', getenv('MYSQL_ENV_MYSQL_DATABASE'));
 define('DB_USER', 'root');
-define('DB_PASSWORD', getenv('DB_ENV_MYSQL_ROOT_PASSWORD'));
+define('DB_PASSWORD', getenv('MYSQL_ENV_MYSQL_ROOT_PASSWORD'));
