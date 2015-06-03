@@ -13,6 +13,7 @@ class Server extends RubbishThorClone {
     $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
     $this->command('ps', 'List status of containers');
     $this->command('logs [wordpress|mysql|mailcatcher]', 'Show logs for container');
+    $this->command('console', 'Start a shell inside the WordPress container');
   }
 
   private function whippet_init() {
@@ -122,5 +123,14 @@ class Server extends RubbishThorClone {
     $this->whippet_init();
 
     passthru('docker logs -f whippet_'.escapeshellarg($container));
+  }
+
+  /*
+   * TODO: document
+   */
+  public function console() {
+    $this->whippet_init();
+
+    passthru('docker exec -ti whippet_wordpress bash');
   }
 };
