@@ -23,3 +23,6 @@ define('DB_HOST', getenv('MYSQL_PORT_3306_TCP_ADDR').':'.getenv('MYSQL_PORT_3306
 define('DB_NAME', getenv('MYSQL_ENV_MYSQL_DATABASE'));
 define('DB_USER', 'root');
 define('DB_PASSWORD', getenv('MYSQL_ENV_MYSQL_ROOT_PASSWORD'));
+
+// Allow running multiple sites without auth/nonce issues
+define('COOKIEHASH', getenv('PROJECT_ID'));
