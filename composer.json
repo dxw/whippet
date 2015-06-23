@@ -1,6 +1,13 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:dxw/whippet-theme-template"
+        }
+    ],
     "minimum-stability": "dev",
     "require": {
+        "dxw/whippet-theme-template": "dev-feature/composer",
         "dxw/rubbishthorclone": "dev-master"
     },
     "bin": ["bin/whippet"]
