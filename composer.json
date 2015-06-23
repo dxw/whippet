@@ -1,4 +1,16 @@
 {
+    "name": "dxw/whippet",
+    "homepage": "https://github.com/dxw/whippet",
+    "type": "project",
+    "version": "0.1.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Harry Metcalfe",
+            "email": "harry@dxw.com",
+            "homepage": "https://www.dxw.com/"
+        }
+    ]
     "repositories": [
         {
             "type": "vcs",
