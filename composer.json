@@ -1,4 +1,5 @@
 {
+    "name": "dxw/whippet",
     "minimum-stability": "dev",
     "require": {
         "dxw/rubbishthorclone": "dev-master"
