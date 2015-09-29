@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "40adee8847ddc110458f8ff21f72c15a",
+    "hash": "b0033a40f5526d77b18497139df17141",
     "packages": [
         {
             "name": "dxw/rubbishthorclone",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dxw/RubbishThorClone.git",
-                "reference": "9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f"
+                "reference": "3fe02ceb074e78a7a467a9d0abca97fe56e436da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dxw/RubbishThorClone/zipball/9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f",
-                "reference": "9ce8d677ee63c9f0d1fc3d3aa2dd0cf7175e3f0f",
+                "url": "https://api.github.com/repos/dxw/RubbishThorClone/zipball/3fe02ceb074e78a7a467a9d0abca97fe56e436da",
+                "reference": "3fe02ceb074e78a7a467a9d0abca97fe56e436da",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,7 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2015-03-26 13:05:39"
+            "time": "2015-05-20 09:54:34"
         },
         {
             "name": "mjackson/optionparser",
