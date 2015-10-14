@@ -12,7 +12,7 @@ class Server extends \RubbishThorClone {
     $this->command('start', 'Run wordpress in docker containers');
     $this->command('stop', 'Stop all containers');
     $this->command('run', 'Alias for whippet server start && whippet server logs wordpress');
-    $this->command('db [connect|dump]', 'Connect to or dump data from MySQL');
+    $this->command('db [connect|dump|undump]', 'Connect to or dump data from MySQL');
     $this->command('ps', 'List status of containers');
     $this->command('logs [wordpress|mysql|mailcatcher]', 'Show logs for container');
     $this->command('console', 'Start a shell inside the WordPress container');
@@ -104,7 +104,9 @@ class Server extends \RubbishThorClone {
     if ($command === 'connect' || $command === null) {
       passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" "$MYSQL_ENV_MYSQL_DATABASE"\'');
     } else if ($command === 'dump') {
-      passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'exec mysqldump -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" "$MYSQL_ENV_MYSQL_DATABASE"\'');
+      passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysqldump -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
+    } else if ($command === 'undump') {
+      passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -i --rm --link=whippet_mysql:mysql mysql sh -c \'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" "$MYSQL_ENV_MYSQL_DATABASE"\'');
     }
   }
 
