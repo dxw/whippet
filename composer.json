@@ -1,8 +1,8 @@
 {
     "name": "dxw/whippet",
     "homepage": "https://github.com/dxw/whippet",
+    "description": "Whippet is a framework for building WordPress sites that eases deployment, plugin management and build steps.",
     "type": "project",
-    "version": "0.1.0",
     "license": "MIT",
     "authors": [
         {
@@ -10,7 +10,7 @@
             "email": "harry@dxw.com",
             "homepage": "https://www.dxw.com/"
         }
-    ]
+    ],
     "repositories": [
         {
             "type": "vcs",
