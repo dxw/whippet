@@ -8,6 +8,16 @@ trait manifest_io {
    * This method loads the current app's plugins manifest into $this->plugins_manifest.
    */
   protected function load_plugins_manifest() {
+    // Check for #-comments
+    $raw_file = file_get_contents($this->plugins_manifest_file);
+    $lines = explode("\n", $raw_file);
+    foreach ($lines as $line) {
+        if (preg_match('/^#/', $line)) {
+            echo "Comments beginning with # are not permitted\n";
+            exit(1);
+        }
+    }
+
     $plugins = parse_ini_file($this->plugins_manifest_file);
 
     if(!is_array($plugins)) {
