@@ -71,4 +71,20 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->assertNotContains('PHP Notice', $stderr);
         $this->assertNotContains('PHP Deprecated', $stderr);
     }
+
+    function testDeprecatedCommentSyntax2()
+    {
+        // Add whitespace before the #
+        $this->createTestDir();
+        file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n # a bad comment\n");
+
+        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+
+        $this->assertEquals(1, $return);
+
+        $this->assertNotContains('PHP Fatal error', $stderr);
+        $this->assertNotContains('PHP Warning', $stderr);
+        $this->assertNotContains('PHP Notice', $stderr);
+        $this->assertNotContains('PHP Deprecated', $stderr);
+    }
 }

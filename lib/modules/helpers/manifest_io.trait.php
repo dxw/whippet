@@ -12,7 +12,7 @@ trait manifest_io {
     $raw_file = file_get_contents($this->plugins_manifest_file);
     $lines = explode("\n", $raw_file);
     foreach ($lines as $line) {
-        if (preg_match('/^#/', $line)) {
+        if (preg_match('/^\s*#/', $line)) {
             echo "Comments beginning with # are not permitted\n";
             exit(1);
         }
