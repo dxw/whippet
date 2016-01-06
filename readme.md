@@ -159,13 +159,13 @@ Then whippet's behaviour will vary depending on what command you run (see below)
 Finally, you can also specify a repo for an individual plugin explicitly:
 
 ```
-# Pull version 3.0.0 from your own special repo
+; Pull version 3.0.0 from your own special repo
 akismet = 3.0.0, git@my-git-server.com:akismet
 
-# Or, pull master:
+; Or, pull master:
 akismet = master, git@my-git-server.com:akismet
 
-# This works too:
+; This works too:
 akismet = , git@my-git-server.com:akismet
 ```
 
