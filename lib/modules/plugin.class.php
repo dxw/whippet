@@ -75,6 +75,7 @@ class Plugin extends RubbishThorClone {
       //  2. Check that the installed plugins are on the lockfile commit. Checkout the correct commit if not.
       //  3. Compare the lockfile to the manifest. Clone any plugins that have been added.
       //  4. Update the lockfile with the new list of commits.
+      //  5. Delete any plugin dirs that are not in .gitmodules or plugins manifest
 
       //
       //  1. Compare the lockfile to the manifest. Delete any plugins that have been removed.
@@ -218,6 +219,25 @@ class Plugin extends RubbishThorClone {
     }
 
     $gitignore->save_ignores($ignores);
+    
+    //
+    //  Remove plugins that are not present in either .gitmodules or plugins manifest
+    //
+    
+    $plugin_dir_files = scandir($this->plugin_dir);
+    $plugin_manifest_dirs = array_keys((Array)$this->plugins_manifest);
+    
+    $git = new Git("{$this->project_dir}");
+    $submodules = $git->submodule_status();
+    
+    foreach($plugin_dir_files as $file) {
+    	if(is_dir("{$this->project_dir}/wp-content/plugins/${file}") && substr($file,0,1) != '.') {
+    		if(!isset($submodules["wp-content/plugins/${file}"]) && !isset(array_flip($plugin_manifest_dirs)[$file])) {
+    			echo "[Removing ${file}] Plugins must either be whippet managed, or a Git submodule" . PHP_EOL;
+    			system("rm -rf {$this->project_dir}/wp-content/plugins/${file}");
+    		}
+    	}
+    }
 
     echo "Completed successfully\n";
   }
