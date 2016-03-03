@@ -2,7 +2,7 @@
 
 class PluginsTest extends PHPUnit_Framework_TestCase
 {
-    function cmd($cmd, $cwd=null)
+    public function cmd($cmd, $cwd = null)
     {
         $process = proc_open($cmd, [
             1 => ['pipe', 'w'],
@@ -21,7 +21,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         return [$return, $stdout, $stderr];
     }
 
-    function createTestDir()
+    public function createTestDir()
     {
         # Create Whippet repo
         $this->dir = $dir = 'tests/plugins-test-dir';
@@ -31,7 +31,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         mkdir($dir.'/wp-content');
         mkdir($dir.'/wp-content/plugins');
         file_put_contents($dir.'/.gitignore', "\n");
-        file_put_contents($dir.'/plugins', "");
+        file_put_contents($dir.'/plugins', '');
 
         # Create a plugin git repo
         mkdir($dir.'/git-repo');
@@ -42,7 +42,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $return, 'Error running git command');
     }
 
-    function testSupportedCommentSyntax()
+    public function testSupportedCommentSyntax()
     {
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n; a good comment\n");
@@ -57,7 +57,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->assertNotContains('PHP Deprecated', $stderr);
     }
 
-    function testDeprecatedCommentSyntax()
+    public function testDeprecatedCommentSyntax()
     {
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n# a bad comment\n");
@@ -72,7 +72,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->assertNotContains('PHP Deprecated', $stderr);
     }
 
-    function testDeprecatedCommentSyntax2()
+    public function testDeprecatedCommentSyntax2()
     {
         // Add whitespace before the #
         $this->createTestDir();
