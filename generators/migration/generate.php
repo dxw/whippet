@@ -218,12 +218,12 @@ class MigrationGenerator extends WhippetGenerator {
     echo "Copying project plugins\n";
     foreach($plugins as $plugin_file => $plugin_data) {
       if(dirname($plugin_file) != '.') {
-        system("cp -a '{$old}/plugins/" . dirname($plugin_file) . "/.' '{$new}/wp-content/plugins/" . dirname($plugin_file)  . "'");
+        $this->recurse_copy("{$old}/plugins/" . dirname($plugin_file), "{$new}/wp-content/plugins/" . dirname($plugin_file));
 
         $this->automatic_fixes[] = "Copied plugin directory " . dirname($plugin_file) . " into the project";
       }
       else {
-        system("cp '{$old}/plugins/{$plugin_file}' '{$new}/wp-content/plugins/'");
+        $this->recurse_copy("{$old}/plugins/{$plugin_file}", "{$new}/wp-content/plugins");
 
         $this->automatic_fixes[] = "Copied plugin file {$plugin_file} into the project";
       }
@@ -254,7 +254,7 @@ class MigrationGenerator extends WhippetGenerator {
         system("mkdir -p $new_theme_dir"); // For themes within subdirs
       }
 
-      system("cp -a '{$old}/themes/{$theme_dir}/.' '{$new_theme_dir}/{$theme_dir}'");
+      $this->recurse_copy("{$old}/themes/{$theme_dir}","{$new_theme_dir}/{$theme_dir}");
 
       $this->automatic_fixes[] = "Copied theme directory {$theme_dir} into the project";
 
@@ -290,7 +290,9 @@ class MigrationGenerator extends WhippetGenerator {
       echo "Copying language files\n";
 
       mkdir("{$new}/wp-content/languages/");
-      system("cp {$old}/languages/*.mo {$new}/wp-content/languages/");
+      foreach (glob("{$old}/languages/*.mo") as $file) {
+        copy($file, "{$new}/wp-content/languages/{$file}");
+      }
 
       $this->automatic_fixes[] = "Copied language directory into the project";
     }

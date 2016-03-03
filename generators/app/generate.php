@@ -28,7 +28,6 @@ class AppGenerator extends WhippetGenerator {
       Git::init($this->target_dir);
     }
 
-    // The . is necessary for this command to work in Linux
-    system("cp -a " . dirname(__FILE__) . "/template/. {$this->target_dir}");
+    $this->recurse_copy(dirname(__FILE__) . "/template",$this->target_dir);
    }
 };

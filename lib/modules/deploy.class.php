@@ -75,8 +75,7 @@ class Release {
     $plugin->install();
 
     // Copy over wp-content
-    // TODO: Sorry, windows devs
-    system("cp -r {$this->project_dir}/wp-content {$this->release_dir}/wp-content");
+    $this->recurse_copy("{$this->project_dir}/wp-content","{$this->release_dir}/wp-content");
 
 
     //
@@ -94,7 +93,7 @@ class Release {
     // Copy public assets
     //
 
-    system("cp -r {$this->project_dir}/public/* {$this->release_dir}");
+	$this->recurse_copy("{$this->project_dir}/public","{$this->release_dir}");
 
 
     //
