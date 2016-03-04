@@ -101,6 +101,22 @@ trait whippet_helpers {
     closedir($dir);
   }
 
+  // 100% credit:
+  // The suckiness of PHP
+  function recurse_rmdir($dir) {
+    $dir_handle = opendir($dir);
+    while(false !== ( $file = readdir($dir_handle) ) ) {
+      if (( $file != '.' ) && ( $file != '..' )) {
+        if ( is_dir($dir . '/' . $file) ) {
+          $this->recurse_rmdir($dir . '/' . $file);
+        } else {
+          unlink($dir . '/' . $file);
+        }
+      }
+    }
+    rmdir($dir);
+  }
+
 
   private function check_for_missing_whippet_files($project_dir) {
     $whippet_files = array(
