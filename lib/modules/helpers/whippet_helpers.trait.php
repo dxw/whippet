@@ -107,7 +107,9 @@ trait whippet_helpers {
     $dir_handle = opendir($dir);
     while(false !== ( $file = readdir($dir_handle) ) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
-        if ( is_dir($dir . '/' . $file) ) {
+        if ( is_link($dir . '/' . $file) ) {
+          unlink($dir . '/' . $file);
+        } elseif ( is_dir($dir . '/' . $file) ) {
           $this->recurse_rmdir($dir . '/' . $file);
         } else {
           unlink($dir . '/' . $file);

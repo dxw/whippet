@@ -66,8 +66,11 @@ class Release {
     $wp->checkout($this->application_config->wordpress->revision);
 
     foreach(['wp-content', '.git', 'readme.html', 'wp-config-sample.php'] as $delete) {
-      // TODO: Sorry, Windows devs
-      system("rm -rf {$this->release_dir}/$delete");
+      if(is_dir("{$this->release_dir}/$delete")) {
+        $this->recurse_rmdir("{$this->release_dir}/$delete");
+      } else {
+        unlink("{$this->release_dir}/$delete");
+      }
     }
 
     // Make sure wp-content is up to date
@@ -84,16 +87,20 @@ class Release {
 
     foreach($this->plugins_locked as $dir => $plugin) {
       foreach(['.git', '.gitmodules', '.gitignore'] as $delete) {
-        // TODO: Sorry, Windows devs
-        system("rm -rf {$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        if(is_dir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
+          $this->recurse_rmdir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        } elseif(file_exists("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
+          unlink("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        }
       }
     }
 
     //
     // Copy public assets
     //
-
-	$this->recurse_copy("{$this->project_dir}/public","{$this->release_dir}");
+    if(is_dir("{$this->project_dir}/public")) {
+	  $this->recurse_copy("{$this->project_dir}/public","{$this->release_dir}");
+	}
 
 
     //
@@ -246,7 +253,7 @@ class Deploy {
         }
 
         if(file_exists($current)) {
-          system("rm {$current}");
+          unlink("{$current}");
         }
 
         system("ln -s " . realpath("{$new_release->release_dir}") . " {$current}");
@@ -279,7 +286,7 @@ class Deploy {
     uasort($releases, function($a, $b) { return filemtime($b) - filemtime($a); });
 
     foreach(array_slice($releases, $keep) as $dir) {
-      system("rm -rf $dir");
+      $this->recurse_rmdir($dir);
     }
   }
 

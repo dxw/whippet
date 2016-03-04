@@ -26,6 +26,6 @@ class ThemeGenerator extends WhippetGenerator {
     $this->recurse_copy(dirname(__FILE__) . "/template", $this->target_dir);
 
     // Delete the spurious .git file
-    system("rm {$this->target_dir}/.git");
+    unlink("{$this->target_dir}/.git");
    }
 };
