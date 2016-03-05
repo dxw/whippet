@@ -251,7 +251,7 @@ class MigrationGenerator extends WhippetGenerator {
       $new_theme_dir = "{$new}/wp-content/themes/" . dirname($theme_dir);
 
       if(!file_exists($new_theme_dir)) {
-        system("mkdir -p $new_theme_dir"); // For themes within subdirs
+        mkdir("{$new_theme_dir}",0755,true); // For themes within subdirs
       }
 
       $this->recurse_copy("{$old}/themes/{$theme_dir}","{$new_theme_dir}/{$theme_dir}");
