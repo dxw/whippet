@@ -109,9 +109,8 @@ class Release {
 
 
     // Symlinkery
-    // TODO: Sorry, windows devs
-    system("ln -s " . realpath("{$this->release_dir}/../../shared/wp-config.php") . " {$this->release_dir}/wp-config.php");
-    system("ln -s " . realpath("{$this->release_dir}/../../shared/uploads") . " {$this->release_dir}/wp-content/uploads");
+    symlink(realpath("{$this->release_dir}/../../shared/wp-config.php"),"{$this->release_dir}/wp-config.php");
+    symlink(realpath("{$this->release_dir}/../../shared/uploads"),"{$this->release_dir}/wp-content/uploads");
 
     // FIN
   }
@@ -256,7 +255,7 @@ class Deploy {
           unlink("{$current}");
         }
 
-        system("ln -s " . realpath("{$new_release->release_dir}") . " {$current}");
+        symlink(realpath("{$new_release->release_dir}"),"{$current}");
 
         // Update manifest
         $release = new stdClass();
