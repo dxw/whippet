@@ -227,7 +227,7 @@ class Deploy {
           $broken_release = $broken_release_prefix . "_{$count}";
         }
 
-        system("mv {$new_release->release_dir} {$broken_release}");
+        rename("{$new_release->release_dir}","{$broken_release}");
 
         echo "Problems:\n";
         echo implode($messages, "\n");
@@ -238,8 +238,8 @@ class Deploy {
       else{
         // If we are forcing, rejig some directories
         if($force) {
-          system("mv {$this->releases_dir}/{$new_release->deployed_commit} {$this->releases_dir}/{$new_release->deployed_commit}_" . ($new_release->number - 1));
-          system("mv {$new_release->release_dir} {$this->releases_dir}/{$new_release->deployed_commit}");
+          rename("{$this->releases_dir}/{$new_release->deployed_commit}","{$this->releases_dir}/{$new_release->deployed_commit}_" . ($new_release->number - 1));
+          rename("{$new_release->release_dir}","{$this->releases_dir}/{$new_release->deployed_commit}");
 
           $new_release->release_dir = "{$this->releases_dir}/{$new_release->deployed_commit}";
         }
