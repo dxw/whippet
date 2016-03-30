@@ -72,6 +72,9 @@ class ModulesPluginTest extends PHPUnit_Framework_TestCase
         $this->assertNotContains('PHP Warning', $output);
         $this->assertNotContains('PHP Notice', $output);
         $this->assertNotContains('PHP Deprecated', $output);
+        $this->assertContains('A default application.json was created', $output);
+        $this->assertContains('[Adding advanced-custom-fields] Cloning into', $output);
+        $this->assertContains('[Checking advanced-custom-fields-pro] Note: checking out', $output);
     }
 
     // public function testDeprecatedCommentSyntax()
