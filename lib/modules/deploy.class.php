@@ -66,8 +66,11 @@ class Release {
     $wp->checkout($this->application_config->wordpress->revision);
 
     foreach(['wp-content', '.git', 'readme.html', 'wp-config-sample.php'] as $delete) {
-      // TODO: Sorry, Windows devs
-      system("rm -rf {$this->release_dir}/$delete");
+      if(is_dir("{$this->release_dir}/$delete")) {
+        $this->recurse_rmdir("{$this->release_dir}/$delete");
+      } else {
+        unlink("{$this->release_dir}/$delete");
+      }
     }
 
     // Make sure wp-content is up to date
@@ -75,8 +78,7 @@ class Release {
     $plugin->install();
 
     // Copy over wp-content
-    // TODO: Sorry, windows devs
-    system("cp -r {$this->project_dir}/wp-content {$this->release_dir}/wp-content");
+    $this->recurse_copy("{$this->project_dir}/wp-content","{$this->release_dir}/wp-content");
 
 
     //
@@ -85,16 +87,20 @@ class Release {
 
     foreach($this->plugins_locked as $dir => $plugin) {
       foreach(['.git', '.gitmodules', '.gitignore'] as $delete) {
-        // TODO: Sorry, Windows devs
-        system("rm -rf {$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        if(is_dir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
+          $this->recurse_rmdir("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        } elseif(file_exists("{$this->release_dir}/wp-content/plugins/$dir/{$delete}")) {
+          unlink("{$this->release_dir}/wp-content/plugins/$dir/{$delete}");
+        }
       }
     }
 
     //
     // Copy public assets
     //
-
-    system("cp -r {$this->project_dir}/public/* {$this->release_dir}");
+    if(is_dir("{$this->project_dir}/public")) {
+	  $this->recurse_copy("{$this->project_dir}/public","{$this->release_dir}");
+	}
 
 
     //
@@ -103,9 +109,8 @@ class Release {
 
 
     // Symlinkery
-    // TODO: Sorry, windows devs
-    system("ln -s " . realpath("{$this->release_dir}/../../shared/wp-config.php") . " {$this->release_dir}/wp-config.php");
-    system("ln -s " . realpath("{$this->release_dir}/../../shared/uploads") . " {$this->release_dir}/wp-content/uploads");
+    symlink(realpath("{$this->release_dir}/../../shared/wp-config.php"),"{$this->release_dir}/wp-config.php");
+    symlink(realpath("{$this->release_dir}/../../shared/uploads"),"{$this->release_dir}/wp-content/uploads");
 
     // FIN
   }
@@ -222,7 +227,7 @@ class Deploy {
           $broken_release = $broken_release_prefix . "_{$count}";
         }
 
-        system("mv {$new_release->release_dir} {$broken_release}");
+        rename("{$new_release->release_dir}","{$broken_release}");
 
         echo "Problems:\n";
         echo implode($messages, "\n");
@@ -233,8 +238,8 @@ class Deploy {
       else{
         // If we are forcing, rejig some directories
         if($force) {
-          system("mv {$this->releases_dir}/{$new_release->deployed_commit} {$this->releases_dir}/{$new_release->deployed_commit}_" . ($new_release->number - 1));
-          system("mv {$new_release->release_dir} {$this->releases_dir}/{$new_release->deployed_commit}");
+          rename("{$this->releases_dir}/{$new_release->deployed_commit}","{$this->releases_dir}/{$new_release->deployed_commit}_" . ($new_release->number - 1));
+          rename("{$new_release->release_dir}","{$this->releases_dir}/{$new_release->deployed_commit}");
 
           $new_release->release_dir = "{$this->releases_dir}/{$new_release->deployed_commit}";
         }
@@ -247,10 +252,10 @@ class Deploy {
         }
 
         if(file_exists($current)) {
-          system("rm {$current}");
+          unlink("{$current}");
         }
 
-        system("ln -s " . realpath("{$new_release->release_dir}") . " {$current}");
+        symlink(realpath("{$new_release->release_dir}"),"{$current}");
 
         // Update manifest
         $release = new stdClass();
@@ -280,7 +285,7 @@ class Deploy {
     uasort($releases, function($a, $b) { return filemtime($b) - filemtime($a); });
 
     foreach(array_slice($releases, $keep) as $dir) {
-      system("rm -rf $dir");
+      $this->recurse_rmdir($dir);
     }
   }
 
