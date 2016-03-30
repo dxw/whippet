@@ -6,9 +6,10 @@ class Plugin extends \RubbishThorClone {
   use Helpers\ManifestIo;
   use Helpers\WhippetHelpers;
 
-  public function __construct(/* string */ $path, \Dxw\Whippet\Untestable $untestable)
+  public function __construct(/* string */ $path, \Dxw\Whippet\Untestable $untestable, \Dxw\Whippet\Factory $factory)
   {
       $this->untestable = $untestable;
+      $this->factory = $factory;
       $this->path = $path;
       parent::__construct();
   }
@@ -48,7 +49,7 @@ class Plugin extends \RubbishThorClone {
     if(!$this->plugins_lock_file) {
 
       foreach($this->plugins_manifest as $dir => $plugin) {
-        $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
+        $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', "{$this->plugin_dir}/{$dir}");
 
         // Is the repo there already?
         if(!$git->is_repo()) {
@@ -101,12 +102,12 @@ class Plugin extends \RubbishThorClone {
       }
 
       // Delete the ones that don't:
-      $gitignore = new \Dxw\Whippet\Git\Gitignore($this->project_dir);
+      $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->project_dir);
       $ignores = $gitignore->get_ignores();
 
       foreach($plugins_to_delete as $dir) {
         echo "[Removing {$dir}]\n";
-        $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
+        $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', "{$this->plugin_dir}/{$dir}");
         $git->delete_repo();
 
         // remove from ignores:
@@ -128,7 +129,7 @@ class Plugin extends \RubbishThorClone {
       //
 
       foreach($this->plugins_locked as $dir => $plugin) {
-        $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
+        $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', "{$this->plugin_dir}/{$dir}");
 
         if(!$git->is_repo()) {
           // The repo has gone missing. Let's add it back.
@@ -182,6 +183,7 @@ class Plugin extends \RubbishThorClone {
         echo "[Adding {$dir}] ";
 
         $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
+        $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', "{$this->plugin_dir}/{$dir}");
 
         // Is the repo there already?
         if(!$git->is_repo()) {
@@ -215,7 +217,7 @@ class Plugin extends \RubbishThorClone {
     //
     // Make sure that Whippet-managed plugins are gitignored
     //
-    $gitignore = new \Dxw\Whippet\Git\Gitignore($this->project_dir);
+    $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->project_dir);
     $ignores = $gitignore->get_ignores();
 
     foreach($this->plugins_locked as $dir => $plugin) {
@@ -252,7 +254,7 @@ class Plugin extends \RubbishThorClone {
       //  - It is the plugin they asked for
       //  - They didn't specify a plugin, and this plugin is in the manifest.
       if($dir == $upgrade_plugin || ($upgrade_plugin == '' && isset($this->plugins_manifest->$dir))) {
-        $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
+        $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', "{$this->plugin_dir}/{$dir}");
 
         // Find the specified revision.
         echo "[Checking {$dir}] ";

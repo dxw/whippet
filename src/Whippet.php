@@ -3,9 +3,10 @@
 namespace Dxw\Whippet;
 
 class Whippet extends \RubbishThorClone {
-    public function __construct(Untestable $untestable)
+    public function __construct(Untestable $untestable, Factory $factory)
     {
         $this->untestable = $untestable;
+        $this->factory = $factory;
         parent::__construct();
     }
 
@@ -30,7 +31,7 @@ class Whippet extends \RubbishThorClone {
   }
 
   public function plugins($plugin_command) {
-    (new Modules\Plugin($this->untestable))->start(array_slice($this->argv, 1));
+    (new Modules\Plugin($this->untestable, $this->factory))->start(array_slice($this->argv, 1));
   }
 
   public function theme($plugin_command) {

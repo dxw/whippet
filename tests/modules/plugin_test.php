@@ -23,19 +23,49 @@ class ModulesPluginTest extends PHPUnit_Framework_TestCase
         // $this->assertEquals(0, $return, 'Error running git command');
     }
 
-    public function testSupportedCommentSyntax()
+    private function getFactory(array $instances)
     {
-        $untestable = $this->getMockBuilder('\\Dxw\\Whippet\\Untestable')
-        ->setMethods(['_exit', '_die'])
+        $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
+        ->setMethods(['newInstance'])
         ->getMock();
 
+        foreach ($instances as $instance) {
+            call_user_func(
+                [
+                    call_user_func_array([$factory->method('newInstance'), 'with'], $instance['args']),
+                    'willReturn',
+                ],
+                $instance['return']
+            );
+        }
+
+        return $factory;
+    }
+
+    public function testSupportedCommentSyntax()
+    {
         $this->createTestDir();
+
+        $untestable = $this->getMockBuilder('\\Dxw\\Whippet\\Untestable')
+        ->getMock();
+
+        $git = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Git')
+        ->disableOriginalConstructor()
+        ->getMock();
+
+        $factory = $this->getFactory([
+            [
+                'args' => ['\\Dxw\\Whippet\\Git\\Git', $this->dir.'/wp-content/plugins/advanced-custom-fields'],
+                'return' => $git,
+            ],
+        ]);
+
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n; a good comment\n");
 
-        $plugin = new \Dxw\Whippet\Modules\Plugin($this->dir, $untestable);
+        $plugin = new \Dxw\Whippet\Modules\Plugin($this->dir, $untestable, $factory);
 
         ob_start();
-        $plugin->start(['plugins', 'install']);
+        $plugin->install();
         $output = ob_get_clean();
 
         $this->assertNotContains('PHP Fatal error', $output);

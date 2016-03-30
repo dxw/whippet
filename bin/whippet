@@ -23,6 +23,7 @@ date_default_timezone_set("UTC");
 define('WHIPPET_ROOT', dirname(dirname(__FILE__)));
 
 $untestable = new \Dxw\Whippet\Untestable();
+$factory = new \Dxw\Whippet\Factory();
 
-$whippet = new \Dxw\Whippet\Whippet($untestable);
+$whippet = new \Dxw\Whippet\Whippet($untestable, $factory);
 $whippet->start($argv);
