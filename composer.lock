@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "427302ffb555a298bc9e7d6d4557c6c0",
+    "hash": "bb2f68c8b911aad7db32f76f6db38c3f",
     "packages": [
         {
             "name": "dxw/rubbishthorclone",
@@ -58,16 +58,16 @@
         },
         {
             "name": "pear/console_table",
-            "version": "1.2.1",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobLoach/Console_Table.git",
-                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950"
+                "url": "https://github.com/pear/Console_Table.git",
+                "reference": "a129a91d8bf19317d81e68d1d3a2e18932f684e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobLoach/Console_Table/zipball/10d89fbbe533351dcfe5dc1e84de25d9a8395950",
-                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950",
+                "url": "https://api.github.com/repos/pear/Console_Table/zipball/a129a91d8bf19317d81e68d1d3a2e18932f684e4",
+                "reference": "a129a91d8bf19317d81e68d1d3a2e18932f684e4",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
             "keywords": [
                 "console"
             ],
-            "time": "2014-10-27 10:04:49"
+            "time": "2014-10-27 09:53:49"
         }
     ],
     "packages-dev": [
@@ -166,6 +166,38 @@
                 "instantiate"
             ],
             "time": "2015-06-14 21:17:01"
+        },
+        {
+            "name": "dxw/phar-install",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dxw/phar-install.git",
+                "reference": "7cdc3081296a1009393382ccb338461a747e5732"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dxw/phar-install/zipball/7cdc3081296a1009393382ccb338461a747e5732",
+                "reference": "7cdc3081296a1009393382ccb338461a747e5732",
+                "shasum": ""
+            },
+            "bin": [
+                "bin/phar-install"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Adams",
+                    "email": "tom@dxw.com",
+                    "homepage": "http://dxw.com"
+                }
+            ],
+            "homepage": "https://github.com/dxw/phar-install",
+            "time": "2016-02-17 13:55:06"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -1024,12 +1056,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "ab0314f7544d600ea7917f02cdad774358b81113"
+                "reference": "801d412451594f7c9e7950a016a377798cf9dfa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/ab0314f7544d600ea7917f02cdad774358b81113",
-                "reference": "ab0314f7544d600ea7917f02cdad774358b81113",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/801d412451594f7c9e7950a016a377798cf9dfa0",
+                "reference": "801d412451594f7c9e7950a016a377798cf9dfa0",
                 "shasum": ""
             },
             "require": {
@@ -1065,13 +1097,14 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-02 10:23:16"
+            "time": "2016-03-04 07:56:56"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "dxw/rubbishthorclone": 20
+        "dxw/rubbishthorclone": 20,
+        "dxw/phar-install": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
