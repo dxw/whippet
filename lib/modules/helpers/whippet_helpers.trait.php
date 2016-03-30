@@ -86,7 +86,9 @@ trait whippet_helpers {
   // Modified to copy symlinks
   function recurse_copy($src,$dst) {
     $dir = opendir($src);
-    @mkdir($dst);
+    if(!is_dir($dst)&&!is_link($dst)) {
+    	mkdir($dst);
+    }
     while(false !== ( $file = readdir($dir)) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
           if ( is_link($src . '/' . $file) ) {
