@@ -6,6 +6,11 @@ class Plugin extends \RubbishThorClone {
   use Helpers\ManifestIo;
   use Helpers\WhippetHelpers;
 
+  public function __construct(\Dxw\Whippet\Untestable $untestable)
+  {
+      $this->untestable = $untestable;
+  }
+
   public function commands() {
     $this->command('install', 'Deploys the current set of plugins into your project');
     $this->command('upgrade [PLUGIN]', 'Upgrades PLUGIN to the most recent available version, or to the version specified in your Plugin file.');
@@ -49,7 +54,7 @@ class Plugin extends \RubbishThorClone {
           // We don't have the repo. Clone it.
           if(!$git->clone_repo($plugin->repository)) {
             echo "Aborting...\n";
-            die();
+            return $this->untestable->die();
           }
         }
 
@@ -57,13 +62,13 @@ class Plugin extends \RubbishThorClone {
         echo "[Checking {$dir}] ";
         if(!$git->checkout($plugin->revision)) {
           echo "Aborting...\n";
-          die();
+          return $this->untestable->die();
         }
 
         $git->checkout($git->current_commit());
         if(!$git->submodule_update()) {
           echo "Aborting...\n";
-          die();
+          return $this->untestable->die();
         }
       }
     }
@@ -149,7 +154,7 @@ class Plugin extends \RubbishThorClone {
 
         if(!$git->submodule_update()) {
           echo "Aborting...\n";
-          die();
+          return $this->untestable->die();
         }
       }
 
@@ -181,19 +186,19 @@ class Plugin extends \RubbishThorClone {
           // We don't have the repo. Clone it.
           if(!$git->clone_repo($plugin->repository)) {
             echo "Aborting...\n";
-            die();
+            return $this->untestable->die();
           }
         }
 
         // Make sure repo is up to date.
         if(!$git->checkout($plugin->revision)) {
           echo "Aborting...\n";
-          die();
+          return $this->untestable->die();
         }
 
         if(!$git->submodule_update()) {
           echo "Aborting...\n";
-          die();
+          return $this->untestable->die();
         }
       }
     }
@@ -253,11 +258,11 @@ class Plugin extends \RubbishThorClone {
 
         // Check it out
         if(!$git->checkout($git->remote_revision_commit($plugin->revision))) {
-          die();
+          return $this->untestable->die();
         }
 
         if(!$git->submodule_update()) {
-          die();
+          return $this->untestable->die();
         }
 
         // If we were upgrading a specific plugin, bail now

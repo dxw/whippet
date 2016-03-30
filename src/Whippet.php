@@ -3,6 +3,11 @@
 namespace Dxw\Whippet;
 
 class Whippet extends \RubbishThorClone {
+    public function __construct(Untestable $untestable)
+    {
+        $this->untestable = $untestable;
+    }
+
   public function commands() {
     $this->command('plugins PLUGIN_COMMAND', '');
     $this->command('theme THEME_COMMAND', '');
@@ -24,7 +29,7 @@ class Whippet extends \RubbishThorClone {
   }
 
   public function plugins($plugin_command) {
-    (new Modules\Plugin)->start(array_slice($this->argv, 1));
+    (new Modules\Plugin($this->untestable))->start(array_slice($this->argv, 1));
   }
 
   public function theme($plugin_command) {
