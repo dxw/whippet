@@ -1,5 +1,7 @@
 <?php
 
+namespace Dxw\Whippet\Git;
+
 /**
   * This is a basic management class for a .gitignore file.
   *

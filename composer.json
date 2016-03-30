@@ -2,7 +2,8 @@
     "name": "dxw/whippet",
     "minimum-stability": "dev",
     "require": {
-        "dxw/rubbishthorclone": "dev-master"
+        "dxw/rubbishthorclone": "dev-master",
+        "aura/autoload": "2.x-dev"
     },
     "bin": ["bin/whippet"],
     "require-dev": {
@@ -11,5 +12,10 @@
     },
     "scripts": {
         "post-update-cmd": "vendor/bin/phar-install"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dxw\\Whippet\\": "src/"
+        }
     }
 }

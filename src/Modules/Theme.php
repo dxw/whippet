@@ -1,7 +1,9 @@
 <?php
 
-class Theme extends RubbishThorClone {
-  use whippet_helpers;
+namespace Dxw\Whippet\Modules;
+
+class Theme extends \RubbishThorClone {
+  use Helpers\WhippetHelpers;
 
   public function commands() {
     $this->command('grunt *arguments', 'Runs the specified grunt command in the context of your theme');/*, function($option_parser) {
@@ -27,7 +29,7 @@ class Theme extends RubbishThorClone {
       }
 
       if(!isset($this->options)) {
-        $this->options = new stdClass;
+        $this->options = new \stdClass;
       }
 
       $this->options->theme = dirname($vendor);

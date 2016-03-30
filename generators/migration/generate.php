@@ -1,9 +1,7 @@
 <?php
 
-require WHIPPET_ROOT . "/generators/whippet_generator.class.php";
-
-class MigrationGenerator extends WhippetGenerator {
-  use whippet_helpers;
+class MigrationGenerator extends \Dxw\Whippet\WhippetGenerator {
+  use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
   function __construct($options) {
     $this->options = $options;
@@ -28,7 +26,7 @@ class MigrationGenerator extends WhippetGenerator {
     //  Does $new look like a whippet app?
     //  Are they both git repos?
 
-    $git = new Git($old);
+    $git = new \Dxw\Whippet\Git\Git($old);
 
 
     //
@@ -183,7 +181,7 @@ class MigrationGenerator extends WhippetGenerator {
         }
       }
 
-      $git = new Git($new);
+      $git = new \Dxw\Whippet\Git\Git($new);
       if(!$git->submodule_add($remote, "wp-content/" . $submodule->dir)) {
         // This error will be added to manual fixes later, by seeing if anything is left over in $submodules.
         continue;
@@ -348,7 +346,7 @@ class MigrationGenerator extends WhippetGenerator {
   function get_themes($dir) {
     $themes = array();
 
-    foreach(new DirectoryIterator($dir) as $file) {
+    foreach(new \DirectoryIterator($dir) as $file) {
       if($file->isDot() || !$file->isDir()) continue;
 
       $got_one = false;
@@ -364,7 +362,7 @@ class MigrationGenerator extends WhippetGenerator {
         }
       }
       else {
-        foreach(new DirectoryIterator($file->getPathname()) as $sub_file) {
+        foreach(new \DirectoryIterator($file->getPathname()) as $sub_file) {
           if($sub_file->isDot() || !$sub_file->isDir()) continue;
 
           $styles = "{$dir}/" . $file->getFilename() . "/" . $sub_file->getFilename() . "/style.css";
@@ -402,11 +400,11 @@ class MigrationGenerator extends WhippetGenerator {
   function get_plugins($dir) {
     $plugins = array();
 
-    foreach(new DirectoryIterator($dir) as $file) {
+    foreach(new \DirectoryIterator($dir) as $file) {
       if($file->isDot()) continue;
 
       if($file->isDir()) {
-        foreach(new DirectoryIterator("{$dir}/{$file}") as $sub_file) {
+        foreach(new \DirectoryIterator("{$dir}/{$file}") as $sub_file) {
           $the_file = "{$file}/" . $sub_file->getFilename();
           $plugin_data = $this->get_file_data("{$dir}/" . $the_file);
 
@@ -500,8 +498,8 @@ class MigrationGenerator extends WhippetGenerator {
       $ignore_paths[$k] = realpath("{$directory}/{$path}");
     }
 
-    $iterator = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS);
-    foreach(new RecursiveIteratorIterator($iterator) as $filename => $file) {
+    $iterator = new \RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS);
+    foreach(new \RecursiveIteratorIterator($iterator) as $filename => $file) {
       $match = false;
       foreach($ignore_paths as $path) {
         if(strpos($file->getRealPath(), $path) === 0) {

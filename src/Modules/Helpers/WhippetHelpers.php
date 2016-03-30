@@ -1,14 +1,16 @@
 <?php
 
-trait whippet_helpers {
+namespace Dxw\Whippet\Modules\Helpers;
+
+trait WhippetHelpers {
   function check_and_create_dir($dir, $force_empty = false) {
     if(!file_exists($dir)) {
       if(!mkdir($dir)) {
-        throw new Exception("Unable to create directory: {$dir}");
+        throw new \Exception("Unable to create directory: {$dir}");
       }
     } else if($force_empty) {
       if((new \FilesystemIterator($dir))->valid()) {
-        throw new Exception("Directory exists but is not empty: {$dir}");
+        throw new \Exception("Directory exists but is not empty: {$dir}");
       }
     }
   }

@@ -1,7 +1,9 @@
 <?php
 
+namespace Dxw\Whippet;
+
 abstract class WhippetGenerator {
-  use whippet_helpers;
+  use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
   function __construct($options) {
     //
