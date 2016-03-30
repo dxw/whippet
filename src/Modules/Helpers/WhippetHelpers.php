@@ -19,7 +19,7 @@ trait WhippetHelpers {
     if(!$this->plugins_manifest_file = $this->find_file('plugins')) {
       if(!$this->plugins_manifest_file = $this->find_file('Plugins')) {
         echo "Unable to find plugins manifest file\n";
-        exit(1);
+        return $this->untestable->_exit(1);
       }
     }
     $this->project_dir = dirname($this->plugins_manifest_file);
@@ -65,7 +65,7 @@ trait WhippetHelpers {
 
   function find_file($file, $include_dir = false){
     // Starting in the current dir, walk up until we find the file
-    $path = getcwd();
+    $path = $this->path;
 
     do {
       $file_path = $path . '/' . $file;

@@ -6,6 +6,7 @@ class Whippet extends \RubbishThorClone {
     public function __construct(Untestable $untestable)
     {
         $this->untestable = $untestable;
+        parent::__construct();
     }
 
   public function commands() {

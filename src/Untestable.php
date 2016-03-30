@@ -4,12 +4,12 @@ namespace Dxw\Whippet;
 
 class Untestable
 {
-    public function die()
+    public function _die()
     {
         die();
     }
 
-    public function exit($code)
+    public function _exit($code)
     {
         exit($code);
     }
