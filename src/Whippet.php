@@ -1,20 +1,8 @@
 <?php
 
-date_default_timezone_set("UTC");
+namespace Dxw\Whippet;
 
-
-require WHIPPET_ROOT . "/lib/git/git.class.php";
-require WHIPPET_ROOT . "/lib/git/gitignore.class.php";
-
-require WHIPPET_ROOT . "/lib/modules/helpers/manifest_io.trait.php";
-require WHIPPET_ROOT . "/lib/modules/helpers/whippet_helpers.trait.php";
-
-require WHIPPET_ROOT . "/lib/modules/plugin.class.php";
-require WHIPPET_ROOT . "/lib/modules/theme.class.php";
-require WHIPPET_ROOT . "/lib/modules/deploy.class.php";
-require WHIPPET_ROOT . "/lib/modules/generate.class.php";
-
-class Whippet extends RubbishThorClone {
+class Whippet extends \RubbishThorClone {
   public function commands() {
     $this->command('plugins PLUGIN_COMMAND', '');
     $this->command('theme THEME_COMMAND', '');
@@ -36,11 +24,11 @@ class Whippet extends RubbishThorClone {
   }
 
   public function plugins($plugin_command) {
-    (new Plugin)->start(array_slice($this->argv, 1));
+    (new Modules\Plugin)->start(array_slice($this->argv, 1));
   }
 
   public function theme($plugin_command) {
-    (new Theme)->start(array_slice($this->argv, 1));
+    (new Modules\Theme)->start(array_slice($this->argv, 1));
   }
 
   public function deploy($dir) {
@@ -48,30 +36,30 @@ class Whippet extends RubbishThorClone {
       $this->options->keep = 3;
     }
 
-    (new Deploy($dir))->deploy(isset($this->options->force), $this->options->keep);
+    (new Modules\Deploy($dir))->deploy(isset($this->options->force), $this->options->keep);
   }
 
   public function init($path = false) {
     if($path) {
-      $this->options = new stdClass();
+      $this->options = new \stdClass();
       $this->options->directory = $path;
     }
 
-    (new Generate())->start("app", $this->options);
+    (new Modules\Generate())->start("app", $this->options);
   }
 
   public function generate($thing = false) {
-    (new Generate())->start($thing, $this->options);
+    (new Modules\Generate())->start($thing, $this->options);
   }
 
   // TODO: This should just be a generator like any other, but it's currently hard to do one
   //       command with several different combinations of required arguments. So just a separate
   //       command for now.
   public function migrate($old, $new) {
-    $this->options = new stdClass();
+    $this->options = new \stdClass();
     $this->options->old = $old;
     $this->options->new = $new;
 
-    (new Generate())->start("migration", $this->options);
+    (new Modules\Generate())->start("migration", $this->options);
   }
 };

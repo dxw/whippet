@@ -4,8 +4,57 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bb2f68c8b911aad7db32f76f6db38c3f",
+    "hash": "deed9d987fe4ba0af9a1ecab12ea7397",
     "packages": [
+        {
+            "name": "aura/autoload",
+            "version": "2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/auraphp/Aura.Autoload.git",
+                "reference": "c18f3e22f1477d90dd524d0fc764297c3b905fe3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/auraphp/Aura.Autoload/zipball/c18f3e22f1477d90dd524d0fc764297c3b905fe3",
+                "reference": "c18f3e22f1477d90dd524d0fc764297c3b905fe3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "aura": {
+                    "type": "library"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aura\\Autoload\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Aura.Autoload Contributors",
+                    "homepage": "https://github.com/auraphp/Aura.Autoload/contributors"
+                }
+            ],
+            "description": "Provides a PSR-4 compliant autoloader implementation.",
+            "homepage": "https://github.com/auraphp/Aura.Autoload",
+            "keywords": [
+                "PSR-4",
+                "SPL autoloader",
+                "autoload",
+                "autoloader",
+                "class loader"
+            ],
+            "time": "2015-04-03 22:38:10"
+        },
         {
             "name": "dxw/rubbishthorclone",
             "version": "dev-master",
@@ -1104,6 +1153,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "dxw/rubbishthorclone": 20,
+        "aura/autoload": 20,
         "dxw/phar-install": 20
     },
     "prefer-stable": false,

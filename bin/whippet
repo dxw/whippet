@@ -13,9 +13,14 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     require __DIR__.'/../vendor.phar';
 }
 
+// Autoload
+$loader = new \Aura\Autoload\Loader;
+$loader->register();
+$loader->addPrefix('Dxw\\Whippet', __DIR__.'/../src');
+
+date_default_timezone_set("UTC");
+
 define('WHIPPET_ROOT', dirname(dirname(__FILE__)));
 
-require WHIPPET_ROOT . "/lib/whippet.class.php";
-
-$whippet = new Whippet();
+$whippet = new \Dxw\Whippet\Whippet();
 $whippet->start($argv);
