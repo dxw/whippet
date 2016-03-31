@@ -308,3 +308,7 @@ In the future, it will also run automated tests.
 
 - Should we manage mu-plugins too? Perhaps with a flag in Plugins?
 - Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don't have lots of identical copies of things in application directories.
+
+## Licence
+
+[MIT](COPYING.txt)
