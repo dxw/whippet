@@ -73,4 +73,25 @@ class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
             $this->assertEquals('plugins file not found', $result->getErr());
         }
     }
+
+    public function testGetDirectoryWhippetJson()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/wp-content/themes/my-theme');
+        touch($dir.'/whippet.json');
+
+        foreach ([
+            $dir.'/wp-content/themes/my-theme',
+            $dir.'/wp-content/themes',
+            $dir.'/wp-content',
+            $dir,
+        ] as $path) {
+            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $result = $fileLocator->getDirectory();
+            $this->assertFalse($result->isErr());
+            $this->assertEquals($dir, $result->unwrap());
+        }
+    }
 }
