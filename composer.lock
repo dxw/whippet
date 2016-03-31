@@ -12,17 +12,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dxw/RubbishThorClone.git",
-                "reference": "3fe02ceb074e78a7a467a9d0abca97fe56e436da"
+                "reference": "a0b3cf9b5a2de8812e07d20bf69dbff17896d3c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dxw/RubbishThorClone/zipball/3fe02ceb074e78a7a467a9d0abca97fe56e436da",
-                "reference": "3fe02ceb074e78a7a467a9d0abca97fe56e436da",
+                "url": "https://api.github.com/repos/dxw/RubbishThorClone/zipball/a0b3cf9b5a2de8812e07d20bf69dbff17896d3c3",
+                "reference": "a0b3cf9b5a2de8812e07d20bf69dbff17896d3c3",
                 "shasum": ""
             },
             "require": {
                 "mjackson/optionparser": "dev-master",
-                "pear/console_table": "1.2.1"
+                "pear/console_table": "*"
             },
             "type": "library",
             "autoload": {
@@ -31,7 +31,7 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2015-05-20 09:54:34"
+            "time": "2016-03-30 20:17:49"
         },
         {
             "name": "mjackson/optionparser",
@@ -58,20 +58,20 @@
         },
         {
             "name": "pear/console_table",
-            "version": "v1.2.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/Console_Table.git",
-                "reference": "a129a91d8bf19317d81e68d1d3a2e18932f684e4"
+                "reference": "c7549096dbe4c25f5f95b405ebfdcfed9b5c0d85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/Console_Table/zipball/a129a91d8bf19317d81e68d1d3a2e18932f684e4",
-                "reference": "a129a91d8bf19317d81e68d1d3a2e18932f684e4",
+                "url": "https://api.github.com/repos/pear/Console_Table/zipball/c7549096dbe4c25f5f95b405ebfdcfed9b5c0d85",
+                "reference": "c7549096dbe4c25f5f95b405ebfdcfed9b5c0d85",
                 "shasum": ""
             },
             "require": {
-                "php": ">=4.3.10"
+                "php": ">=5.2.0"
             },
             "suggest": {
                 "pear/Console_Color2": ">=0.1.2"
@@ -109,7 +109,7 @@
             "keywords": [
                 "console"
             ],
-            "time": "2014-10-27 09:53:49"
+            "time": "2016-01-21 16:15:28"
         }
     ],
     "packages-dev": [
@@ -119,12 +119,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d"
+                "reference": "416fb8ad1d095a87f1d21bc40711843cd122fd4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8e884e78f9f0eb1329e445619e04456e64d8051d",
-                "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/416fb8ad1d095a87f1d21bc40711843cd122fd4a",
+                "reference": "416fb8ad1d095a87f1d21bc40711843cd122fd4a",
                 "shasum": ""
             },
             "require": {
@@ -165,7 +165,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2016-03-31 10:24:22"
         },
         {
             "name": "dxw/phar-install",
@@ -556,12 +556,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "264188ddf4d3586c80ea615f8ec8eaea34e652a1"
+                "reference": "1a1b63266c046e1856fd03812a4e0ac2b51aa2d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/264188ddf4d3586c80ea615f8ec8eaea34e652a1",
-                "reference": "264188ddf4d3586c80ea615f8ec8eaea34e652a1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1a1b63266c046e1856fd03812a4e0ac2b51aa2d5",
+                "reference": "1a1b63266c046e1856fd03812a4e0ac2b51aa2d5",
                 "shasum": ""
             },
             "require": {
@@ -620,7 +620,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-02-23 11:54:56"
+            "time": "2016-03-14 15:10:21"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1056,12 +1056,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "801d412451594f7c9e7950a016a377798cf9dfa0"
+                "reference": "407e31ad9742ace5c3d01642f02a3b2e6062bae5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/801d412451594f7c9e7950a016a377798cf9dfa0",
-                "reference": "801d412451594f7c9e7950a016a377798cf9dfa0",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/407e31ad9742ace5c3d01642f02a3b2e6062bae5",
+                "reference": "407e31ad9742ace5c3d01642f02a3b2e6062bae5",
                 "shasum": ""
             },
             "require": {
@@ -1097,7 +1097,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:56:56"
+            "time": "2016-03-30 14:44:34"
         }
     ],
     "aliases": [],
