@@ -59,7 +59,7 @@ class Whippet extends RubbishThorClone {
       $this->options->directory = $path;
     }
 
-    (new Generate())->start("whippet", $this->options);
+    (new Generate())->start("app", $this->options);
   }
 
   public function generate($thing = false) {
