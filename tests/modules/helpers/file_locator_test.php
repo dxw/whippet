@@ -1,0 +1,76 @@
+<?php
+
+class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
+{
+    public function testGetDirectorySuccess1()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/wp-content/themes/my-theme');
+        touch($dir.'/plugins');
+
+        foreach ([
+            $dir.'/wp-content/themes/my-theme',
+            $dir.'/wp-content/themes',
+            $dir.'/wp-content',
+            $dir,
+        ] as $path) {
+            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $result = $fileLocator->getDirectory();
+            $this->assertFalse($result->isErr());
+            $this->assertEquals($dir, $result->unwrap());
+        }
+    }
+
+    public function testGetDirectorySuccess2()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/projects');
+        mkdir($dir.'/projects/project1');
+        mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
+        mkdir($dir.'/projects/project1/wp-content');
+        mkdir($dir.'/projects/project1/wp-content/themes');
+        mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
+        touch($dir.'/projects/project1/plugins');
+
+        foreach ([
+            $dir.'/projects/project1/wp-content/themes/my-theme',
+            $dir.'/projects/project1/wp-content/themes',
+            $dir.'/projects/project1/wp-content',
+            $dir.'/projects/project1',
+        ] as $path) {
+            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $result = $fileLocator->getDirectory();
+            $this->assertFalse($result->isErr());
+            $this->assertEquals($dir.'/projects/project1', $result->unwrap());
+        }
+    }
+
+    public function testGetDirectoryFailure()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/projects');
+        mkdir($dir.'/projects/project1');
+        mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
+        mkdir($dir.'/projects/project1/wp-content');
+        mkdir($dir.'/projects/project1/wp-content/themes');
+        mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
+
+        foreach ([
+            $dir.'/projects/project1/wp-content/themes/my-theme',
+            $dir.'/projects/project1/wp-content/themes',
+            $dir.'/projects/project1/wp-content',
+            $dir.'/projects/project1',
+        ] as $path) {
+            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $result = $fileLocator->getDirectory();
+            $this->assertTrue($result->isErr());
+            $this->assertEquals('plugins file not found', $result->getErr());
+        }
+    }
+}
