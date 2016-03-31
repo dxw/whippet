@@ -326,4 +326,19 @@ class Git
 
         return $tmp_dir;
     }
+
+    public static function ls_remote($repo, $ref)
+    {
+        exec(sprintf('git ls-remote %s %s', escapeshellarg($repo), escapeshellarg($ref)), $output, $return);
+
+        if ($return !== 0) {
+            return \Result\Result::err('git error');
+        }
+
+        if (count($output) === 0) {
+            return \Result\Result::err('ref not found');
+        }
+
+        return \Result\Result::ok(explode("\t", $output[0])[0]);
+    }
 };

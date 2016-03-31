@@ -23,6 +23,8 @@ class Whippet extends \RubbishThorClone
 
         $this->command('migrate OLDPATH NEWPATH', 'Examines an existing wp-content directory and attempts to create an identical Whippet application.');
         $this->command('server SERVER_COMMAND', '');
+        $this->command('dependencies SUBCOMMAND', 'Manage dependencies (themes, plugins)');
+        $this->command('deps SUBCOMMAND', 'Alias for dependencies');
     }
 
     public function plugins($plugin_command)
@@ -74,5 +76,15 @@ class Whippet extends \RubbishThorClone
     public function server($plugin_command)
     {
         (new Modules\Server())->start(array_slice($this->argv, 1));
+    }
+
+    public function dependencies()
+    {
+        (new Modules\Dependencies())->start(array_slice($this->argv, 1));
+    }
+
+    public function deps()
+    {
+        $this->dependencies();
     }
 };
