@@ -81,7 +81,7 @@ class Release {
     $this->recurse_copy("{$this->project_dir}/wp-content","{$this->release_dir}/wp-content");
     
 	if(file_exists("{$this->release_dir}/wp-content/uploads")) {
-		system("rm -rf {$this->release_dir}/wp-content/uploads");
+		$this->recurse_rm("{$this->release_dir}/wp-content/uploads");
     }
 
     //
