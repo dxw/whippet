@@ -121,6 +121,18 @@ trait whippet_helpers {
     rmdir($dir);
   }
 
+  function recurse_rm($path) {
+      if (!file_exists($path)) {
+          return;
+      }
+
+      if (is_dir($path)) {
+          $this->recurse_rmdir($path);
+      } else {
+          unlink($path);
+      }
+  }
+
 
   private function check_for_missing_whippet_files($project_dir) {
     $whippet_files = array(
