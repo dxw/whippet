@@ -1,6 +1,18 @@
 #!/usr/bin/env php
 <?php
 
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+    // Checked-out repo, after `composer install` has been run
+    require __DIR__.'/../vendor/autoload.php' ;
+} elseif (file_exists(__DIR__.'/../../../autoload.php')) {
+    // Installed as a dependency of another project
+    require __DIR__.'/../../../autoload.php';
+} else {
+    // Fallback to vendor.phar
+    // (for environments where we choose not to run `composer install`)
+    require __DIR__.'/../vendor.phar';
+}
+
 define('WHIPPET_ROOT', dirname(dirname(__FILE__)));
 
 require WHIPPET_ROOT . "/lib/whippet.class.php";

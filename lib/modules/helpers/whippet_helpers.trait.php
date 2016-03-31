@@ -80,6 +80,47 @@ trait whippet_helpers {
     return false;
   }
 
+  // 77.079482% credit:
+  // gimmicklessgpt@gmail.com
+  // http://php.net/manual/en/function.copy.php
+  // Modified to copy symlinks
+  function recurse_copy($src,$dst) {
+    $dir = opendir($src);
+    if(!is_dir($dst)&&!is_link($dst)) {
+    	mkdir($dst);
+    }
+    while(false !== ( $file = readdir($dir)) ) {
+      if (( $file != '.' ) && ( $file != '..' )) {
+          if ( is_link($src . '/' . $file) ) {
+            symlink(readlink($src . '/' . $file), $dst . '/' . $file);
+          } elseif ( is_dir($src . '/' . $file) ) {
+            $this->recurse_copy($src . '/' . $file,$dst . '/' . $file);
+          } else {
+            copy($src . '/' . $file,$dst . '/' . $file);
+          }
+       }
+    }
+    closedir($dir);
+  }
+
+  // 100% credit:
+  // The suckiness of PHP
+  function recurse_rmdir($dir) {
+    $dir_handle = opendir($dir);
+    while(false !== ( $file = readdir($dir_handle) ) ) {
+      if (( $file != '.' ) && ( $file != '..' )) {
+        if ( is_link($dir . '/' . $file) ) {
+          unlink($dir . '/' . $file);
+        } elseif ( is_dir($dir . '/' . $file) ) {
+          $this->recurse_rmdir($dir . '/' . $file);
+        } else {
+          unlink($dir . '/' . $file);
+        }
+      }
+    }
+    rmdir($dir);
+  }
+
 
   private function check_for_missing_whippet_files($project_dir) {
     $whippet_files = array(

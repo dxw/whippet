@@ -1,0 +1,15 @@
+{
+    "name": "dxw/whippet",
+    "minimum-stability": "dev",
+    "require": {
+        "dxw/rubbishthorclone": "dev-master"
+    },
+    "bin": ["bin/whippet"],
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*",
+        "dxw/phar-install": "dev-master"
+    },
+    "scripts": {
+        "post-update-cmd": "vendor/bin/phar-install"
+    }
+}

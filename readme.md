@@ -17,17 +17,18 @@ At the moment, Whippet can manages plugins and releases and compile stylesheets 
 
 During development, whippet is designed to be used in conjunction with [Whippet Server](https://github.com/dxw/whippet-server). These projects will be combined at some point in the future.
 
-Whippet is under development and should be considered alpha software.
+*Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
 # Getting started
 
 ## Install whippet
 
-To install Whippet, clone this directory and install its submodules:
+To install Whippet, clone this directory and install its dependencies:
 
 ```
 $ git clone https://github.com/dxw/whippet.git
 $ git submodule update --init --recursive
+$ composer install
 ```
 
 The following commands must be available on your system for Whippet to work correctly:
@@ -88,12 +89,12 @@ If you're using any plugins from the codex, you should add them to your ```plugi
 
 ### Give yourself some credit!
 
-Whippet contains a ```/wp-content/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/wp-content/public``` that you'd like to
+Whippet contains a ```/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/public/``` that you'd like to
 see in the root directory of your website, like the Google webmaster tools file, or a favicon.
 
 ### Add or generate a theme
 
-Finally, add a theme to ```/wp-content/themes``` (or generate one) and get devving!
+Finally, add a theme to ```/wp-content/themes/``` (or [generate one](Generators) and get devving!
 
 ## Run your application
 
@@ -158,17 +159,17 @@ Then whippet's behaviour will vary depending on what command you run (see below)
 Finally, you can also specify a repo for an individual plugin explicitly:
 
 ```
-# Pull version 3.0.0 from your own special repo
+; Pull version 3.0.0 from your own special repo
 akismet = 3.0.0, git@my-git-server.com:akismet
 
-# Or, pull master:
+; Or, pull master:
 akismet = master, git@my-git-server.com:akismet
 
-# This works too:
+; This works too:
 akismet = , git@my-git-server.com:akismet
 ```
 
-### whippet plugin install
+### whippet plugins install
 
 When run for the first time, this command will install all the plugins in your Plugins file, at the most
 recent commits that exist in the remote for branch or tag you specify (or master, if not specified.) The
@@ -184,7 +185,7 @@ Critically, if no changes have been made to the Plugins file, whippet plugin ins
 the commits specified in plugins.lock; ie, the most recent versions that were available at the time the
 plugins were last installed.
 
-### whippet plugins update <plugin>
+### whippet plugins upgrade <plugin>
 
 This command checks to see if the branch or tag in the Plugins file has a newer commit on the remote repo than
 is installed locally, and if so, updates the installed plugin to the newest one available on the remote.
