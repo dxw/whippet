@@ -27,15 +27,20 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
         return $fileLocator;
     }
 
-    private function getGit($cloneRepo, $checkout)
+    private function getGit($isRepo, $cloneRepo, $checkout)
     {
         $git = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Git')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $git->expects($this->exactly(1))
-        ->method('clone_repo')
-        ->with($cloneRepo);
+        $git->method('is_repo')
+        ->willReturn($isRepo);
+
+        if ($cloneRepo !== null) {
+            $git->expects($this->exactly(1))
+            ->method('clone_repo')
+            ->with($cloneRepo);
+        }
 
         $git->expects($this->exactly(1))
         ->method('checkout')
@@ -71,7 +76,36 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
 
         $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
 
-        $git = $this->getGit('git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+        $git = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
+
+        $dependencies->install();
+    }
+
+    public function testInstallThemeAlreadyCloned()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/wp-content/themes/my-theme');
+
+        $whippetLock = $this->getWhippetLock('themes', [
+            [
+                'name' => 'my-theme',
+                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'revision' => '27ba906',
+            ],
+        ]);
+
+        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
+
+        $git = $this->getGit(true, null, '27ba906');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', $dir.'/whippet.lock', $whippetLock],

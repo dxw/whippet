@@ -23,7 +23,11 @@ class Dependencies
             $path = $dir.'/wp-content/themes/'.$theme['name'];
 
             $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', $path);
-            $git->clone_repo($theme['src']);
+
+            if (!$git->is_repo()) {
+                $git->clone_repo($theme['src']);
+            }
+
             $git->checkout($theme['revision']);
         }
     }
