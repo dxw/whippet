@@ -18,5 +18,5 @@ install:
   - composer install
 script:
   - vendor/bin/phpunit
-  # - php-cs-fixer fix --dry-run -v --diff src
+  - php-cs-fixer fix --dry-run -v --diff src
   - php-cs-fixer fix --dry-run -v --diff tests
