@@ -2,7 +2,7 @@
 
 namespace Dxw\Whippet\Modules\Helpers;
 
-class Dependencies
+class DependenciesInstaller
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,

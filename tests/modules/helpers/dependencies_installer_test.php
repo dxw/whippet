@@ -1,6 +1,6 @@
 <?php
 
-class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
+class Modules_Helpers_DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
 {
     private function getWhippetLock($dependencyType, $return)
     {
@@ -89,7 +89,7 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Modules\Helpers\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
         $dependencies->install();
@@ -123,7 +123,7 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Modules\Helpers\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
         $dependencies->install();
