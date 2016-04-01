@@ -15,6 +15,11 @@ class Dependencies extends \RubbishThorClone
         $fileLocator = new \Dxw\Whippet\FileLocator(getcwd());
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
-        $dependencies->install();
+        $result = $dependencies->install();
+
+        if ($result->isErr()) {
+            echo sprintf("ERROR: %s\n", $result->getErr());
+            exit(1);
+        }
     }
 }
