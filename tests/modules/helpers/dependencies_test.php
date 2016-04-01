@@ -49,14 +49,17 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
         return $git;
     }
 
-    private function getFactory($valueMap)
+    private function getFactory(array $newInstanceMap, array $callStaticMap)
     {
         $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
         ->disableOriginalConstructor()
         ->getMock();
 
         $factory->method('newInstance')
-        ->will($this->returnValueMap($valueMap));
+        ->will($this->returnValueMap($newInstanceMap));
+
+        $factory->method('callStatic')
+        ->will($this->returnValueMap($callStaticMap));
 
         return $factory;
     }
@@ -79,8 +82,9 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
         $git = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
 
         $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', $dir.'/whippet.lock', $whippetLock],
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
+        ], [
+            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
         $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
@@ -108,8 +112,9 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
         $git = $this->getGit(true, null, '27ba906');
 
         $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', $dir.'/whippet.lock', $whippetLock],
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
+        ], [
+            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
         $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);

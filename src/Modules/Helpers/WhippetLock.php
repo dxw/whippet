@@ -4,9 +4,19 @@ namespace Dxw\Whippet\Modules\Helpers;
 
 class WhippetLock
 {
-    public function __construct(/* string */ $path)
+    public static function fromString(/* string */ $json)
     {
-        $this->data = json_decode(file_get_contents($path), true);
+        return new self(json_decode($json, true));
+    }
+
+    public static function fromFile(/* string */ $path)
+    {
+        return self::fromString(file_get_contents($path));
+    }
+
+    public function __construct(array $data)
+    {
+        $this->data = $data;
     }
 
     public function getDependencies(/* string */ $type)

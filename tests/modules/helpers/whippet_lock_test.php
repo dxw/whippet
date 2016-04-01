@@ -7,6 +7,58 @@ class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
+        $data = [
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'revision' => '27ba906',
+                ],
+            ],
+        ];
+
+        $whippetLock = new \Dxw\Whippet\Modules\Helpers\WhippetLock($data);
+
+        $this->assertEquals([
+            [
+                'name' => 'my-theme',
+                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'revision' => '27ba906',
+            ],
+        ], $whippetLock->getDependencies('themes'));
+    }
+
+    public function testFromStringGetDependencies()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $json = json_encode([
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'revision' => '27ba906',
+                ],
+            ],
+        ]);
+
+        $whippetLock = \Dxw\Whippet\Modules\Helpers\WhippetLock::fromString($json);
+
+        $this->assertEquals([
+            [
+                'name' => 'my-theme',
+                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'revision' => '27ba906',
+            ],
+        ], $whippetLock->getDependencies('themes'));
+    }
+
+    public function testFromFileGetDependencies()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
         file_put_contents($dir.'/whippet.lock', json_encode([
             'themes' => [
                 [
@@ -17,7 +69,7 @@ class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $whippetLock = new \Dxw\Whippet\Modules\Helpers\WhippetLock($dir.'/whippet.lock');
+        $whippetLock = \Dxw\Whippet\Modules\Helpers\WhippetLock::fromFile($dir.'/whippet.lock');
 
         $this->assertEquals([
             [

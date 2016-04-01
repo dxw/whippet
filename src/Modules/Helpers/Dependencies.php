@@ -17,7 +17,7 @@ class Dependencies
         $result = $this->fileLocator->getDirectory();
         $dir = $result->unwrap();
 
-        $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', $dir.'/whippet.lock');
+        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
 
         foreach ($lockFile->getDependencies('themes') as $theme) {
             $path = $dir.'/wp-content/themes/'.$theme['name'];
