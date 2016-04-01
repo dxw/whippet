@@ -1,10 +1,10 @@
 <?php
 
-class Modules_Helpers_DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
+class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
 {
     private function getWhippetLock($dependencyType, $return)
     {
-        $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock')
+        $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\WhippetLock')
         ->disableOriginalConstructor()
         ->getMock();
 
@@ -17,7 +17,7 @@ class Modules_Helpers_DependenciesInstaller_Test extends PHPUnit_Framework_TestC
 
     private function getFileLocator($return)
     {
-        $fileLocator = $this->getMockBuilder('\\Dxw\\Whippet\\Modules\\Helpers\\FileLocator')
+        $fileLocator = $this->getMockBuilder('\\Dxw\\Whippet\\FileLocator')
         ->disableOriginalConstructor()
         ->getMock();
 
@@ -86,10 +86,10 @@ class Modules_Helpers_DependenciesInstaller_Test extends PHPUnit_Framework_TestC
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
         ], [
-            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Modules\Helpers\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
         $dependencies->install();
@@ -120,10 +120,10 @@ class Modules_Helpers_DependenciesInstaller_Test extends PHPUnit_Framework_TestC
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
         ], [
-            ['\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Modules\Helpers\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
         $dependencies->install();

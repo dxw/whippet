@@ -1,12 +1,12 @@
 <?php
 
-namespace Dxw\Whippet\Modules\Helpers;
+namespace Dxw\Whippet;
 
 class DependenciesInstaller
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\Modules\Helpers\FileLocator $fileLocator
+        \Dxw\Whippet\FileLocator $fileLocator
     ) {
         $this->factory = $factory;
         $this->fileLocator = $fileLocator;
@@ -17,7 +17,7 @@ class DependenciesInstaller
         $result = $this->fileLocator->getDirectory();
         $dir = $result->unwrap();
 
-        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Modules\\Helpers\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
+        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
 
         foreach ($lockFile->getDependencies('themes') as $theme) {
             $path = $dir.'/wp-content/themes/'.$theme['name'];

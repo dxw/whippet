@@ -1,6 +1,6 @@
 <?php
 
-class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
+class WhippetLock_Test extends PHPUnit_Framework_TestCase
 {
     public function testGetDependencies()
     {
@@ -17,7 +17,7 @@ class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        $whippetLock = new \Dxw\Whippet\Modules\Helpers\WhippetLock($data);
+        $whippetLock = new \Dxw\Whippet\WhippetLock($data);
 
         $this->assertEquals([
             [
@@ -43,7 +43,7 @@ class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $whippetLock = \Dxw\Whippet\Modules\Helpers\WhippetLock::fromString($json);
+        $whippetLock = \Dxw\Whippet\WhippetLock::fromString($json);
 
         $this->assertEquals([
             [
@@ -69,7 +69,7 @@ class Modules_Helpers_WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $whippetLock = \Dxw\Whippet\Modules\Helpers\WhippetLock::fromFile($dir.'/whippet.lock');
+        $whippetLock = \Dxw\Whippet\WhippetLock::fromFile($dir.'/whippet.lock');
 
         $this->assertEquals([
             [

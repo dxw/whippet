@@ -1,6 +1,6 @@
 <?php
 
-class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
+class FileLocator_Test extends PHPUnit_Framework_TestCase
 {
     public function testGetDirectorySuccess1()
     {
@@ -16,7 +16,7 @@ class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/wp-content',
             $dir,
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $fileLocator = new \Dxw\Whippet\FileLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertFalse($result->isErr());
             $this->assertEquals($dir, $result->unwrap());
@@ -42,7 +42,7 @@ class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/projects/project1/wp-content',
             $dir.'/projects/project1',
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $fileLocator = new \Dxw\Whippet\FileLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertFalse($result->isErr());
             $this->assertEquals($dir.'/projects/project1', $result->unwrap());
@@ -67,7 +67,7 @@ class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/projects/project1/wp-content',
             $dir.'/projects/project1',
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $fileLocator = new \Dxw\Whippet\FileLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertTrue($result->isErr());
             $this->assertEquals('plugins file not found', $result->getErr());
@@ -88,7 +88,7 @@ class Modules_Helpers_FileLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/wp-content',
             $dir,
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator($path);
+            $fileLocator = new \Dxw\Whippet\FileLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertFalse($result->isErr());
             $this->assertEquals($dir, $result->unwrap());

@@ -12,8 +12,8 @@ class Dependencies extends \RubbishThorClone
     public function install()
     {
         $factory = new \Dxw\Whippet\Factory();
-        $fileLocator = new \Dxw\Whippet\Modules\Helpers\FileLocator(getcwd());
-        $dependencies = new \Dxw\Whippet\Modules\Helpers\DependenciesInstaller($factory, $fileLocator);
+        $fileLocator = new \Dxw\Whippet\FileLocator(getcwd());
+        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
         $dependencies->install();
     }
