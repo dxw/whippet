@@ -1,9 +1,7 @@
 <?php
 
-require WHIPPET_ROOT . "/generators/whippet_generator.class.php";
-
-class ThemeGenerator extends WhippetGenerator {
-  use whippet_helpers;
+class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
+  use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
   function __construct($options) {
     $this->options = $options;

@@ -1,5 +1,7 @@
 <?php
 
+namespace Dxw\Whippet\Git;
+
 /**
   * This class is a container for git commands. It would be very nice to replace it with
   * a proper library for interacting with git repos but we couldn't find one.
@@ -94,12 +96,12 @@ class Git {
 
     foreach($output as $line) {
       if(preg_match('/(\+?U?-?)([a-z0-9]{40}) ([^\(]+)([^\)]*)/', trim($line), $matches)) {
-        $submodule = new stdClass();
+        $submodule = new \stdClass();
         $submodule->status = trim($matches[1]);
         $submodule->commit = trim($matches[2]);
         $submodule->dir    = trim($matches[3]);
         $submodule->description = preg_replace('/^[\s\(]*/', '', $matches[4]);
-        $submodule->remotes = (new git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
+        $submodule->remotes = (new Git("{$this->repo_path}/{$submodule->dir}"))->get_remotes();
 
         $submodules[$submodule->dir] = $submodule;
       }
@@ -220,7 +222,7 @@ class Git {
     $refs = array();
     foreach($reflist as $line) {
       if(preg_match("/^([a-z0-9]{40})\s+(.+)$/", $line, $matches)) {
-        $ref = new stdClass();
+        $ref = new \stdClass();
 
         $ref->commit = $matches[1];
 

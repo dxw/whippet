@@ -1,5 +1,7 @@
 <?php
 
+namespace Dxw\Whippet\Modules;
+
 class Generate {
   function __construct() {
     $this->generators_dir = WHIPPET_ROOT . '/generators';
@@ -40,7 +42,7 @@ class Generate {
   function get_generators() {
     $generators = array();
 
-    foreach(new DirectoryIterator($this->generators_dir) as $file) {
+    foreach(new \DirectoryIterator($this->generators_dir) as $file) {
       if($file->isDot()) continue;
 
       if($file->isDir()) {

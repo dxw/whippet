@@ -1,9 +1,11 @@
 <?php
 
+namespace Dxw\Whippet\Modules\Helpers;
+
 /**
  * This trait contains methods for loading, saving and updating the plugins manifest and lock file.
  */
-trait manifest_io {
+trait ManifestIo {
   /**
    * This method loads the current app's plugins manifest into $this->plugins_manifest.
    */
@@ -27,7 +29,7 @@ trait manifest_io {
 
     // Got plugins - turn names to sources
     $source = $append = '';
-    $this->plugins_manifest = new stdClass();
+    $this->plugins_manifest = new \stdClass();
 
     foreach($plugins as $plugin => $data) {
       //
@@ -77,7 +79,7 @@ trait manifest_io {
       }
 
       // We should now have repo and revision
-      $this->plugins_manifest->$plugin = new stdClass();
+      $this->plugins_manifest->$plugin = new \stdClass();
       $this->plugins_manifest->$plugin->repository = $repository;
       $this->plugins_manifest->$plugin->revision = $revision;
     }
@@ -114,7 +116,7 @@ trait manifest_io {
 
     $this->plugins_lock_file = "{$this->project_dir}/plugins.lock";
 
-    $this->plugins_locked = new stdClass();
+    $this->plugins_locked = new \stdClass();
 
     foreach(scandir($this->plugin_dir) as $dir) {
       if($dir[0] == '.') {
@@ -125,7 +127,7 @@ trait manifest_io {
         continue;
       }
 
-      $git = new Git("{$this->plugin_dir}/{$dir}");
+      $git = new \Dxw\Whippet\Git\Git("{$this->plugin_dir}/{$dir}");
 
       if(!$commit = $git->current_commit())
       {
@@ -133,7 +135,7 @@ trait manifest_io {
         exit(1);
       }
 
-      $this->plugins_locked->$dir              = new stdClass();
+      $this->plugins_locked->$dir              = new \stdClass();
       $this->plugins_locked->$dir->repository  = $this->plugins_manifest->$dir->repository;
       $this->plugins_locked->$dir->revision    = $this->plugins_manifest->$dir->revision;
       $this->plugins_locked->$dir->commit      = $commit;

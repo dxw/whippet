@@ -1,9 +1,7 @@
 <?php
 
-require WHIPPET_ROOT . "/generators/whippet_generator.class.php";
-
-class AppGenerator extends WhippetGenerator {
-  use whippet_helpers;
+class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
+  use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
   function __construct($options) {
     $this->options = $options;
@@ -24,8 +22,8 @@ class AppGenerator extends WhippetGenerator {
     }
 
     // Make the target dir a git repo, if it isn't already
-    if(!(new Git($this->target_dir))->is_repo()) {
-      Git::init($this->target_dir);
+    if(!(new \Dxw\Whippet\Git\Git($this->target_dir))->is_repo()) {
+      \Dxw\Whippet\Git\Git::init($this->target_dir);
     }
 
     $this->recurse_copy(dirname(__FILE__) . "/template",$this->target_dir);
