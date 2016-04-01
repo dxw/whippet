@@ -22,6 +22,9 @@ class DependenciesUpdater
             'hash' => $jsonHash,
             'themes' => [],
         ];
+        $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir);
+
+        $ignores = $gitignore->get_ignores();
 
         foreach ($jsonFile['themes'] as $theme) {
             echo sprintf("[Updating themes/%s]\n", $theme['name']);
@@ -34,9 +37,12 @@ class DependenciesUpdater
                 'src' => $src,
                 'revision' => $commitResult->unwrap(),
             ];
+
+            $ignores[] = '/wp-content/themes/'.$theme['name']."\n";
         }
 
         file_put_contents($dir.'/whippet.lock', json_encode($lockFile));
+        $gitignore->save_ignores(array_unique($ignores));
 
         return \Result\Result::ok();
     }
