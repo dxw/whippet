@@ -39,12 +39,14 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
         if ($cloneRepo !== null) {
             $git->expects($this->exactly(1))
             ->method('clone_repo')
-            ->with($cloneRepo);
+            ->with($cloneRepo)
+            ->will($this->returnCallback(function () { echo "git clone output\n"; }));
         }
 
         $git->expects($this->exactly(1))
         ->method('checkout')
-        ->with($checkout);
+        ->with($checkout)
+        ->will($this->returnCallback(function () { echo "git checkout output\n"; }));
 
         return $git;
     }
@@ -89,7 +91,11 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
 
+        ob_start();
         $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
     }
 
     public function testInstallThemeAlreadyCloned()
@@ -119,6 +125,10 @@ class Modules_Helpers_Dependencies_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Modules\Helpers\Dependencies($factory, $fileLocator);
 
+        ob_start();
         $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertEquals("[Checking themes/my-theme]\ngit checkout output\n", $output);
     }
 }

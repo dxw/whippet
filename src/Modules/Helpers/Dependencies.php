@@ -25,7 +25,10 @@ class Dependencies
             $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', $path);
 
             if (!$git->is_repo()) {
+                echo sprintf("[Adding themes/%s]\n", $theme['name']);
                 $git->clone_repo($theme['src']);
+            } else {
+                echo sprintf("[Checking themes/%s]\n", $theme['name']);
             }
 
             $git->checkout($theme['revision']);
