@@ -71,7 +71,8 @@ class Whippet extends \RubbishThorClone
         (new Modules\Generate())->start('migration', $this->options);
     }
 
-    public function server($plugin_command) {
+    public function server($plugin_command)
+    {
         (new Modules\Server())->start(array_slice($this->argv, 1));
     }
 };
