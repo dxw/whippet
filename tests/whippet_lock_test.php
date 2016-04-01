@@ -4,10 +4,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 {
     public function testGetDependencies()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
-
-        $data = [
+        $whippetLock = new \Dxw\Whippet\WhippetLock([
             'themes' => [
                 [
                     'name' => 'my-theme',
@@ -15,9 +12,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
                     'revision' => '27ba906',
                 ],
             ],
-        ];
-
-        $whippetLock = new \Dxw\Whippet\WhippetLock($data);
+        ]);
 
         $this->assertEquals([
             [
@@ -30,10 +25,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testFromStringGetDependencies()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
-
-        $json = json_encode([
+        $whippetLock = \Dxw\Whippet\WhippetLock::fromString(json_encode([
             'themes' => [
                 [
                     'name' => 'my-theme',
@@ -41,9 +33,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
                     'revision' => '27ba906',
                 ],
             ],
-        ]);
-
-        $whippetLock = \Dxw\Whippet\WhippetLock::fromString($json);
+        ]));
 
         $this->assertEquals([
             [
@@ -78,5 +68,14 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
                 'revision' => '27ba906',
             ],
         ], $whippetLock->getDependencies('themes'));
+    }
+
+    public function testGetHash()
+    {
+        $whippetLock = new \Dxw\Whippet\WhippetLock([
+            'hash' => '123',
+        ]);
+
+        $this->assertEquals('123', $whippetLock->getHash());
     }
 }

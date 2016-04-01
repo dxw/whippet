@@ -17,7 +17,16 @@ class DependenciesInstaller
         $result = $this->fileLocator->getDirectory();
         $dir = $result->unwrap();
 
+        if (!file_exists($dir.'/whippet.json')) {
+            return \Result\Result::err('whippet.json not found');
+        }
+
         $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
+
+        $hash = sha1(file_get_contents($dir.'/whippet.json'));
+        if ($lockFile->getHash() !== $hash) {
+            return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
+        }
 
         foreach ($lockFile->getDependencies('themes') as $theme) {
             $path = $dir.'/wp-content/themes/'.$theme['name'];
@@ -33,5 +42,7 @@ class DependenciesInstaller
 
             $git->checkout($theme['revision']);
         }
+
+        return \Result\Result::ok();
     }
 }

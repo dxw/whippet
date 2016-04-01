@@ -23,4 +23,9 @@ class WhippetLock
     {
         return $this->data[$type];
     }
+
+    public function getHash()
+    {
+        return $this->data['hash'];
+    }
 }

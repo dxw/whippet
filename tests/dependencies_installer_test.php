@@ -2,15 +2,20 @@
 
 class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
 {
-    private function getWhippetLock($dependencyType, $return)
+    private function getWhippetLock(/* string */ $hash, array $dependencyMap)
     {
         $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\WhippetLock')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $whippetLock->method('getDependencies')
-        ->with($dependencyType)
-        ->willReturn($return);
+        $whippetLock->method('getHash')
+        ->willReturn($hash);
+
+        foreach ($dependencyMap as $dependencyType => $return) {
+            $whippetLock->method('getDependencies')
+            ->with($dependencyType)
+            ->willReturn($return);
+        }
 
         return $whippetLock;
     }
@@ -70,12 +75,15 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $whippetLock = $this->getWhippetLock('themes', [
-            [
-                'name' => 'my-theme',
-                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                'revision' => '27ba906',
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), [
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'revision' => '27ba906',
+                ],
             ],
         ]);
 
@@ -92,9 +100,10 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
-        $dependencies->install();
+        $result = $dependencies->install();
         $output = ob_get_clean();
 
+        $this->assertFalse($result->isErr());
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
     }
 
@@ -102,14 +111,17 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         mkdir($dir.'/wp-content/themes/my-theme');
 
-        $whippetLock = $this->getWhippetLock('themes', [
-            [
-                'name' => 'my-theme',
-                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                'revision' => '27ba906',
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), [
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'revision' => '27ba906',
+                ],
             ],
         ]);
 
@@ -126,9 +138,55 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
 
         ob_start();
-        $dependencies->install();
+        $result = $dependencies->install();
         $output = ob_get_clean();
 
+        $this->assertFalse($result->isErr());
         $this->assertEquals("[Checking themes/my-theme]\ngit checkout output\n", $output);
+    }
+
+    public function testInstallMissingWhippetJson()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
+
+        $factory = $this->getFactory([], []);
+
+        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+
+        ob_start();
+        $result = $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertEquals(true, $result->isErr());
+        $this->assertEquals('whippet.json not found', $result->getErr());
+        $this->assertEquals('', $output);
+    }
+
+    public function testInstallWrongHash()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
+
+        $whippetLock = $this->getWhippetLock('123123', []);
+
+        $factory = $this->getFactory([], [
+            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+
+        ob_start();
+        $result = $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertEquals(true, $result->isErr());
+        $this->assertEquals('mismatched hash - run `whippet dependencies update` first', $result->getErr());
+        $this->assertEquals('', $output);
     }
 }
