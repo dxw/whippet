@@ -28,19 +28,21 @@ class DependenciesInstaller
             return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
         }
 
-        foreach ($lockFile->getDependencies('themes') as $theme) {
-            $path = $dir.'/wp-content/themes/'.$theme['name'];
+        foreach (['themes', 'plugins'] as $type) {
+            foreach ($lockFile->getDependencies($type) as $dep) {
+                $path = $dir.'/wp-content/'.$type.'/'.$dep['name'];
 
-            $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', $path);
+                $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', $path);
 
-            if (!$git->is_repo()) {
-                echo sprintf("[Adding themes/%s]\n", $theme['name']);
-                $git->clone_repo($theme['src']);
-            } else {
-                echo sprintf("[Checking themes/%s]\n", $theme['name']);
+                if (!$git->is_repo()) {
+                    echo sprintf("[Adding %s/%s]\n", $type, $dep['name']);
+                    $git->clone_repo($dep['src']);
+                } else {
+                    echo sprintf("[Checking %s/%s]\n", $type, $dep['name']);
+                }
+
+                $git->checkout($dep['revision']);
             }
-
-            $git->checkout($theme['revision']);
         }
 
         return \Result\Result::ok();

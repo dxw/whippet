@@ -21,6 +21,10 @@ class WhippetLock
 
     public function getDependencies(/* string */ $type)
     {
+        if (!isset($this->data[$type])) {
+            return [];
+        }
+
         return $this->data[$type];
     }
 

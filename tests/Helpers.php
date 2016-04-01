@@ -11,11 +11,13 @@ trait Helpers
         $whippetLock->method('getHash')
         ->willReturn($hash);
 
+        $map = [];
         foreach ($dependencyMap as $dependencyType => $return) {
-            $whippetLock->method('getDependencies')
-            ->with($dependencyType)
-            ->willReturn($return);
+            $map[] = [$dependencyType, $return];
         }
+
+        $whippetLock->method('getDependencies')
+        ->will($this->returnValueMap($map));
 
         return $whippetLock;
     }

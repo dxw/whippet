@@ -78,4 +78,13 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('123', $whippetLock->getHash());
     }
+
+    public function testGetDependenciesNotSet()
+    {
+        $whippetLock = new \Dxw\Whippet\WhippetLock([
+            'themes' => [],
+        ]);
+
+        $this->assertEquals([], $whippetLock->getDependencies('plugins'));
+    }
 }

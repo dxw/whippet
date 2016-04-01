@@ -18,14 +18,30 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
                     'revision' => '27ba906',
                 ],
             ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+                    'revision' => '123456',
+                ],
+                [
+                    'name' => 'another-plugin',
+                    'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
+                    'revision' => '789abc',
+                ],
+            ],
         ]);
 
         $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
 
-        $git = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+        $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+        $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $gitAnotherPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/another-plugin', '789abc');
 
         $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
+            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme],
+            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin],
+            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin],
         ], [
             ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
@@ -37,7 +53,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
-        $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
+        $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n[Adding plugins/another-plugin]\ngit clone output\ngit checkout output\n", $output);
     }
 
     public function testInstallThemeAlreadyCloned()
@@ -56,6 +72,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
                     'revision' => '27ba906',
                 ],
             ],
+            'plugins' => [],
         ]);
 
         $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
