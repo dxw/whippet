@@ -245,4 +245,49 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('git command failed: oh no', $result->getErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
+
+    public function testUpdateWithExplicitSrc()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $json = json_encode([
+            'src' => [
+                'themes' => 'git@git.dxw.net:wordpress-themes/',
+            ],
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'ref' => 'v1.4',
+                    'src' => 'foobar',
+                ],
+            ],
+        ]);
+
+        file_put_contents($dir.'/whippet.json', $json);
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/themes/my-theme\n",
+        ], true);
+
+        $whippetLock = $this->getWhippetLock([
+            ['themes', 'my-theme', 'foobar', '27ba906'],
+        ], sha1($json), $dir.'/whippet.lock');
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
+        ], [
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'foobar', 'v1.4', \Result\Result::ok('27ba906')],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("[Updating themes/my-theme]\n", $output);
+    }
 }

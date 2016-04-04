@@ -27,7 +27,12 @@ class Updater
             foreach ($deps as $dep) {
                 echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
 
-                $src = $jsonFile['src'][$type].$dep['name'];
+                if (isset($dep['src'])) {
+                    $src = $dep['src'];
+                } else {
+                    $src = $jsonFile['src'][$type].$dep['name'];
+                }
+
                 $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $dep['ref']);
 
                 if ($commitResult->isErr()) {
