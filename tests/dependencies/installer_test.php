@@ -9,6 +9,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
 
         $whippetLock = $this->getWhippetLock(sha1('foobar'), [
             'themes' => [
@@ -59,6 +60,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
 
         mkdir($dir.'/wp-content/themes/my-theme');
 
@@ -109,11 +111,31 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $output);
     }
 
+    public function testInstallMissingWhippetLock()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $factory = $this->getFactory([], []);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertEquals(true, $result->isErr());
+        $this->assertEquals('whippet.lock not found', $result->getErr());
+        $this->assertEquals('', $output);
+    }
+
     public function testInstallWrongHash()
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
 
         $whippetLock = $this->getWhippetLock('123123', []);
 

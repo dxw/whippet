@@ -14,8 +14,12 @@ class Installer
 
     public function install()
     {
-        if (!file_exists($this->dir.'/whippet.json')) {
+        if (!is_file($this->dir.'/whippet.json')) {
             return \Result\Result::err('whippet.json not found');
+        }
+
+        if (!is_file($this->dir.'/whippet.lock')) {
+            return \Result\Result::err('whippet.lock not found');
         }
 
         $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
