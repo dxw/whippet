@@ -16,6 +16,10 @@ class Migration
     {
         $result = $this->parsePluginsFile(file_get_contents($this->dir.'/plugins'));
 
+        if ($result->isErr()) {
+            return $result;
+        }
+
         $pluginsFile = $result->unwrap();
         $whippetJson = [
             'src' => [
