@@ -30,6 +30,10 @@ class Updater
                 $src = $jsonFile['src'][$type].$dep['name'];
                 $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $dep['ref']);
 
+                if ($commitResult->isErr()) {
+                    return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
+                }
+
                 $lockFile->addDependency($type, $dep['name'], $src, $commitResult->unwrap());
 
                 $ignores[] = '/wp-content/'.$type.'/'.$dep['name']."\n";
