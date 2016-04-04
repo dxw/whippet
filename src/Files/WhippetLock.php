@@ -1,6 +1,6 @@
 <?php
 
-namespace Dxw\Whippet;
+namespace Dxw\Whippet\Files;
 
 class WhippetLock
 {

@@ -43,7 +43,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin],
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin],
         ], [
-            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
@@ -82,7 +82,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
         ], [
-            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
@@ -126,7 +126,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $whippetLock = $this->getWhippetLock('123123', []);
 
         $factory = $this->getFactory([], [
-            ['\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
         $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);

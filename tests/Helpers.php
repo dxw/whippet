@@ -4,7 +4,7 @@ trait Helpers
 {
     private function getWhippetLock(/* string */ $hash, array $dependencyMap)
     {
-        $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\WhippetLock')
+        $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Files\\WhippetLock')
         ->disableOriginalConstructor()
         ->getMock();
 

@@ -21,7 +21,7 @@ class DependenciesInstaller
             return \Result\Result::err('whippet.json not found');
         }
 
-        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
+        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
 
         $hash = sha1(file_get_contents($dir.'/whippet.json'));
         if ($lockFile->getHash() !== $hash) {

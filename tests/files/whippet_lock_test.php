@@ -1,10 +1,10 @@
 <?php
 
-class WhippetLock_Test extends PHPUnit_Framework_TestCase
+class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 {
     public function testGetDependencies()
     {
-        $whippetLock = new \Dxw\Whippet\WhippetLock([
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
             'themes' => [
                 [
                     'name' => 'my-theme',
@@ -25,7 +25,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testFromStringGetDependencies()
     {
-        $whippetLock = \Dxw\Whippet\WhippetLock::fromString(json_encode([
+        $whippetLock = \Dxw\Whippet\Files\WhippetLock::fromString(json_encode([
             'themes' => [
                 [
                     'name' => 'my-theme',
@@ -59,7 +59,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $whippetLock = \Dxw\Whippet\WhippetLock::fromFile($dir.'/whippet.lock');
+        $whippetLock = \Dxw\Whippet\Files\WhippetLock::fromFile($dir.'/whippet.lock');
 
         $this->assertEquals([
             [
@@ -72,7 +72,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testGetHash()
     {
-        $whippetLock = new \Dxw\Whippet\WhippetLock([
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
             'hash' => '123',
         ]);
 
@@ -81,7 +81,7 @@ class WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDependenciesNotSet()
     {
-        $whippetLock = new \Dxw\Whippet\WhippetLock([
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
             'themes' => [],
         ]);
 
