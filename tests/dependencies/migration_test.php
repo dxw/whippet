@@ -172,4 +172,24 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             '', // Trailing newline
         ]), file_get_contents($dir.'/whippet.json'));
     }
+
+    public function testMigrateMissingPluginsFile()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $factory = $this->getFactory([], []);
+
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+
+        ob_start();
+        $result = $migration->migrate();
+        $output = ob_get_clean();
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('plugins file not found in current working directory', $result->getErr());
+        $this->assertEquals('', $output);
+
+        $this->assertFalse(file_exists($dir.'/whippet.json'));
+    }
 }

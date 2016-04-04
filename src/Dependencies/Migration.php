@@ -14,6 +14,10 @@ class Migration
 
     public function migrate()
     {
+        if (!is_file($this->dir.'/plugins')) {
+            return \Result\Result::err('plugins file not found in current working directory');
+        }
+
         $result = $this->parsePluginsFile(file_get_contents($this->dir.'/plugins'));
 
         if ($result->isErr()) {
