@@ -87,4 +87,44 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
         $this->assertEquals([], $whippetLock->getDependencies('plugins'));
     }
+
+    public function testSetHash()
+    {
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([]);
+
+        $whippetLock->setHash('123');
+
+        $this->assertEquals('123', $whippetLock->getHash());
+    }
+
+    public function testAddDependency()
+    {
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([]);
+
+        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.dxw.net:foobar/baz', '123abc');
+        $this->assertEquals([
+            [
+                'name' => 'my-plugin',
+                'src' => 'git@git.dxw.net:foobar/baz',
+                'revision' => '123abc',
+            ],
+        ], $whippetLock->getDependencies('plugins'));
+    }
+
+    public function testSaveToPath()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $data = [
+            'foo' => 'bar',
+        ];
+
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock($data);
+
+        $whippetLock->saveToPath($dir.'/my-whippet.lock');
+
+        $this->assertTrue(file_exists($dir.'/my-whippet.lock'));
+        $this->assertEquals($data, json_decode(file_get_contents($dir.'/my-whippet.lock'), true));
+    }
 }

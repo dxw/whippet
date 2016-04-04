@@ -20,6 +20,32 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
         return $gitignore;
     }
 
+    private function getWhippetLock(array $addDependency, /* string */ $hash, /* string */ $path)
+    {
+        $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Files\\WhippetLock')
+        ->disableOriginalConstructor()
+        ->getMock();
+
+        call_user_func_array(
+            [
+                $whippetLock->expects($this->exactly(count($addDependency)))
+                ->method('addDependency'),
+                'withConsecutive',
+            ],
+            $addDependency
+        );
+
+        $whippetLock->expects($this->exactly(1))
+        ->method('saveToPath')
+        ->with($path);
+
+        $whippetLock->expects($this->exactly(1))
+        ->method('setHash')
+        ->with($hash);
+
+        return $whippetLock;
+    }
+
     public function testUpdate()
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
@@ -53,8 +79,14 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/plugins/my-plugin\n",
         ]);
 
+        $whippetLock = $this->getWhippetLock([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+            ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
+        ], sha1($json), $dir.'/whippet.lock');
+
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
@@ -68,25 +100,6 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
-
-        $this->assertTrue(file_exists($dir.'/whippet.lock'));
-        $this->assertEquals([
-            'hash' => sha1($json),
-            'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                    'revision' => '27ba906',
-                ],
-            ],
-            'plugins' => [
-                [
-                    'name' => 'my-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
-                    'revision' => 'd961c3d',
-                ],
-            ],
-        ], json_decode(file_get_contents($dir.'/whippet.lock'), true));
     }
 
     public function testUpdateWithExistingGitignore()
@@ -121,8 +134,13 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ]);
 
+        $whippetLock = $this->getWhippetLock([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+        ], sha1($json), $dir.'/whippet.lock');
+
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
         ]);
@@ -135,18 +153,6 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
-
-        $this->assertTrue(file_exists($dir.'/whippet.lock'));
-        $this->assertEquals([
-            'hash' => sha1($json),
-            'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                    'revision' => '27ba906',
-                ],
-            ],
-        ], json_decode(file_get_contents($dir.'/whippet.lock'), true));
     }
 
     public function testUpdateWithExistingGitignoreNoDuplication()
@@ -182,8 +188,13 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ]);
 
+        $whippetLock = $this->getWhippetLock([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+        ], sha1($json), $dir.'/whippet.lock');
+
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
         ]);
@@ -196,17 +207,5 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
-
-        $this->assertTrue(file_exists($dir.'/whippet.lock'));
-        $this->assertEquals([
-            'hash' => sha1($json),
-            'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                    'revision' => '27ba906',
-                ],
-            ],
-        ], json_decode(file_get_contents($dir.'/whippet.lock'), true));
     }
 }

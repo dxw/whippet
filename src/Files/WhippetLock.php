@@ -32,4 +32,23 @@ class WhippetLock
     {
         return $this->data['hash'];
     }
+
+    public function setHash(/* string */ $hash)
+    {
+        $this->data['hash'] = $hash;
+    }
+
+    public function addDependency(/* string */ $type, /* string */ $name, /* string */ $src, /* string */ $revision)
+    {
+        $this->data[$type][] = [
+            'name' => $name,
+            'src' => $src,
+            'revision' => $revision,
+        ];
+    }
+
+    public function saveToPath(/* string */ $path)
+    {
+        file_put_contents($path, json_encode($this->data));
+    }
 }

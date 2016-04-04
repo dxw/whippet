@@ -19,10 +19,8 @@ class DependenciesUpdater
 
         $jsonHash = sha1(file_get_contents($dir.'/whippet.json'));
         $jsonFile = json_decode(file_get_contents($dir.'/whippet.json'), true);
-        $lockFile = [
-            'hash' => $jsonHash,
-            'themes' => [],
-        ];
+        $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
+        $lockFile->setHash($jsonHash);
         $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir);
 
         $ignores = $gitignore->get_ignores();
@@ -35,17 +33,13 @@ class DependenciesUpdater
                 $src = $jsonFile['src'][$type].$dep['name'];
                 $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $dep['ref']);
 
-                $lockFile[$type][] = [
-                    'name' => $dep['name'],
-                    'src' => $src,
-                    'revision' => $commitResult->unwrap(),
-                ];
+                $lockFile->addDependency($type, $dep['name'], $src, $commitResult->unwrap());
 
                 $ignores[] = '/wp-content/'.$type.'/'.$dep['name']."\n";
             }
         }
 
-        file_put_contents($dir.'/whippet.lock', json_encode($lockFile));
+        $lockFile->saveToPath($dir.'/whippet.lock');
         $gitignore->save_ignores(array_unique($ignores));
 
         return \Result\Result::ok();
