@@ -9,7 +9,7 @@ class Dependencies extends \RubbishThorClone
         parent::__construct();
 
         $this->factory = new \Dxw\Whippet\Factory();
-        $this->fileLocator = new \Dxw\Whippet\FileLocator(getcwd());
+        $this->directoryLocator = new \Dxw\Whippet\DirectoryLocator(getcwd());
     }
 
     public function commands()
@@ -29,7 +29,7 @@ class Dependencies extends \RubbishThorClone
 
     private function getDirectory()
     {
-        $dirResult = $this->fileLocator->getDirectory();
+        $dirResult = $this->directoryLocator->getDirectory();
         $this->exitIfError($dirResult);
 
         return $dirResult->unwrap();

@@ -22,18 +22,6 @@ trait Helpers
         return $whippetLock;
     }
 
-    private function getFileLocator($return)
-    {
-        $fileLocator = $this->getMockBuilder('\\Dxw\\Whippet\\FileLocator')
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        $fileLocator->method('getDirectory')
-        ->willReturn($return);
-
-        return $fileLocator;
-    }
-
     private function getGit($isRepo, $cloneRepo, $checkout)
     {
         $git = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Git')

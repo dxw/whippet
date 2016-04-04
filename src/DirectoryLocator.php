@@ -2,7 +2,7 @@
 
 namespace Dxw\Whippet;
 
-class FileLocator
+class DirectoryLocator
 {
     public function __construct(/* string */ $cwd)
     {
