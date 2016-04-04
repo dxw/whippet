@@ -8,7 +8,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
 
         mkdir($dir.'/wp-content/themes/my-theme');
-        touch($dir.'/plugins');
+        touch($dir.'/whippet.json');
 
         foreach ([
             $dir.'/wp-content/themes/my-theme',
@@ -34,7 +34,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
         mkdir($dir.'/projects/project1/wp-content');
         mkdir($dir.'/projects/project1/wp-content/themes');
         mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
-        touch($dir.'/projects/project1/plugins');
+        touch($dir.'/projects/project1/whippet.json');
 
         foreach ([
             $dir.'/projects/project1/wp-content/themes/my-theme',
@@ -60,6 +60,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
         mkdir($dir.'/projects/project1/wp-content');
         mkdir($dir.'/projects/project1/wp-content/themes');
         mkdir($dir.'/projects/project1/wp-content/themes/my-theme');
+        touch($dir.'/plugins');
 
         foreach ([
             $dir.'/projects/project1/wp-content/themes/my-theme',
@@ -70,7 +71,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $fileLocator = new \Dxw\Whippet\DirectoryLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertTrue($result->isErr());
-            $this->assertEquals('whippet.json not found, plugins file not found', $result->getErr());
+            $this->assertEquals('whippet.json not found', $result->getErr());
         }
     }
 
@@ -103,7 +104,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
         mkdir($dir.'/wp-content');
         mkdir($dir.'/wp-content/plugins');
         mkdir($dir.'/wp-content/plugins/my-plugin');
-        touch($dir.'/plugins');
+        touch($dir.'/whippet.json');
 
         $fileLocator = new \Dxw\Whippet\DirectoryLocator($dir.'/wp-content/plugins/my-plugin');
         $result = $fileLocator->getDirectory();

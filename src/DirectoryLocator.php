@@ -13,13 +13,13 @@ class DirectoryLocator
     {
         $path = $this->cwd;
         while (dirname($path) !== $path) {
-            if (is_file($path.'/plugins') || is_file($path.'/whippet.json')) {
+            if (is_file($path.'/whippet.json')) {
                 return \Result\Result::ok($path);
             }
 
             $path = dirname($path);
         }
 
-        return \Result\Result::err('whippet.json not found, plugins file not found');
+        return \Result\Result::err('whippet.json not found');
     }
 }

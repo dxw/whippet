@@ -55,7 +55,7 @@ class Dependencies extends \RubbishThorClone
 
     public function migrate()
     {
-        $dir = $this->getDirectory();
+        $dir = getcwd();
         $migration = new \Dxw\Whippet\Dependencies\Migration($this->factory, $dir);
         $this->exitIfError($migration->migrate());
     }
