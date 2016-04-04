@@ -132,4 +132,44 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse(file_exists($dir.'/whippet.json'));
     }
+
+    public function testMigratePrettyPrint()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        file_put_contents($dir.'/plugins', implode("\n", [
+            'source = "git@git.dxw.net:wordpress-plugins/"',
+            'twitget=',
+        ]));
+
+        $factory = $this->getFactory([
+        ], [
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/twitget', 'master', \Result\Result::ok('27ba906')],
+        ]);
+
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+
+        ob_start();
+        $result = $migration->migrate();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals('', $output);
+
+        $this->assertTrue(file_exists($dir.'/whippet.json'));
+        $this->assertEquals(implode("\n", [
+            '{',
+            '    "src": {',
+            '        "plugins": "git@git.dxw.net:wordpress-plugins/"',
+            '    },',
+            '    "plugins": [',
+            '        {',
+            '            "name": "twitget"',
+            '        }',
+            '    ]',
+            '}',
+            '', // Trailing newline
+        ]), file_get_contents($dir.'/whippet.json'));
+    }
 }

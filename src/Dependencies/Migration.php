@@ -45,7 +45,7 @@ class Migration
             $whippetJson['plugins'][] = $newPlugin;
         }
 
-        file_put_contents($this->dir.'/whippet.json', json_encode($whippetJson));
+        file_put_contents($this->dir.'/whippet.json', json_encode($whippetJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
 
         return \Result\Result::ok();
     }
