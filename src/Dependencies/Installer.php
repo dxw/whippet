@@ -37,7 +37,11 @@ class Installer
 
                 if (!$git->is_repo()) {
                     echo sprintf("[Adding %s/%s]\n", $type, $dep['name']);
-                    $git->clone_repo($dep['src']);
+                    $result = $git->clone_repo($dep['src']);
+
+                    if ($result === false) {
+                        return \Result\Result::err('could not clone repository');
+                    }
                 } else {
                     echo sprintf("[Checking %s/%s]\n", $type, $dep['name']);
                 }

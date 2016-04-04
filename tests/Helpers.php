@@ -32,16 +32,29 @@ trait Helpers
         ->willReturn($isRepo);
 
         if ($cloneRepo !== null) {
+            $return = true;
+
+            if (is_array($cloneRepo)) {
+                $return = $cloneRepo['return'];
+                $cloneRepo = $cloneRepo['with'];
+            }
+
             $git->expects($this->exactly(1))
             ->method('clone_repo')
             ->with($cloneRepo)
-            ->will($this->returnCallback(function () { echo "git clone output\n"; }));
+            ->will($this->returnCallback(function () use ($return) {
+                echo "git clone output\n";
+
+                return $return;
+            }));
         }
 
-        $git->expects($this->exactly(1))
-        ->method('checkout')
-        ->with($checkout)
-        ->will($this->returnCallback(function () { echo "git checkout output\n"; }));
+        if ($checkout !== null) {
+            $git->expects($this->exactly(1))
+            ->method('checkout')
+            ->with($checkout)
+            ->will($this->returnCallback(function () { echo "git checkout output\n"; }));
+        }
 
         return $git;
     }
