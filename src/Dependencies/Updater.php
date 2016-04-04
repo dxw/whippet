@@ -33,7 +33,12 @@ class Updater
                     $src = $jsonFile['src'][$type].$dep['name'];
                 }
 
-                $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $dep['ref']);
+                $ref = 'master';
+                if (isset($dep['ref'])) {
+                    $ref = $dep['ref'];
+                }
+
+                $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
 
                 if ($commitResult->isErr()) {
                     return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
