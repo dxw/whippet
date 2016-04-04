@@ -16,6 +16,7 @@ class Dependencies extends \RubbishThorClone
     {
         $this->command('install', 'Installs dependencies');
         $this->command('update', 'Updates dependencies to their latest versions');
+        $this->command('migrate', 'Converts legacy plugins file to whippet.json');
     }
 
     private function exitIfError(\Result\Result $result)
@@ -40,5 +41,11 @@ class Dependencies extends \RubbishThorClone
 
         $this->exitIfError($updater->update());
         $this->exitIfError($installer->install());
+    }
+
+    public function migrate()
+    {
+        $migration = new \Dxw\Whippet\DependenciesMigration($this->factory, $this->fileLocator);
+        $this->exitIfError($migration->migrate());
     }
 }
