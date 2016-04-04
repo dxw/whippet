@@ -60,4 +60,13 @@ trait Helpers
 
         return $factory;
     }
+
+    private function getNullFactory()
+    {
+        $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
+        ->disableOriginalConstructor()
+        ->getMock();
+
+        return $factory;
+    }
 }

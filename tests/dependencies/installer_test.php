@@ -98,7 +98,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $factory = $this->getFactory([], []);
+        $factory = $this->getNullFactory();
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 
@@ -117,7 +117,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $factory = $this->getFactory([], []);
+        $factory = $this->getNullFactory();
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 

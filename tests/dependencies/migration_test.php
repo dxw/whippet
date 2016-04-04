@@ -94,7 +94,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             'twitget=',
         ]));
 
-        $factory = $this->getFactory([], []);
+        $factory = $this->getNullFactory();
 
         $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
 
@@ -118,7 +118,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             'source=',
         ]));
 
-        $factory = $this->getFactory([], []);
+        $factory = $this->getNullFactory();
 
         $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
 
@@ -178,7 +178,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $factory = $this->getFactory([], []);
+        $factory = $this->getNullFactory();
 
         $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
 
