@@ -1,36 +1,33 @@
 <?php
 
-namespace Dxw\Whippet;
+namespace Dxw\Whippet\Dependencies;
 
-class DependenciesInstaller
+class Installer
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\FileLocator $fileLocator
+        /* string */ $dir
     ) {
         $this->factory = $factory;
-        $this->fileLocator = $fileLocator;
+        $this->dir = $dir;
     }
 
     public function install()
     {
-        $result = $this->fileLocator->getDirectory();
-        $dir = $result->unwrap();
-
-        if (!file_exists($dir.'/whippet.json')) {
+        if (!file_exists($this->dir.'/whippet.json')) {
             return \Result\Result::err('whippet.json not found');
         }
 
-        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock');
+        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
 
-        $hash = sha1(file_get_contents($dir.'/whippet.json'));
+        $hash = sha1(file_get_contents($this->dir.'/whippet.json'));
         if ($lockFile->getHash() !== $hash) {
             return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
         }
 
         foreach (['themes', 'plugins'] as $type) {
             foreach ($lockFile->getDependencies($type) as $dep) {
-                $path = $dir.'/wp-content/'.$type.'/'.$dep['name'];
+                $path = $this->dir.'/wp-content/'.$type.'/'.$dep['name'];
 
                 $git = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Git', $path);
 

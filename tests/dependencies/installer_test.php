@@ -1,6 +1,6 @@
 <?php
 
-class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
+class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 {
     use Helpers;
 
@@ -32,8 +32,6 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
         $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
         $gitAnotherPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/another-plugin', '789abc');
@@ -46,7 +44,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 
         ob_start();
         $result = $dependencies->install();
@@ -75,8 +73,6 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
             'plugins' => [],
         ]);
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $git = $this->getGit(true, null, '27ba906');
 
         $factory = $this->getFactory([
@@ -85,7 +81,7 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 
         ob_start();
         $result = $dependencies->install();
@@ -100,11 +96,9 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $factory = $this->getFactory([], []);
 
-        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 
         ob_start();
         $result = $dependencies->install();
@@ -121,15 +115,13 @@ class DependenciesInstaller_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $whippetLock = $this->getWhippetLock('123123', []);
 
         $factory = $this->getFactory([], [
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesInstaller($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
 
         ob_start();
         $result = $dependencies->install();

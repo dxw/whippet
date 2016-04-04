@@ -27,17 +27,27 @@ class Dependencies extends \RubbishThorClone
         }
     }
 
+    private function getDirectory()
+    {
+        $dirResult = $this->fileLocator->getDirectory();
+        $this->exitIfError($dirResult);
+
+        return $dirResult->unwrap();
+    }
+
     public function install()
     {
-        $installer = new \Dxw\Whippet\DependenciesInstaller($this->factory, $this->fileLocator);
+        $dir = $this->getDirectory();
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
 
         $this->exitIfError($installer->install());
     }
 
     public function update()
     {
-        $updater = new \Dxw\Whippet\DependenciesUpdater($this->factory, $this->fileLocator);
-        $installer = new \Dxw\Whippet\DependenciesInstaller($this->factory, $this->fileLocator);
+        $dir = $this->getDirectory();
+        $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir);
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
 
         $this->exitIfError($updater->update());
         $this->exitIfError($installer->install());
@@ -45,7 +55,8 @@ class Dependencies extends \RubbishThorClone
 
     public function migrate()
     {
-        $migration = new \Dxw\Whippet\DependenciesMigration($this->factory, $this->fileLocator);
+        $dir = $this->getDirectory();
+        $migration = new \Dxw\Whippet\Dependencies\Migration($this->factory, $dir);
         $this->exitIfError($migration->migrate());
     }
 }

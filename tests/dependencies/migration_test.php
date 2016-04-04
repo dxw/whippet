@@ -1,6 +1,6 @@
 <?php
 
-class DependenciesMigration_Test extends PHPUnit_Framework_TestCase
+class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 {
     use Helpers;
 
@@ -130,15 +130,13 @@ class DependenciesMigration_Test extends PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $factory = $this->getFactory([
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
         ]);
 
-        $migration = new \Dxw\Whippet\DependenciesMigration($factory, $fileLocator);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
 
         ob_start();
         $result = $migration->migrate();

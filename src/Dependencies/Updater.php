@@ -1,27 +1,24 @@
 <?php
 
-namespace Dxw\Whippet;
+namespace Dxw\Whippet\Dependencies;
 
-class DependenciesUpdater
+class Updater
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\FileLocator $fileLocator
+        /* string */ $dir
     ) {
         $this->factory = $factory;
-        $this->fileLocator = $fileLocator;
+        $this->dir = $dir;
     }
 
     public function update()
     {
-        $result = $this->fileLocator->getDirectory();
-        $dir = $result->unwrap();
-
-        $jsonHash = sha1(file_get_contents($dir.'/whippet.json'));
-        $jsonFile = json_decode(file_get_contents($dir.'/whippet.json'), true);
+        $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
+        $jsonFile = json_decode(file_get_contents($this->dir.'/whippet.json'), true);
         $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
         $lockFile->setHash($jsonHash);
-        $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir);
+        $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
 
         $ignores = $gitignore->get_ignores();
 
@@ -39,7 +36,7 @@ class DependenciesUpdater
             }
         }
 
-        $lockFile->saveToPath($dir.'/whippet.lock');
+        $lockFile->saveToPath($this->dir.'/whippet.lock');
         $gitignore->save_ignores(array_unique($ignores));
 
         return \Result\Result::ok();

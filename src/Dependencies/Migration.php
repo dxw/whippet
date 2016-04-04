@@ -1,23 +1,20 @@
 <?php
 
-namespace Dxw\Whippet;
+namespace Dxw\Whippet\Dependencies;
 
-class DependenciesMigration
+class Migration
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\FileLocator $fileLocator
+        /* string */ $dir
     ) {
         $this->factory = $factory;
-        $this->fileLocator = $fileLocator;
+        $this->dir = $dir;
     }
 
     public function migrate()
     {
-        $dirResult = $this->fileLocator->getDirectory();
-        $dir = $dirResult->unwrap();
-
-        $result = $this->parsePluginsFile(file_get_contents($dir.'/plugins'));
+        $result = $this->parsePluginsFile(file_get_contents($this->dir.'/plugins'));
 
         $pluginsFile = $result->unwrap();
         $whippetJson = [
@@ -44,7 +41,7 @@ class DependenciesMigration
             $whippetJson['plugins'][] = $newPlugin;
         }
 
-        file_put_contents($dir.'/whippet.json', json_encode($whippetJson));
+        file_put_contents($this->dir.'/whippet.json', json_encode($whippetJson));
 
         return \Result\Result::ok();
     }

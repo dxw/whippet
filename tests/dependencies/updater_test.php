@@ -1,6 +1,6 @@
 <?php
 
-class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
+class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 {
     use Helpers;
 
@@ -72,8 +72,6 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', $json);
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
@@ -92,7 +90,7 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesUpdater($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
 
         ob_start();
         $result = $dependencies->update();
@@ -121,8 +119,6 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', $json);
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $gitignore = $this->getGitignore([
             "/wp-content/languages\n",
             "/node_modules\n",
@@ -145,7 +141,7 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesUpdater($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
 
         ob_start();
         $result = $dependencies->update();
@@ -174,8 +170,6 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', $json);
 
-        $fileLocator = $this->getFileLocator(\Result\Result::ok($dir));
-
         $gitignore = $this->getGitignore([
             "/wp-content/languages\n",
             "/node_modules\n",
@@ -199,7 +193,7 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\DependenciesUpdater($factory, $fileLocator);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
 
         ob_start();
         $result = $dependencies->update();
