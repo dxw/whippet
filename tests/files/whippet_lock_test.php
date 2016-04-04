@@ -127,4 +127,26 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($dir.'/my-whippet.lock'));
         $this->assertEquals($data, json_decode(file_get_contents($dir.'/my-whippet.lock'), true));
     }
+
+    public function testSaveToPathPrettyPrinting()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $data = [
+            'foo' => '/',
+        ];
+
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock($data);
+
+        $whippetLock->saveToPath($dir.'/my-whippet.lock');
+
+        $this->assertTrue(file_exists($dir.'/my-whippet.lock'));
+        $this->assertEquals(implode("\n", [
+            '{',
+            '    "foo": "/"',
+            '}',
+            '', // Trailing newline
+        ]), file_get_contents($dir.'/my-whippet.lock'), true);
+    }
 }
