@@ -20,6 +20,6 @@ class FileLocator
             $path = dirname($path);
         }
 
-        return \Result\Result::err('plugins file not found');
+        return \Result\Result::err('whippet.json not found, plugins file not found');
     }
 }

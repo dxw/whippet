@@ -70,7 +70,7 @@ class FileLocator_Test extends PHPUnit_Framework_TestCase
             $fileLocator = new \Dxw\Whippet\FileLocator($path);
             $result = $fileLocator->getDirectory();
             $this->assertTrue($result->isErr());
-            $this->assertEquals('plugins file not found', $result->getErr());
+            $this->assertEquals('whippet.json not found, plugins file not found', $result->getErr());
         }
     }
 
