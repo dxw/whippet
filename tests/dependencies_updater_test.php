@@ -28,11 +28,18 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
         $json = json_encode([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
             ],
             'themes' => [
                 [
                     'name' => 'my-theme',
                     'ref' => 'v1.4',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'ref' => 'v1.6',
                 ],
             ],
         ]);
@@ -43,12 +50,14 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
+            "/wp-content/plugins/my-plugin\n",
         ]);
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
         ]);
 
         $dependencies = new \Dxw\Whippet\DependenciesUpdater($factory, $fileLocator);
@@ -58,7 +67,7 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
-        $this->assertEquals("[Updating themes/my-theme]\n", $output);
+        $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
 
         $this->assertTrue(file_exists($dir.'/whippet.lock'));
         $this->assertEquals([
@@ -68,6 +77,13 @@ class DependenciesUpdater_Test extends PHPUnit_Framework_TestCase
                     'name' => 'my-theme',
                     'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
                     'revision' => '27ba906',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+                    'revision' => 'd961c3d',
                 ],
             ],
         ], json_decode(file_get_contents($dir.'/whippet.lock'), true));

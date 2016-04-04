@@ -11,6 +11,7 @@ class DependenciesUpdater
         $this->factory = $factory;
         $this->fileLocator = $fileLocator;
     }
+
     public function update()
     {
         $result = $this->fileLocator->getDirectory();
@@ -26,19 +27,22 @@ class DependenciesUpdater
 
         $ignores = $gitignore->get_ignores();
 
-        foreach ($jsonFile['themes'] as $theme) {
-            echo sprintf("[Updating themes/%s]\n", $theme['name']);
+        foreach (['themes', 'plugins'] as $type) {
+            $deps = isset($jsonFile[$type]) ? $jsonFile[$type] : [];
+            foreach ($deps as $dep) {
+                echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
 
-            $src = $jsonFile['src']['themes'].$theme['name'];
-            $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $theme['ref']);
+                $src = $jsonFile['src'][$type].$dep['name'];
+                $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $dep['ref']);
 
-            $lockFile['themes'][] = [
-                'name' => $theme['name'],
-                'src' => $src,
-                'revision' => $commitResult->unwrap(),
-            ];
+                $lockFile[$type][] = [
+                    'name' => $dep['name'],
+                    'src' => $src,
+                    'revision' => $commitResult->unwrap(),
+                ];
 
-            $ignores[] = '/wp-content/themes/'.$theme['name']."\n";
+                $ignores[] = '/wp-content/'.$type.'/'.$dep['name']."\n";
+            }
         }
 
         file_put_contents($dir.'/whippet.lock', json_encode($lockFile));
