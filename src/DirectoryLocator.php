@@ -13,7 +13,7 @@ class DirectoryLocator
     {
         $path = $this->cwd;
         while (dirname($path) !== $path) {
-            if (file_exists($path.'/plugins') || file_exists($path.'/whippet.json')) {
+            if (is_file($path.'/plugins') || is_file($path.'/whippet.json')) {
                 return \Result\Result::ok($path);
             }
 

@@ -94,4 +94,20 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $this->assertEquals($dir, $result->unwrap());
         }
     }
+
+    public function testGetDirectoryAvoidPluginsDirectory()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        mkdir($dir.'/wp-content');
+        mkdir($dir.'/wp-content/plugins');
+        mkdir($dir.'/wp-content/plugins/my-plugin');
+        touch($dir.'/plugins');
+
+        $fileLocator = new \Dxw\Whippet\DirectoryLocator($dir.'/wp-content/plugins/my-plugin');
+        $result = $fileLocator->getDirectory();
+        $this->assertFalse($result->isErr());
+        $this->assertEquals($dir, $result->unwrap());
+    }
 }
