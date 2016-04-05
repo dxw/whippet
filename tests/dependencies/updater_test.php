@@ -574,4 +574,56 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
     }
+
+    public function testUpdateWithBrokenJson()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $whippetJson = $this->getWhippetJson([
+            'src' => [
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            ],
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'ref' => 'v1.4',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'ref' => 'v1.6',
+                ],
+            ],
+        ]);
+
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/themes/my-theme\n",
+            "/wp-content/plugins/my-plugin\n",
+        ], false, false);
+
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+        ], [
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('missing sources', $result->getErr());
+        $this->assertEquals("[Updating themes/my-theme]\n", $output);
+    }
 }

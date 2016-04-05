@@ -109,7 +109,11 @@ class Updater
         if (isset($dep['src'])) {
             $src = $dep['src'];
         } else {
-            $src = $this->jsonFile->getSources()[$type].$dep['name'];
+            $sources = $this->jsonFile->getSources();
+            if (!isset($sources[$type])) {
+                return \Result\Result::err('missing sources');
+            }
+            $src = $sources[$type].$dep['name'];
         }
 
         $ref = 'master';
