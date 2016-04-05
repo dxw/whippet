@@ -22,6 +22,8 @@ class Updater
 
         $ignores = $gitignore->get_ignores();
 
+        $count = 0;
+
         foreach (['themes', 'plugins'] as $type) {
             $deps = isset($jsonFile[$type]) ? $jsonFile[$type] : [];
             foreach ($deps as $dep) {
@@ -47,11 +49,17 @@ class Updater
                 $lockFile->addDependency($type, $dep['name'], $src, $commitResult->unwrap());
 
                 $ignores[] = '/wp-content/'.$type.'/'.$dep['name']."\n";
+
+                ++$count;
             }
         }
 
         $lockFile->saveToPath($this->dir.'/whippet.lock');
         $gitignore->save_ignores(array_unique($ignores));
+
+        if ($count === 0) {
+            echo "whippet.json contains no dependencies\n";
+        }
 
         return \Result\Result::ok();
     }

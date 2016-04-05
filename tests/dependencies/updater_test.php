@@ -333,4 +333,33 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
+
+    public function testUpdateBlankJsonfile()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $json = json_encode([]);
+
+        file_put_contents($dir.'/whippet.json', $json);
+
+        $gitignore = $this->getGitignore([], [], true);
+
+        $whippetLock = $this->getWhippetLock([], sha1($json), $dir.'/whippet.lock');
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
+        ], [
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("whippet.json contains no dependencies\n", $output);
+    }
 }
