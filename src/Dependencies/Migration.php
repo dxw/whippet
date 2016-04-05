@@ -14,6 +14,10 @@ class Migration
 
     public function migrate()
     {
+        if (is_file($this->dir.'/whippet.json')) {
+            return \Result\Result::err('will not overwrite existing whippet.json');
+        }
+
         if (!is_file($this->dir.'/plugins')) {
             return \Result\Result::err('plugins file not found in current working directory');
         }

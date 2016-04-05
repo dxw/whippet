@@ -165,4 +165,28 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse(file_exists($dir.'/whippet.json'));
     }
+
+    public function testMigratePreExistingWhippetJson()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+        touch($dir.'/whippet.json');
+
+        file_put_contents($dir.'/plugins', implode("\n", [
+            'source = "git@git.dxw.net:wordpress-plugins/"',
+            'twitget=',
+        ]));
+
+        $factory = $this->getNullFactory();
+
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+
+        ob_start();
+        $result = $migration->migrate();
+        $output = ob_get_clean();
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('will not overwrite existing whippet.json', $result->getErr());
+        $this->assertEquals('', $output);
+    }
 }
