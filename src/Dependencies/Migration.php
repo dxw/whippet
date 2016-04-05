@@ -25,7 +25,7 @@ class Migration
         }
 
         $pluginsFile = $result->unwrap();
-        $whippetJson = [
+        $whippetData = [
             'src' => [
                 'plugins' => $pluginsFile['source'],
             ],
@@ -46,10 +46,11 @@ class Migration
                 $newPlugin['src'] = $data->repository;
             }
 
-            $whippetJson['plugins'][] = $newPlugin;
+            $whippetData['plugins'][] = $newPlugin;
         }
 
-        file_put_contents($this->dir.'/whippet.json', json_encode($whippetJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+        $whippetJson = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetJson', $whippetData);
+        $whippetJson->saveToPath($this->dir.'/whippet.json');
 
         return \Result\Result::ok();
     }

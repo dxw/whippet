@@ -15,10 +15,15 @@ class Updater
     public function update()
     {
         $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
-        $jsonFile = json_decode(file_get_contents($this->dir.'/whippet.json'), true);
         $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
         $lockFile->setHash($jsonHash);
         $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
+
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $this->dir.'/whippet.json');
+        if ($result->isErr()) {
+            return $result;
+        }
+        $jsonFile = $result->unwrap();
 
         $ignores = [];
         if (is_file($this->dir.'/.gitignore')) {
@@ -28,14 +33,13 @@ class Updater
         $count = 0;
 
         foreach (['themes', 'plugins'] as $type) {
-            $deps = isset($jsonFile[$type]) ? $jsonFile[$type] : [];
-            foreach ($deps as $dep) {
+            foreach ($jsonFile->getDependencies($type) as $dep) {
                 echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
 
                 if (isset($dep['src'])) {
                     $src = $dep['src'];
                 } else {
-                    $src = $jsonFile['src'][$type].$dep['name'];
+                    $src = $jsonFile->getSources()[$type].$dep['name'];
                 }
 
                 $ref = 'master';

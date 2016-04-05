@@ -93,4 +93,9 @@ trait Helpers
 
         return $factory;
     }
+
+    private function getWhippetJson(array $data)
+    {
+        return new \Dxw\Whippet\Files\WhippetJson($data);
+    }
 }

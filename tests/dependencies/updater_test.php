@@ -55,7 +55,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
                 'plugins' => 'git@git.dxw.net:wordpress-plugins/',
@@ -74,7 +74,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
@@ -84,7 +84,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
             ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
@@ -92,6 +92,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -110,7 +111,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
         touch($dir.'/.gitignore');
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
             ],
@@ -122,7 +123,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([
             "/wp-content/languages\n",
@@ -137,13 +138,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -162,7 +164,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
         touch($dir.'/.gitignore');
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
             ],
@@ -174,7 +176,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([
             "/wp-content/languages\n",
@@ -190,13 +192,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -214,7 +217,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
             ],
@@ -226,19 +229,20 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
         ], false, false);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1($json), null);
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null);
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::err('oh no')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -257,7 +261,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
             ],
@@ -270,7 +274,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
@@ -278,13 +282,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'foobar', '27ba906'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'foobar', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -302,7 +307,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
             ],
@@ -313,7 +318,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
@@ -321,13 +326,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'master', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -345,18 +351,19 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([]);
+        $whippetJson = $this->getWhippetJson([]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [], true, false);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1($json), $dir.'/whippet.lock');
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
             ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
         ], [
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
@@ -374,7 +381,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $json = json_encode([
+        $whippetJson = $this->getWhippetJson([
             'src' => [
                 'themes' => 'git@git.dxw.net:wordpress-themes/',
                 'plugins' => 'git@git.dxw.net:wordpress-plugins/',
@@ -393,7 +400,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        file_put_contents($dir.'/whippet.json', $json);
+        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
@@ -403,7 +410,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
             ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
-        ], sha1($json), $dir.'/whippet.lock');
+        ], sha1('foobar'), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
@@ -411,6 +418,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], [
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
         ]);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
