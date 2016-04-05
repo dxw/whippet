@@ -190,4 +190,41 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('could not clone repository', $result->getErr());
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\n", $output);
     }
+
+    public function testInstallCheckoutFails()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
+
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), [
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'revision' => '27ba906',
+                ],
+            ],
+            'plugins' => [],
+        ]);
+
+        $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme],
+        ], [
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', $whippetLock],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('could not checkout revision', $result->getErr());
+        $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
+    }
 }

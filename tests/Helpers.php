@@ -50,10 +50,21 @@ trait Helpers
         }
 
         if ($checkout !== null) {
+            $return = true;
+
+            if (is_array($checkout)) {
+                $return = $checkout['return'];
+                $checkout = $checkout['with'];
+            }
+
             $git->expects($this->exactly(1))
             ->method('checkout')
             ->with($checkout)
-            ->will($this->returnCallback(function () { echo "git checkout output\n"; }));
+            ->will($this->returnCallback(function () use ($return) {
+                echo "git checkout output\n";
+
+                return $return;
+            }));
         }
 
         return $git;

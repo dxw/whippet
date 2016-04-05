@@ -46,7 +46,10 @@ class Installer
                     echo sprintf("[Checking %s/%s]\n", $type, $dep['name']);
                 }
 
-                $git->checkout($dep['revision']);
+                $result = $git->checkout($dep['revision']);
+                if ($result === false) {
+                    return \Result\Result::err('could not checkout revision');
+                }
             }
         }
 
