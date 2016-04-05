@@ -14,20 +14,21 @@ class Updater
 
     public function update()
     {
-        $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
-        $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
-
         $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $this->dir.'/whippet.json');
         if ($result->isErr()) {
-            return $result;
+            return \Result\Result::err(sprintf('whippet.json: %s', $result->getErr()));
         }
         $jsonFile = $result->unwrap();
 
         $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
         if ($result->isErr()) {
-            return $result;
+            $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
+        } else {
+            $lockFile = $result->unwrap();
         }
-        $lockFile = $result->unwrap();
+
+        $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
+        $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
 
         $lockFile->setHash($jsonHash);
 

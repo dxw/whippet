@@ -497,4 +497,81 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
+
+    public function testUpdateBubbleErrors()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $factory = $this->getFactory([
+        ], [
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::err('a WhippetJson error')],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('whippet.json: a WhippetJson error', $result->getErr());
+        $this->assertEquals('', $output);
+    }
+
+    public function testUpdateNoExistingWhippetLock()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $whippetJson = $this->getWhippetJson([
+            'src' => [
+                'themes' => 'git@git.dxw.net:wordpress-themes/',
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            ],
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'ref' => 'v1.4',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'ref' => 'v1.6',
+                ],
+            ],
+        ]);
+
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/themes/my-theme\n",
+            "/wp-content/plugins/my-plugin\n",
+        ], true, false);
+
+        $whippetLock = $this->getWhippetLockWritable([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+            ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
+        ], sha1('foobar'), $dir.'/whippet.lock', []);
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
+        ], [
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
+            ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson)],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found')],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
+    }
 }
