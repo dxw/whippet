@@ -18,11 +18,11 @@ class Installer
             return \Result\Result::err('whippet.json not found');
         }
 
-        if (!is_file($this->dir.'/whippet.lock')) {
-            return \Result\Result::err('whippet.lock not found');
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
+        if ($result->isErr()) {
+            return \Result\Result::err(sprintf('whippet.lock: %s', $result->getErr()));
         }
-
-        $lockFile = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
+        $lockFile = $result->unwrap();
 
         $hash = sha1(file_get_contents($this->dir.'/whippet.json'));
         if ($lockFile->getHash() !== $hash) {

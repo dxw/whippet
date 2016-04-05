@@ -35,13 +35,14 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
             ],
         ]));
 
+        $this->assertFalse($whippetLock->isErr());
         $this->assertEquals([
             [
                 'name' => 'my-theme',
                 'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
                 'revision' => '27ba906',
             ],
-        ], $whippetLock->getDependencies('themes'));
+        ], $whippetLock->unwrap()->getDependencies('themes'));
     }
 
     public function testFromFileGetDependencies()
@@ -61,13 +62,14 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
         $whippetLock = \Dxw\Whippet\Files\WhippetLock::fromFile($dir.'/whippet.lock');
 
+        $this->assertFalse($whippetLock->isErr());
         $this->assertEquals([
             [
                 'name' => 'my-theme',
                 'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
                 'revision' => '27ba906',
             ],
-        ], $whippetLock->getDependencies('themes'));
+        ], $whippetLock->unwrap()->getDependencies('themes'));
     }
 
     public function testGetHash()
@@ -148,5 +150,24 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
             '}',
             '', // Trailing newline
         ]), file_get_contents($dir.'/my-whippet.lock'), true);
+    }
+
+    public function testFromStringInvalid()
+    {
+        $output = \Dxw\Whippet\Files\WhippetLock::fromString('this is not json');
+
+        $this->assertTrue($output->isErr());
+        $this->assertEquals('invalid JSON', $output->getErr());
+    }
+
+    public function testFromFileNotFound()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $output = \Dxw\Whippet\Files\WhippetLock::fromFile($dir.'/file-not-found.json');
+
+        $this->assertTrue($output->isErr());
+        $this->assertEquals('file not found', $output->getErr());
     }
 }

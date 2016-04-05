@@ -6,11 +6,20 @@ abstract class Base
 {
     public static function fromString(/* string */ $json)
     {
-        return new static(json_decode($json, true));
+        $data = json_decode($json, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return \Result\Result::err('invalid JSON');
+        }
+
+        return \Result\Result::ok(new static($data));
     }
 
     public static function fromFile(/* string */ $path)
     {
+        if (!is_file($path)) {
+            return \Result\Result::err('file not found');
+        }
+
         return self::fromString(file_get_contents($path));
     }
 
