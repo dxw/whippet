@@ -229,4 +229,31 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('could not checkout revision', $result->getErr());
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
     }
+
+    public function testInstallBlankLockfile()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+        file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
+
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), [
+            'themes' => [],
+            'plugins' => [],
+        ]);
+
+        $factory = $this->getFactory([
+        ], [
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->install();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("whippet.lock contains nothing to install\n", $output);
+    }
 }

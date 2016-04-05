@@ -29,6 +29,8 @@ class Installer
             return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
         }
 
+        $count = 0;
+
         foreach (['themes', 'plugins'] as $type) {
             foreach ($lockFile->getDependencies($type) as $dep) {
                 $path = $this->dir.'/wp-content/'.$type.'/'.$dep['name'];
@@ -50,7 +52,13 @@ class Installer
                 if ($result === false) {
                     return \Result\Result::err('could not checkout revision');
                 }
+
+                ++$count;
             }
+        }
+
+        if ($count === 0) {
+            echo "whippet.lock contains nothing to install\n";
         }
 
         return \Result\Result::ok();
