@@ -20,7 +20,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         return $gitignore;
     }
 
-    private function getWhippetLock(array $addDependency, /* string */ $hash, /* string */ $path)
+    private function getWhippetLockWritable(array $addDependency, /* string */ $hash, /* string */ $path)
     {
         $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Files\\WhippetLock')
         ->disableOriginalConstructor()
@@ -77,7 +77,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/plugins/my-plugin\n",
         ], true);
 
-        $whippetLock = $this->getWhippetLock([
+        $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
             ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
         ], sha1($json), $dir.'/whippet.lock');
@@ -130,7 +130,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ], true);
 
-        $whippetLock = $this->getWhippetLock([
+        $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1($json), $dir.'/whippet.lock');
 
@@ -182,7 +182,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ], true);
 
-        $whippetLock = $this->getWhippetLock([
+        $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1($json), $dir.'/whippet.lock');
 
@@ -226,7 +226,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ], false);
 
-        $whippetLock = $this->getWhippetLock([], sha1($json), null);
+        $whippetLock = $this->getWhippetLockWritable([], sha1($json), null);
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
@@ -270,7 +270,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ], true);
 
-        $whippetLock = $this->getWhippetLock([
+        $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'foobar', '27ba906'],
         ], sha1($json), $dir.'/whippet.lock');
 
@@ -313,7 +313,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/wp-content/themes/my-theme\n",
         ], true);
 
-        $whippetLock = $this->getWhippetLock([
+        $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1($json), $dir.'/whippet.lock');
 
@@ -345,7 +345,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [], true);
 
-        $whippetLock = $this->getWhippetLock([], sha1($json), $dir.'/whippet.lock');
+        $whippetLock = $this->getWhippetLockWritable([], sha1($json), $dir.'/whippet.lock');
 
         $factory = $this->getFactory([
             ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
