@@ -20,7 +20,10 @@ class Updater
         $lockFile->setHash($jsonHash);
         $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
 
-        $ignores = $gitignore->get_ignores();
+        $ignores = [];
+        if (is_file($this->dir.'/.gitignore')) {
+            $ignores = $gitignore->get_ignores();
+        }
 
         $count = 0;
 

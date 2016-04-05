@@ -4,14 +4,18 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 {
     use Helpers;
 
-    private function getGitignore(array $get, array $save, /* bool */ $saveIgnores)
+    private function getGitignore(array $get, array $save, /* bool */ $saveIgnores, /* bool */ $warnOnGet)
     {
         $gitignore = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Gitignore')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $gitignore->method('get_ignores')
-        ->willReturn($get);
+        $getIgnores = $gitignore->method('get_ignores');
+        if ($warnOnGet) {
+            $getIgnores->will($this->returnCallback(function () { trigger_error('$warOnGet set but not prevented', E_USER_WARNING); }));
+        } else {
+            $getIgnores->willReturn($get);
+        }
 
         $gitignore->expects($this->exactly($saveIgnores ? 1 : 0))
         ->method('save_ignores')
@@ -75,7 +79,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true);
+        ], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
@@ -104,6 +108,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
+        touch($dir.'/.gitignore');
 
         $json = json_encode([
             'src' => [
@@ -128,7 +133,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true);
+        ], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
@@ -155,6 +160,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
     {
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
+        touch($dir.'/.gitignore');
 
         $json = json_encode([
             'src' => [
@@ -180,7 +186,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true);
+        ], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
@@ -224,7 +230,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], false);
+        ], false, false);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1($json), null);
 
@@ -268,7 +274,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], true);
+        ], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'foobar', '27ba906'],
@@ -311,7 +317,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], true);
+        ], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
@@ -343,7 +349,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', $json);
 
-        $gitignore = $this->getGitignore([], [], true);
+        $gitignore = $this->getGitignore([], [], true, false);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1($json), $dir.'/whippet.lock');
 
@@ -361,5 +367,59 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("whippet.json contains no dependencies\n", $output);
+    }
+
+    public function testUpdateNoGitignore()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+        $dir = $root->url();
+
+        $json = json_encode([
+            'src' => [
+                'themes' => 'git@git.dxw.net:wordpress-themes/',
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            ],
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                    'ref' => 'v1.4',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'my-plugin',
+                    'ref' => 'v1.6',
+                ],
+            ],
+        ]);
+
+        file_put_contents($dir.'/whippet.json', $json);
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/themes/my-theme\n",
+            "/wp-content/plugins/my-plugin\n",
+        ], true, true);
+
+        $whippetLock = $this->getWhippetLockWritable([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+            ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
+        ], sha1($json), $dir.'/whippet.lock');
+
+        $factory = $this->getFactory([
+            ['\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore],
+            ['\\Dxw\\Whippet\\Files\\WhippetLock', [], $whippetLock],
+        ], [
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
+            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
+        ]);
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
     }
 }
