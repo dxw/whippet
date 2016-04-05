@@ -15,8 +15,6 @@ class Updater
     public function update()
     {
         $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
-        $lockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
-        $lockFile->setHash($jsonHash);
         $gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
 
         $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $this->dir.'/whippet.json');
@@ -25,9 +23,28 @@ class Updater
         }
         $jsonFile = $result->unwrap();
 
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
+        if ($result->isErr()) {
+            return $result;
+        }
+        $lockFile = $result->unwrap();
+
+        $lockFile->setHash($jsonHash);
+
         $ignores = [];
         if (is_file($this->dir.'/.gitignore')) {
             $ignores = $gitignore->get_ignores();
+        }
+
+        // Iterate through locked dependencies and remove from gitignore
+        foreach (['themes', 'plugins'] as $type) {
+            foreach ($lockFile->getDependencies($type) as $dep) {
+                $line = '/wp-content/'.$type.'/'.$dep['name']."\n";
+                $index = array_search($line, $ignores);
+                if ($index !== false) {
+                    unset($ignores[$index]);
+                }
+            }
         }
 
         $count = 0;
