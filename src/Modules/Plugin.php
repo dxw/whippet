@@ -13,6 +13,30 @@ class Plugin extends \RubbishThorClone
         $this->command('upgrade [PLUGIN]', 'Upgrades PLUGIN to the most recent available version, or to the version specified in your Plugin file.');
     }
 
+    private function deprecationNotice()
+    {
+        $this->warningText(array_merge([
+            'The plugins subcommand is deprecated and will be removed in a future release.',
+            '',
+            'To migrate a `plugins` file to a `whippet.json` file, run the following:',
+            '  $ whippet deps migrate',
+            '',
+            'Once you have a `whippet.json` file, you can run the following instead of `whippet plugins upgrade`:',
+            '  $ whippet deps update',
+            '',
+            'And the following instead of `whippet plugins install`:',
+            '  $ whippet deps install',
+            '',
+            '',
+        ]));
+    }
+
+    private function warningText($lines)
+    {
+        $c = new \Colors\Color();
+        echo $c(implode("\n", $lines))->bg('red')->fg('white')."\n";
+    }
+
     /*
     * Commands
     */
@@ -26,6 +50,7 @@ class Plugin extends \RubbishThorClone
     */
     public function install()
     {
+        $this->deprecationNotice();
         $this->whippet_init();
         $this->load_plugins_manifest();
         $this->load_plugins_lock();
@@ -226,6 +251,7 @@ class Plugin extends \RubbishThorClone
     */
     public function upgrade($upgrade_plugin = '')
     {
+        $this->deprecationNotice();
         $this->whippet_init();
         $this->load_plugins_manifest();
         $this->load_plugins_lock();
