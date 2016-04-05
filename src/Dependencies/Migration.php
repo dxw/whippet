@@ -14,6 +14,31 @@ class Migration
 
     public function migrate()
     {
+        $result = $this->loadFiles();
+        if ($result->isErr()) {
+            return $result;
+        }
+
+        $whippetData = [
+            'src' => [
+                'plugins' => $this->pluginsFile['source'],
+            ],
+            'plugins' => [
+            ],
+        ];
+
+        foreach ($this->pluginsFile['plugins'] as $name => $data) {
+            $whippetData['plugins'][] = $this->getPlugin($name, $data);
+        }
+
+        $whippetJson = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetJson', $whippetData);
+        $whippetJson->saveToPath($this->dir.'/whippet.json');
+
+        return \Result\Result::ok();
+    }
+
+    private function loadFiles()
+    {
         if (is_file($this->dir.'/whippet.json')) {
             return \Result\Result::err('will not overwrite existing whippet.json');
         }
@@ -23,44 +48,35 @@ class Migration
         }
 
         $result = $this->parsePluginsFile(file_get_contents($this->dir.'/plugins'));
-
         if ($result->isErr()) {
             return $result;
         }
-
-        $pluginsFile = $result->unwrap();
-        $whippetData = [
-            'src' => [
-                'plugins' => $pluginsFile['source'],
-            ],
-            'plugins' => [
-            ],
-        ];
-
-        foreach ($pluginsFile['plugins'] as $name => $data) {
-            $newPlugin = [
-                'name' => $name,
-            ];
-
-            if ($data->revision !== 'master') {
-                $newPlugin['ref'] = $data->revision;
-            }
-
-            if ($data->repository !== '') {
-                $newPlugin['src'] = $data->repository;
-            }
-
-            $whippetData['plugins'][] = $newPlugin;
-        }
-
-        $whippetJson = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetJson', $whippetData);
-        $whippetJson->saveToPath($this->dir.'/whippet.json');
+        $this->pluginsFile = $result->unwrap();
 
         return \Result\Result::ok();
     }
 
+    private function getPlugin($name, $data)
+    {
+        $newPlugin = [
+            'name' => $name,
+        ];
+
+        if ($data->revision !== 'master') {
+            $newPlugin['ref'] = $data->revision;
+        }
+
+        if ($data->repository !== '') {
+            $newPlugin['src'] = $data->repository;
+        }
+
+        return $newPlugin;
+    }
+
     // Copied/pasted from ManifestIo because that class doesn't expose the source line
-    public function parsePluginsFile($raw_file)
+    //
+    // Beware of untested code
+    private function parsePluginsFile($raw_file)
     {
         // Check for #-comments
         $lines = explode("\n", $raw_file);
