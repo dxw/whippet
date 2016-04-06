@@ -6,7 +6,7 @@ class Installer
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        /* string */ $dir
+        \Dxw\Whippet\ProjectDirectory $dir
     ) {
         $this->factory = $factory;
         $this->dir = $dir;

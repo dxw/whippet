@@ -86,7 +86,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
         ]);
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $migration->migrate();
@@ -109,7 +109,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $factory = $this->getNullFactory();
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $migration->migrate();
@@ -133,7 +133,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $factory = $this->getNullFactory();
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $migration->migrate();
@@ -153,7 +153,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $factory = $this->getNullFactory();
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $migration->migrate();
@@ -179,7 +179,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $factory = $this->getNullFactory();
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, $dir);
+        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $migration->migrate();

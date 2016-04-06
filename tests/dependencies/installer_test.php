@@ -45,7 +45,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -83,7 +83,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -100,7 +100,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $factory = $this->getNullFactory();
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -121,7 +121,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -145,7 +145,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -182,7 +182,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -219,7 +219,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();
@@ -247,7 +247,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->install();

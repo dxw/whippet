@@ -105,7 +105,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -158,7 +158,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -212,7 +212,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -255,7 +255,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -302,7 +302,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -346,7 +346,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -376,7 +376,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -431,7 +431,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -488,7 +488,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -508,7 +508,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::err('a WhippetJson error')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -565,7 +565,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found')],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();
@@ -616,7 +616,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
         ]);
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, $dir);
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater($factory, new \Dxw\Whippet\ProjectDirectory($dir));
 
         ob_start();
         $result = $dependencies->update();

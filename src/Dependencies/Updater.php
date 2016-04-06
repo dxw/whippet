@@ -6,7 +6,7 @@ class Updater
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        /* string */ $dir
+        \Dxw\Whippet\ProjectDirectory $dir
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
@@ -75,7 +75,7 @@ class Updater
 
     private function loadGitignore()
     {
-        $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', $this->dir);
+        $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
 
         $this->ignores = [];
         if (is_file($this->dir.'/.gitignore')) {

@@ -9,7 +9,7 @@ class Dependencies extends \RubbishThorClone
         parent::__construct();
 
         $this->factory = new \Dxw\Whippet\Factory();
-        $this->directoryLocator = new \Dxw\Whippet\DirectoryLocator(getcwd());
+        $this->projectDirectory = \Dxw\Whippet\ProjectDirectory::find(getcwd());
     }
 
     public function commands()
@@ -29,10 +29,9 @@ class Dependencies extends \RubbishThorClone
 
     private function getDirectory()
     {
-        $dirResult = $this->directoryLocator->getDirectory();
-        $this->exitIfError($dirResult);
+        $this->exitIfError($this->projectDirectory);
 
-        return $dirResult->unwrap();
+        return $this->projectDirectory->unwrap();
     }
 
     public function install()
@@ -55,7 +54,7 @@ class Dependencies extends \RubbishThorClone
 
     public function migrate()
     {
-        $dir = getcwd();
+        $dir = new \Dxw\Whippet\ProjectDirectory(getcwd());
         $migration = new \Dxw\Whippet\Dependencies\Migration($this->factory, $dir);
         $this->exitIfError($migration->migrate());
     }

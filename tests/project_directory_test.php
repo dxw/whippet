@@ -1,6 +1,6 @@
 <?php
 
-class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
+class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 {
     public function testGetDirectorySuccess1()
     {
@@ -16,10 +16,10 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/wp-content',
             $dir,
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\DirectoryLocator($path);
-            $result = $fileLocator->getDirectory();
+            $result = \Dxw\Whippet\ProjectDirectory::find($path);
             $this->assertFalse($result->isErr());
-            $this->assertEquals($dir, $result->unwrap());
+            $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
+            $this->assertEquals($dir, $result->unwrap()->__toString());
         }
     }
 
@@ -42,10 +42,10 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/projects/project1/wp-content',
             $dir.'/projects/project1',
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\DirectoryLocator($path);
-            $result = $fileLocator->getDirectory();
+            $result = \Dxw\Whippet\ProjectDirectory::find($path);
             $this->assertFalse($result->isErr());
-            $this->assertEquals($dir.'/projects/project1', $result->unwrap());
+            $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
+            $this->assertEquals($dir.'/projects/project1', $result->unwrap()->__toString());
         }
     }
 
@@ -68,8 +68,7 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/projects/project1/wp-content',
             $dir.'/projects/project1',
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\DirectoryLocator($path);
-            $result = $fileLocator->getDirectory();
+            $result = \Dxw\Whippet\ProjectDirectory::find($path);
             $this->assertTrue($result->isErr());
             $this->assertEquals('whippet.json not found', $result->getErr());
         }
@@ -89,10 +88,10 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
             $dir.'/wp-content',
             $dir,
         ] as $path) {
-            $fileLocator = new \Dxw\Whippet\DirectoryLocator($path);
-            $result = $fileLocator->getDirectory();
+            $result = \Dxw\Whippet\ProjectDirectory::find($path);
             $this->assertFalse($result->isErr());
-            $this->assertEquals($dir, $result->unwrap());
+            $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
+            $this->assertEquals($dir, $result->unwrap()->__toString());
         }
     }
 
@@ -106,9 +105,9 @@ class DirectoryLocator_Test extends PHPUnit_Framework_TestCase
         mkdir($dir.'/wp-content/plugins/my-plugin');
         touch($dir.'/whippet.json');
 
-        $fileLocator = new \Dxw\Whippet\DirectoryLocator($dir.'/wp-content/plugins/my-plugin');
-        $result = $fileLocator->getDirectory();
+        $result = \Dxw\Whippet\ProjectDirectory::find($dir.'/wp-content/plugins/my-plugin');
         $this->assertFalse($result->isErr());
-        $this->assertEquals($dir, $result->unwrap());
+        $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
+        $this->assertEquals($dir, $result->unwrap()->__toString());
     }
 }
