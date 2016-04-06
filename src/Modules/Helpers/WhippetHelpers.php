@@ -21,8 +21,10 @@ trait WhippetHelpers
     {
         if (!$this->plugins_manifest_file = $this->find_file('plugins')) {
             if (!$this->plugins_manifest_file = $this->find_file('Plugins')) {
-                echo "Unable to find plugins manifest file\n";
-                exit(1);
+                if (!$this->plugins_manifest_file = $this->find_file('whippet.json')) {
+                    echo "Unable to find whippet.json or plugins manifest file\n";
+                    exit(1);
+                }
             }
         }
         $this->project_dir = dirname($this->plugins_manifest_file);
