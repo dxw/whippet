@@ -32,20 +32,19 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
                 ],
             ],
         ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
         $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
         $gitAnotherPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/another-plugin', '789abc');
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin);
 
-        $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme],
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin],
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin],
-        ], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -74,16 +73,15 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ],
             'plugins' => [],
         ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $git = $this->getGit(true, null, '27ba906');
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git);
 
-        $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $git],
-        ], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -98,9 +96,10 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $factory = $this->getNullFactory();
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -117,11 +116,12 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $dir = $root->url();
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $factory = $this->getFactory([], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found')],
-        ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found'));
 
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -140,12 +140,12 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
         $whippetLock = $this->getWhippetLock('123123', []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $factory = $this->getFactory([], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -173,16 +173,15 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ],
             'plugins' => [],
         ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $gitMyTheme = $this->getGit(false, ['with' => 'git@git.dxw.net:wordpress-themes/my-theme', 'return' => false], null);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
-        $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme],
-        ], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -210,16 +209,15 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             ],
             'plugins' => [],
         ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
-        $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme],
-        ], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();
@@ -241,13 +239,12 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             'themes' => [],
             'plugins' => [],
         ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $factory = $this->getFactory([
-        ], [
-            ['\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock)],
-        ]);
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $dependencies->install();

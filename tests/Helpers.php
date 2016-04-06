@@ -2,6 +2,12 @@
 
 trait Helpers
 {
+    public function setUp()
+    {
+        $this->factoryNewInstance = [];
+        $this->factoryCallStatic = [];
+    }
+
     private function getWhippetLock(/* string */ $hash, array $dependencyMap)
     {
         $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Files\\WhippetLock')
@@ -70,32 +76,33 @@ trait Helpers
         return $git;
     }
 
-    private function getFactory(array $newInstanceMap, array $callStaticMap)
+    private function getWhippetJson(array $data)
+    {
+        return new \Dxw\Whippet\Files\WhippetJson($data);
+    }
+
+    private function getFactory()
     {
         $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
         ->disableOriginalConstructor()
         ->getMock();
 
         $factory->method('newInstance')
-        ->will($this->returnValueMap($newInstanceMap));
+        ->will($this->returnValueMap($this->factoryNewInstance));
 
         $factory->method('callStatic')
-        ->will($this->returnValueMap($callStaticMap));
+        ->will($this->returnValueMap($this->factoryCallStatic));
 
         return $factory;
     }
 
-    private function getNullFactory()
+    private function addFactoryNewInstance()
     {
-        $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        return $factory;
+        $this->factoryNewInstance[] = func_get_args();
     }
 
-    private function getWhippetJson(array $data)
+    private function addFactoryCallStatic()
     {
-        return new \Dxw\Whippet\Files\WhippetJson($data);
+        $this->factoryCallStatic[] = func_get_args();
     }
 }

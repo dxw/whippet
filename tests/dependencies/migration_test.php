@@ -47,46 +47,47 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $whippetJson = $this->getWhippetJsonExpectSavePath($dir.'/whippet.json');
 
-        $factory = $this->getFactory([
-            ['\\Dxw\\Whippet\\Files\\WhippetJson', [
-                'src' => [
-                    'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetJson', [
+            'src' => [
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            ],
+            'plugins' => [
+                ['name' => 'twitget'],
+                ['name' => 'acf-options-page'],
+                ['name' => 'new-members-only'],
+                ['name' => 'wordpress-importer'],
+                ['name' => 'page-links-to'],
+                ['name' => 'akismet'],
+                ['name' => 'acf-repeater'],
+                ['name' => 'advanced-custom-fields'],
+                ['name' => 'theme-my-login'],
+                ['name' => 'breadcrumb-navxt'],
+                ['name' => 'contact-form-7'],
+                ['name' => 'wp-realtime-sitemap'],
+                ['name' => 'tinymce-advanced'],
+                ['name' => 'relevanssi-premium'],
+                ['name' => 'jw-player-plugin-for-wordpress'],
+                ['name' => 'gravityforms'],
+                ['name' => 'unconfirmed'],
+                [
+                    'name' => 'oauth2-server',
+                    'src' => 'git@git.dxw.net:dxw-wp-plugins/oauth2-server',
                 ],
-                'plugins' => [
-                    ['name' => 'twitget'],
-                    ['name' => 'acf-options-page'],
-                    ['name' => 'new-members-only'],
-                    ['name' => 'wordpress-importer'],
-                    ['name' => 'page-links-to'],
-                    ['name' => 'akismet'],
-                    ['name' => 'acf-repeater'],
-                    ['name' => 'advanced-custom-fields'],
-                    ['name' => 'theme-my-login'],
-                    ['name' => 'breadcrumb-navxt'],
-                    ['name' => 'contact-form-7'],
-                    ['name' => 'wp-realtime-sitemap'],
-                    ['name' => 'tinymce-advanced'],
-                    ['name' => 'relevanssi-premium'],
-                    ['name' => 'jw-player-plugin-for-wordpress'],
-                    ['name' => 'gravityforms'],
-                    ['name' => 'unconfirmed'],
-                    [
-                        'name' => 'oauth2-server',
-                        'src' => 'git@git.dxw.net:dxw-wp-plugins/oauth2-server',
-                    ],
-                    [
-                        'name' => 'network-approve-users',
-                        'ref' => 'v1.1.1',
-                        'src' => 'git@git.dxw.net:dxw-wp-plugins/network-approve-users',
-                    ],
+                [
+                    'name' => 'network-approve-users',
+                    'ref' => 'v1.1.1',
+                    'src' => 'git@git.dxw.net:dxw-wp-plugins/network-approve-users',
                 ],
-            ], $whippetJson],
-        ], [
-            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906')],
-            ['\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d')],
-        ]);
+            ],
+        ], $whippetJson);
 
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
+
+        $migration = new \Dxw\Whippet\Dependencies\Migration(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $migration->migrate();
@@ -107,9 +108,10 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             'twitget=',
         ]));
 
-        $factory = $this->getNullFactory();
-
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $migration = new \Dxw\Whippet\Dependencies\Migration(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $migration->migrate();
@@ -131,9 +133,10 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             'source=',
         ]));
 
-        $factory = $this->getNullFactory();
-
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $migration = new \Dxw\Whippet\Dependencies\Migration(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $migration->migrate();
@@ -151,9 +154,10 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
         $root = \org\bovigo\vfs\vfsStream::setup();
         $dir = $root->url();
 
-        $factory = $this->getNullFactory();
-
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $migration = new \Dxw\Whippet\Dependencies\Migration(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $migration->migrate();
@@ -177,9 +181,10 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
             'twitget=',
         ]));
 
-        $factory = $this->getNullFactory();
-
-        $migration = new \Dxw\Whippet\Dependencies\Migration($factory, new \Dxw\Whippet\ProjectDirectory($dir));
+        $migration = new \Dxw\Whippet\Dependencies\Migration(
+            $this->getFactory(),
+            new \Dxw\Whippet\ProjectDirectory($dir)
+        );
 
         ob_start();
         $result = $migration->migrate();
