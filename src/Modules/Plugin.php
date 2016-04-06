@@ -243,6 +243,8 @@ class Plugin extends \RubbishThorClone
         $gitignore->save_ignores($ignores);
 
         echo "Completed successfully\n";
+
+        return \Result\Result::ok();
     }
 
     /*
