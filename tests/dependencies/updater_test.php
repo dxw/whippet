@@ -104,7 +104,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -157,7 +157,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -211,7 +211,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -254,7 +254,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -301,7 +301,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -345,7 +345,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -374,7 +374,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -429,7 +429,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -486,7 +486,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -506,7 +506,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -563,7 +563,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -614,7 +614,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();

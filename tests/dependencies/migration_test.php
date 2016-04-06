@@ -86,7 +86,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -110,7 +110,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -135,7 +135,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -156,7 +156,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -183,7 +183,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();

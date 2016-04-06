@@ -43,7 +43,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -80,7 +80,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -98,7 +98,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -120,7 +120,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -144,7 +144,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -180,7 +180,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -216,7 +216,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();
@@ -243,7 +243,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            new \Dxw\Whippet\ProjectDirectory($dir)
+            $this->getProjectDirectory($dir)
         );
 
         ob_start();

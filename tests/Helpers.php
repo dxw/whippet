@@ -105,4 +105,9 @@ trait Helpers
     {
         $this->factoryCallStatic[] = func_get_args();
     }
+
+    private function getProjectDirectory($dir)
+    {
+        return new \Dxw\Whippet\ProjectDirectory($dir);
+    }
 }
