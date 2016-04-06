@@ -13,22 +13,28 @@ class Plugin extends \RubbishThorClone
         $this->command('upgrade [PLUGIN]', 'Upgrades PLUGIN to the most recent available version, or to the version specified in your Plugin file.');
     }
 
-    private function deprecationNotice()
+    private function deprecationNotice($internal)
     {
-        $this->warningText(array_merge([
-            'The plugins subcommand is deprecated and will be removed in a future release.',
-            '',
-            'To migrate a `plugins` file to a `whippet.json` file, run the following:',
-            '  $ whippet deps migrate',
-            '',
-            'Once you have a `whippet.json` file, you can run the following instead of `whippet plugins upgrade`:',
-            '  $ whippet deps update',
-            '',
-            'And the following instead of `whippet plugins install`:',
-            '  $ whippet deps install',
-            '',
-            '',
-        ]));
+        if ($internal) {
+            $this->warningText([
+                'Notice: Using a deprecated `plugins` file.',
+            ]);
+        } else {
+            $this->warningText([
+                'The plugins subcommand is deprecated and will be removed in a future release.',
+                '',
+                'To migrate a `plugins` file to a `whippet.json` file, run the following:',
+                '  $ whippet deps migrate',
+                '',
+                'Once you have a `whippet.json` file, you can run the following instead of `whippet plugins upgrade`:',
+                '  $ whippet deps update',
+                '',
+                'And the following instead of `whippet plugins install`:',
+                '  $ whippet deps install',
+                '',
+                '',
+            ]);
+        }
     }
 
     private function warningText($lines)
@@ -48,9 +54,9 @@ class Plugin extends \RubbishThorClone
     * This command will not change an installed commit unless the revision has changed. It
     * just makes sure that what's in the project is what's in the file.
     */
-    public function install()
+    public function install($internal = false)
     {
-        $this->deprecationNotice();
+        $this->deprecationNotice($internal);
         $this->whippet_init();
         $this->load_plugins_manifest();
         $this->load_plugins_lock();
