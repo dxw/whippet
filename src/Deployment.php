@@ -8,15 +8,17 @@ class Deployment
 
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\ProjectDirectory $dir
+        \Dxw\Whippet\ProjectDirectory $projectDir,
+        /* string */ $deployDir
     ) {
         $this->factory = $factory;
-        $this->deploy_dir = (string) $dir;
+        $this->projectDir = $projectDir;
+        $this->deploy_dir = $deployDir;
         $this->releases_dir = "{$this->deploy_dir}/releases";
         $this->shared_dir = "{$this->deploy_dir}/shared";
     }
 
-    public function deploy($force, $keep)
+    public function deploy(/* bool */ $force, /* int */ $keep)
     {
         try {
             //
@@ -50,7 +52,7 @@ class Deployment
                 $release_number = 0;
             }
 
-            $new_release = new \Dxw\Whippet\Modules\Release($this->releases_dir, '', $release_number);
+            $new_release = $this->factory->newInstance('\\Dxw\\Whippet\\Modules\\Release', $this->releases_dir, '', $release_number);
 
             // Make it.
             $new_release->create($force);
@@ -116,7 +118,7 @@ class Deployment
                 echo implode($messages, "\n");
                 echo "\n\nRelease did not validate; it has been moved to: $broken_release";
 
-                exit(1);
+                return \Result\Result::err('release did not validate');
             } else {
                 // If we are forcing, rejig some directories
                 if ($force) {
@@ -191,23 +193,4 @@ class Deployment
     {
         return file_put_contents("{$this->deploy_dir}/releases/manifest.json", json_encode($this->releases_manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
-};
-
-/*
-/var/data/dxw.com     # app repo
-
-app
-releases
-c1cbf7b2f8ecd7d6befece09f712c85a7c839b      # a working WP deploy
-shared
-wp-config.php
-uploads -> /somewhere/that/uploads/exist
-current -> c1cbf7b2f8ecd7d6befece09f712c85a7c839b
-
-/var/vhosts/dxw.com -> /app/current
-
-
-
-git pull
-whippet deploy /path/to/app
-*/
+}

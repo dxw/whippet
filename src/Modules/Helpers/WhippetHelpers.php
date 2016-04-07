@@ -160,6 +160,8 @@ trait WhippetHelpers
         }
 
         if (count($missing) > 0) {
+            echo "hello\n";
+            echo $project_dir;
             echo "The following files and directories are required but could not be found:\n";
             foreach ($missing as $file) {
                 echo "  {$file}\n";
