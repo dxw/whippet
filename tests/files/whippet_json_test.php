@@ -2,6 +2,8 @@
 
 class Files_WhippetJson_Test extends PHPUnit_Framework_TestCase
 {
+    use \Helpers;
+
     public function testGetDependenciesPlugins()
     {
         $whippetJson = new \Dxw\Whippet\Files\WhippetJson([

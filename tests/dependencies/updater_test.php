@@ -2,7 +2,7 @@
 
 class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 {
-    use Helpers;
+    use \Helpers;
 
     private function getGitignore(array $get, array $save, /* bool */ $saveIgnores, /* bool */ $warnOnGet)
     {
@@ -62,8 +62,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdate()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -117,8 +116,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateWithExistingGitignore()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
@@ -170,8 +168,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateWithExistingGitignoreNoDuplication()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
@@ -224,8 +221,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateFailedGitCommand()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -268,8 +264,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateWithExplicitSrc()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -314,8 +309,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateWithoutRef()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -358,8 +352,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateBlankJsonfile()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
@@ -387,8 +380,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateNoGitignore()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -442,8 +434,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateRemoveFromGitignore()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
@@ -499,8 +490,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateBubbleErrors()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::err('a WhippetJson error'));
 
@@ -520,8 +510,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateNoExistingWhippetLock()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -576,8 +565,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
     public function testUpdateWithBrokenJson()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $whippetJson = $this->getWhippetJson([
             'src' => [

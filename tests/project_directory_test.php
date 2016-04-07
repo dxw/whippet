@@ -2,10 +2,11 @@
 
 class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 {
+    use \Helpers;
+
     public function testGetDirectorySuccess1()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         mkdir($dir.'/wp-content/themes/my-theme');
         touch($dir.'/whippet.json');
@@ -25,8 +26,7 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDirectorySuccess2()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         mkdir($dir.'/projects');
         mkdir($dir.'/projects/project1');
@@ -51,8 +51,7 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDirectoryFailure()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         mkdir($dir.'/projects');
         mkdir($dir.'/projects/project1');
@@ -76,8 +75,7 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDirectoryWhippetJson()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         mkdir($dir.'/wp-content/themes/my-theme');
         touch($dir.'/whippet.json');
@@ -97,8 +95,7 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDirectoryAvoidPluginsDirectory()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         mkdir($dir.'/wp-content');
         mkdir($dir.'/wp-content/plugins');

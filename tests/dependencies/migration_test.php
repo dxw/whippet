@@ -2,7 +2,7 @@
 
 class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 {
-    use Helpers;
+    use \Helpers;
 
     private function getWhippetJsonExpectSavePath($path)
     {
@@ -19,8 +19,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
     public function testMigrate()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         file_put_contents($dir.'/plugins', implode("\n", [
             'source = "git@git.dxw.net:wordpress-plugins/"',
@@ -99,8 +98,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
     public function testMigrateDeprecatedComment()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         file_put_contents($dir.'/plugins', implode("\n", [
             '#bad comment',
@@ -126,8 +124,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
     public function testMigrateMissingSource()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         file_put_contents($dir.'/plugins', implode("\n", [
             'source=',
@@ -151,8 +148,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
     public function testMigrateMissingPluginsFile()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
@@ -172,8 +168,7 @@ class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
 
     public function testMigratePreExistingWhippetJson()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         touch($dir.'/whippet.json');
 
         file_put_contents($dir.'/plugins', implode("\n", [

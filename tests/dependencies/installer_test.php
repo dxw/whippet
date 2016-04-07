@@ -2,12 +2,11 @@
 
 class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 {
-    use Helpers;
+    use \Helpers;
 
     public function testInstall()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
@@ -56,8 +55,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallThemeAlreadyCloned()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
@@ -93,8 +91,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallMissingWhippetJson()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
@@ -112,8 +109,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallMissingWhippetLock()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found'));
@@ -134,8 +130,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallWrongHash()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
@@ -158,8 +153,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallCloneFails()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
@@ -194,8 +188,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallCheckoutFails()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
@@ -230,8 +223,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
     public function testInstallBlankLockfile()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 

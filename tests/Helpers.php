@@ -110,4 +110,11 @@ trait Helpers
     {
         return new \Dxw\Whippet\ProjectDirectory($dir);
     }
+
+    private function getDir()
+    {
+        $root = \org\bovigo\vfs\vfsStream::setup();
+
+        return $root->url();
+    }
 }

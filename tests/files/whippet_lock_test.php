@@ -2,6 +2,8 @@
 
 class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 {
+    use \Helpers;
+
     public function testGetDependencies()
     {
         $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
@@ -47,8 +49,7 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testFromFileGetDependencies()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         file_put_contents($dir.'/whippet.lock', json_encode([
             'themes' => [
@@ -115,8 +116,7 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testSaveToPath()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $data = [
             'foo' => 'bar',
@@ -132,8 +132,7 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testSaveToPathPrettyPrinting()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $data = [
             'foo' => '/',
@@ -162,8 +161,7 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
 
     public function testFromFileNotFound()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $output = \Dxw\Whippet\Files\WhippetLock::fromFile($dir.'/file-not-found.json');
 
