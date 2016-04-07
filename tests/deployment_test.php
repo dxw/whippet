@@ -4,17 +4,45 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
-    private function getRelease(/* string */ $path)
+    public function symlink()
     {
+        if (!isset($this->symlinkCalls)) {
+            $this->symlinkCalls = [];
+        }
+
+        $this->symlinkCalls[] = func_get_args();
+    }
+
+    private function getRelease(/* string */ $path, /* bool */ $createFiles)
+    {
+        mkdir($path);
+        $releaseDir = $path.'/abc123';
+        mkdir($releaseDir);
+
         $release = $this->getMockBuilder('\\Dxw\\Whippet\\Modules\\Release')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $release->expects($this->exactly(1))
+        $createMethod = $release->expects($this->exactly(1))
         ->method('create')
         ->with(false);
+        if ($createFiles) {
+            $createMethod->will($this->returnCallback(function () use ($releaseDir) {
+                touch($releaseDir.'/wp-login.php');
+                mkdir($releaseDir.'/wp-includes');
+                touch($releaseDir.'/wp-includes/wp-db.php');
+                mkdir($releaseDir.'/wp-admin');
+                touch($releaseDir.'/wp-admin/edit.php');
+                mkdir($releaseDir.'/wp-content');
+                mkdir($releaseDir.'/wp-content/themes');
+                mkdir($releaseDir.'/wp-content/plugins');
+                file_put_contents($releaseDir.'/wp-config.php', "<?php define('DB_NAME', 'foobar');\n");
+                mkdir($releaseDir.'/wp-content/uploads');
+            }));
+        }
 
-        $release->release_dir = $path;
+        $release->release_dir = $releaseDir;
+        $release->deployed_commit = 'abc123';
 
         return $release;
     }
@@ -25,13 +53,15 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
 
         $projectDir = $dir.'/wp';
         $deployDir = $dir.'/deploy';
-        $sharedDir = $dir.'/shared';
+        $sharedDir = $deployDir.'/shared';
 
         // Create deploy directory files
         mkdir($deployDir);
 
         // Create shared dir files
         mkdir($sharedDir);
+        file_put_contents($sharedDir.'/wp-config.php', "<?php define('DB_NAME', 'foobar');\n");
+        mkdir($sharedDir.'/uploads');
 
         return [$projectDir, $deployDir, $sharedDir];
     }
@@ -52,7 +82,7 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
 
         touch($sharedDir.'/wp-config.php');
 
-        $release = $this->getRelease($deployDir.'/releases');
+        $release = $this->getRelease($deployDir.'/releases', false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Modules\\Release', $deployDir.'/releases', '', 0, $release);
 
         $deployment = new \Dxw\Whippet\Deployment(
@@ -74,12 +104,40 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
             "\twp-admin/edit.php is missing; is WordPress properly deployed?",
             "\twp-content/themes is missing; is the app properly deployed?",
             "\twp-content/plugins is missing; is the app properly deployed?",
-            "\tuploads directory is not in the shared directory.",
-            "\twp-config.php doesn't contain DB_NAME; is it valid?",
             "\twp-config.php is missing; did the symlinking fail?",
             "\twp-content/uploads is missing; did the symlinking fail?",
             '',
-            'Release did not validate; it has been moved to: vfs://root/deploy/releases.broken',
+            'Release did not validate; it has been moved to: vfs://root/deploy/releases/abc123.broken',
         ]), $output);
+    }
+
+    public function testDeploySuccess()
+    {
+        list($projectDir, $deployDir, $sharedDir) = $this->getAllDirs();
+        $this->createProjectFiles($projectDir);
+
+        touch($sharedDir.'/wp-config.php');
+
+        $release = $this->getRelease($deployDir.'/releases', true);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Modules\\Release', $deployDir.'/releases', '', 0, $release);
+
+        $deployment = new \Dxw\Whippet\Deployment(
+            $this->getFactory(),
+            $this->getProjectDirectory($projectDir),
+            $deployDir
+        );
+        $deployment->symlink = [$this, 'symlink'];
+        $deployment->realpath = function ($a) { return $a; };
+
+        ob_start();
+        $result = $deployment->deploy(false, 3);
+        $output = ob_get_clean();
+
+        $this->assertEquals([
+            [$deployDir.'/releases/abc123', $deployDir.'/releases/abc123/../../current'],
+        ], $this->symlinkCalls);
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals('', $output);
     }
 }

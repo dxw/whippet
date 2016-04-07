@@ -16,6 +16,10 @@ class Deployment
         $this->deploy_dir = $deployDir;
         $this->releases_dir = "{$this->deploy_dir}/releases";
         $this->shared_dir = "{$this->deploy_dir}/shared";
+
+        // Dirty hack for functions that don't work with vfsStream
+        $this->symlink = 'symlink';
+        $this->realpath = 'realpath';
     }
 
     public function deploy(/* bool */ $force, /* int */ $keep)
@@ -79,7 +83,7 @@ class Deployment
 
                 // Is there stuff in shared? Does it look right?
                 'wp-config.php is not in the shared directory.' => !file_exists("{$new_release->release_dir}/../../shared/wp-config.php"),
-                'uploads directory is not in the shared directory.' => (!file_exists("{$new_release->release_dir}/../../shared/uploads") && !is_link("{$new_release->release_dir}/../../shared/uploads")),
+                'uploads directory is not in the shared directory.' => (!file_exists("{$new_release->release_dir}/../../shared/uploads") && !file_exists("{$new_release->release_dir}/../../shared/uploads")),
                 "wp-config.php doesn't contain DB_NAME; is it valid?" => !strpos(file_get_contents("{$new_release->release_dir}/../../shared/wp-config.php"), 'DB_NAME'),
 
                 //
@@ -131,7 +135,7 @@ class Deployment
                 $current = "{$new_release->release_dir}/../../current";
 
                 // If we are not forcing, check to see if the release being deployed is the currently deployed release - if so, do nothing
-                if (!$force && file_exists($current) && readlink($current) == realpath($new_release->release_dir)) {
+                if (!$force && file_exists($current) && readlink($current) == call_user_func($this->realpath, $new_release->release_dir)) {
                     return;
                 }
 
@@ -139,7 +143,7 @@ class Deployment
                     unlink("{$current}");
                 }
 
-                symlink(realpath("{$new_release->release_dir}"), "{$current}");
+                call_user_func($this->symlink, call_user_func($this->realpath, "{$new_release->release_dir}"), "{$current}");
 
                 // Update manifest
                 $release = new \stdClass();
@@ -163,12 +167,14 @@ class Deployment
         // of directories on -f kinda screws that up. It needs to be made better, and then we can do this properly.
         //
 
-        $releases = glob(realpath("{$this->releases_dir}").'/*', GLOB_ONLYDIR);
+        $releases = glob(call_user_func($this->realpath, "{$this->releases_dir}").'/*', GLOB_ONLYDIR);
         uasort($releases, function ($a, $b) { return filemtime($b) - filemtime($a); });
 
         foreach (array_slice($releases, $keep) as $dir) {
             $this->recurse_rmdir($dir);
         }
+
+        return \Result\Result::ok();
     }
 
     protected function load_releases_manifest()
