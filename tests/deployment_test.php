@@ -4,7 +4,7 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
-    private function getRelease($path)
+    private function getRelease(/* string */ $path)
     {
         $release = $this->getMockBuilder('\\Dxw\\Whippet\\Modules\\Release')
         ->disableOriginalConstructor()
@@ -19,27 +19,37 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
         return $release;
     }
 
-    public function testDeployRequiredButNotFound()
+    private function getAllDirs()
     {
-        $root = \org\bovigo\vfs\vfsStream::setup();
-        $dir = $root->url();
+        $dir = $this->getDir();
 
         $projectDir = $dir.'/wp';
         $deployDir = $dir.'/deploy';
         $sharedDir = $dir.'/shared';
-
-        // Create project files
-        mkdir($projectDir);
-        mkdir($projectDir.'/config');
-        mkdir($projectDir.'/wp-content');
-        mkdir($projectDir.'/wp-content/plugins');
-        touch($projectDir.'/.gitignore');
 
         // Create deploy directory files
         mkdir($deployDir);
 
         // Create shared dir files
         mkdir($sharedDir);
+
+        return [$projectDir, $deployDir, $sharedDir];
+    }
+
+    private function createProjectFiles(/* string */ $projectDir)
+    {
+        mkdir($projectDir);
+        mkdir($projectDir.'/config');
+        mkdir($projectDir.'/wp-content');
+        mkdir($projectDir.'/wp-content/plugins');
+        touch($projectDir.'/.gitignore');
+    }
+
+    public function testDeployReleaseDidNotValidate()
+    {
+        list($projectDir, $deployDir, $sharedDir) = $this->getAllDirs();
+        $this->createProjectFiles($projectDir);
+
         touch($sharedDir.'/wp-config.php');
 
         $release = $this->getRelease($deployDir.'/releases');
