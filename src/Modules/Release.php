@@ -41,7 +41,10 @@ class Release
         // Got whippet.{json,lock} or plugins.lock?
         if (is_file($this->project_dir.'/whippet.json') && is_file($this->project_dir.'/whippet.lock')) {
             $factory = new \Dxw\Whippet\Factory();
-            $installer = new \Dxw\Whippet\Dependencies\Installer($factory, $this->project_dir);
+            $installer = new \Dxw\Whippet\Dependencies\Installer(
+                $factory,
+                new \Dxw\Whippet\ProjectDirectory($this->project_dir)
+            );
         } elseif ($this->plugins_lock_file && file_exists($this->plugins_lock_file)) {
             $installer = new Plugin();
         } else {
