@@ -7,13 +7,13 @@ This project is a framework for building WordPress applications that eases deplo
 Whippet has a few basic goals:
 
 1. Allowing proper build steps to take place, that automate build tasks both during development and deployment
-2. Properly managing plugins, allowing them to be version controlled and easily updated
+2. Properly managing plugins and themes, allowing them to be version controlled and easily updated
 3. Managing the creation of releases, including rollbacks
 4. Automating the generation of commonly required objects like new applications and new themes
 5. Facilitating automated testing
 6. Allowing structured test data to be distributed as part of the codebase
 
-At the moment, Whippet can manages plugins and releases and compile stylesheets in Whippet-enabled themes.
+At the moment, Whippet can manages plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
 
 During development, whippet is designed to be used in conjunction with [Whippet Server](https://github.com/dxw/whippet-server). These projects will be combined at some point in the future.
 
@@ -83,9 +83,9 @@ To change the version, replace "master" with the version you'd like:
         "revision": "4.1.1"
 ```
 
-### Add plugins
+### Add plugins and themes
 
-If you're using any plugins from the codex, you should add them to your ```plugins``` file. For more information, see the [Plugins section](#plugins).
+If you're using any plugins or themes from the codex, you should add them to your `whippet.json` file. For more information, see the [Plugins section](#plugins).
 
 ### Give yourself some credit!
 
@@ -122,76 +122,91 @@ An application that uses Whippet must have the following directory structure, an
 
 Note: At the moment, Whippet assumes it is running within dxw's infrastructure, and makes some assumptions accordingly. If you run into a problem where this may be the cause, please open an issue.
 
-To manage plugins using Whippet, you make entries in the Plugins file in the root of the application.
+To manage plugins and themes using Whippet, you make entries in the `whippet.json` file in the root of the application.
 
-The first line of the file should specify a source for plugins. The source should be a base url for a git repo.
+The file should specify a source for plugins and themes. The source should be a base url for a git repo.
 
-If you are a dxw customer, the source will be ```git@git.dxw.net:wordpress-plugins/```. If not, we suggest using ```https://github.com/wp-plugins```.
+If you are a dxw customer, the sources will be `git@git.dxw.net:wordpress-plugins/` and `git@git.dxw.net:wordpress-themes/`. If not, we suggest using `https://github.com/wp-plugins` for plugins.
 
-Subsequent lines should specify plugins that you want to install. They consist of the name of the plugin followed by an equals sign, followed optionally by a tag or branch name. Example:
+The rest of the file should specify plugins and themes that you want to install. Example:
 
 ```
-source = "git@git.dxw.net:wordpress-plugins/"
-
-akismet=
+{
+    "src": {
+        "plugins": "git@git.dxw.net:wordpress-plugins/",
+        "themes": "git@git.dxw.net:wordpress-themes/"
+    },
+    "plugins": [
+        {"name": "akismet"}
+    ],
+    "themes": [
+        {"name": "twentyfourteen"},
+        {"name": "twentysixteen"},
+        {"name": "twentyten"}
+    ]
+}
 ```
 
-The ```akismet=``` instructs Whippet (on request) to install the most recent version of Akismet available in the repo. Whippet will determine a valid repo URL for the akismet plugin by appending it to the source. In this example:
+The `{"name": "akismet"}` instructs Whippet (on request) to install the most recent version of Akismet available in the repo. Whippet will determine a valid repo URL for the akismet plugin by appending the name to the source. In this example:
 
 ```
 git@git.dxw.net:wordpress-plugins/akismet
 ```
 
-You can also specify a particular label or branch that you want to use. Generally, this will either be master (the default) or a tag (for a specific version). So you can do:
+You can also specify a particular label or branch that you want to use. Generally, this will either be master (the default) or a tag (for a specific version), but you can use any git reference. So you can do:
 
 ```
-akismet = v3.0.0
+{
+    "name": "akismet",
+    "ref": "v1.1"
+}
 ```
 
-Which will cause Whippet to install the plugin at the commit with that tag. If you use a branch:
+Which will cause Whippet to install the plugin at the commit with that tag or branch.
+
+Finally, you can also specify a repo for an individual plugin or theme explicitly:
+
+- Pull version 3.0.0 from your own special repo:
 
 ```
-akismet = master
+{
+    "name": "akismet",
+    "ref": "v3.0.0",
+    "src": "git@my-git-server.com:akismet"
+}
 ```
 
-Then whippet's behaviour will vary depending on what command you run (see below).
-
-Finally, you can also specify a repo for an individual plugin explicitly:
+- Or, pull master:
 
 ```
-; Pull version 3.0.0 from your own special repo
-akismet = 3.0.0, git@my-git-server.com:akismet
-
-; Or, pull master:
-akismet = master, git@my-git-server.com:akismet
-
-; This works too:
-akismet = , git@my-git-server.com:akismet
+{
+    "name": "akismet",
+    "ref": "master",
+    "src": "git@my-git-server.com:akismet"
+}
 ```
+
+- This works too:
+
+```
+{
+    "name": "akismet",
+    "src": "git@my-git-server.com:akismet"
+}
+```
+
+### whippet deps update
+
+This command will:
+
+1. Check the commit hash for each ref of each repo specified in `whippet.json`
+2. Update `whippet.lock`
+3. Update `.gitignore` with the plugins/themes installed, and remove plugins/themes that are removed from `whippet.json`
+4. Run `whippet deps install`
 
 ### whippet plugins install
 
-When run for the first time, this command will install all the plugins in your Plugins file, at the most
-recent commits that exist in the remote for branch or tag you specify (or master, if not specified.) The
-hashes for these commits will be saved in plugins.lock, which you should commit into git.
-
-When run on subsequent occasions, this command will:
-
-1. Check for plugins that have been removed from your Plugins file, and delete them from the application
-2. Check for changes to the Plugins file, and update, add or remove plugins as specified
-3. Check for plugins that have been added to your Plugins file, and clone them
-
-Critically, if no changes have been made to the Plugins file, whippet plugin install will always install
-the commits specified in plugins.lock; ie, the most recent versions that were available at the time the
-plugins were last installed.
-
-### whippet plugins upgrade <plugin>
-
-This command checks to see if the branch or tag in the Plugins file has a newer commit on the remote repo than
-is installed locally, and if so, updates the installed plugin to the newest one available on the remote.
-
-It is used where the Plugins file refers to a branch (either explicitly, or by leaving it blank and
-defaulting to master) and you wish to update the locally installed version to the newest one available.
+This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
 
 ## Deploys
 
@@ -210,7 +225,7 @@ mkdir /var/local/myapp/releases
 cp /path/to/your/wp-config.php /var/local/myapp/shared/
 ```
 
-When you deploy, Whippet will make sure your app is up to date (per your plugins.lock), create a new release in releases, and create a symlink that points to it (in this example, at /var/local/myapp/current).
+When you deploy, Whippet will make sure your app is up to date (per your `whippet.lock`), create a new release in releases, and create a symlink that points to it (in this example, at /var/local/myapp/current).
 
 You can then configure your webserver to use the current symlink as your document root, and your application should be available.
 
