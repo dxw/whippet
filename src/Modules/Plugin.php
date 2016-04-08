@@ -259,7 +259,7 @@ class Plugin extends \RubbishThorClone
     */
     public function upgrade($upgrade_plugin = '')
     {
-        $this->deprecationNotice();
+        $this->deprecationNotice(true);
         $this->whippet_init();
         $this->load_plugins_manifest();
         $this->load_plugins_lock();
