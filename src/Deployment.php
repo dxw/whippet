@@ -20,6 +20,7 @@ class Deployment
         // Dirty hack for functions that don't work with vfsStream
         $this->symlink = 'symlink';
         $this->realpath = 'realpath';
+        $this->glob = 'glob';
     }
 
     public function deploy(/* bool */ $force, /* int */ $keep)
@@ -167,7 +168,7 @@ class Deployment
         // of directories on -f kinda screws that up. It needs to be made better, and then we can do this properly.
         //
 
-        $releases = glob(call_user_func($this->realpath, "{$this->releases_dir}").'/*', GLOB_ONLYDIR);
+        $releases = call_user_func($this->glob, call_user_func($this->realpath, "{$this->releases_dir}").'/*', GLOB_ONLYDIR);
         uasort($releases, function ($a, $b) { return filemtime($b) - filemtime($a); });
 
         foreach (array_slice($releases, $keep) as $dir) {

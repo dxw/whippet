@@ -128,6 +128,16 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
         );
         $deployment->symlink = [$this, 'symlink'];
         $deployment->realpath = function ($a) { return $a; };
+        mkdir($deployDir.'/releases/1');
+        mkdir($deployDir.'/releases/2');
+        mkdir($deployDir.'/releases/3');
+        mkdir($deployDir.'/releases/4');
+        $deployment->glob = function () use ($deployDir) { return [
+            $deployDir.'/releases/1',
+            $deployDir.'/releases/2',
+            $deployDir.'/releases/3',
+            $deployDir.'/releases/4',
+        ]; };
 
         ob_start();
         $result = $deployment->deploy(false, 3);
@@ -139,5 +149,9 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($result->isErr());
         $this->assertEquals('', $output);
+        $this->assertTrue(file_exists($deployDir.'/releases/1'));
+        $this->assertTrue(file_exists($deployDir.'/releases/2'));
+        $this->assertTrue(file_exists($deployDir.'/releases/3'));
+        $this->assertFalse(file_exists($deployDir.'/releases/4'));
     }
 }
