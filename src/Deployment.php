@@ -57,7 +57,7 @@ class Deployment
                 $release_number = 0;
             }
 
-            $new_release = $this->factory->newInstance('\\Dxw\\Whippet\\Modules\\Release', $this->releases_dir, '', $release_number);
+            $new_release = $this->factory->newInstance('\\Dxw\\Whippet\\Release', $this->releases_dir, '', $release_number);
 
             // Make it.
             $new_release->create($force);

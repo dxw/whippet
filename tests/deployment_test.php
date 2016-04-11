@@ -19,7 +19,7 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
         $releaseDir = $path.'/abc123';
         mkdir($releaseDir);
 
-        $release = $this->getMockBuilder('\\Dxw\\Whippet\\Modules\\Release')
+        $release = $this->getMockBuilder('\\Dxw\\Whippet\\Release')
         ->disableOriginalConstructor()
         ->getMock();
 
@@ -83,7 +83,7 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
         touch($sharedDir.'/wp-config.php');
 
         $release = $this->getRelease($deployDir.'/releases', false);
-        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Modules\\Release', $deployDir.'/releases', '', 0, $release);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Release', $deployDir.'/releases', '', 0, $release);
 
         $deployment = new \Dxw\Whippet\Deployment(
             $this->getFactory(),
@@ -119,7 +119,7 @@ class DeploymentTest extends PHPUnit_Framework_TestCase
         touch($sharedDir.'/wp-config.php');
 
         $release = $this->getRelease($deployDir.'/releases', true);
-        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Modules\\Release', $deployDir.'/releases', '', 0, $release);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Release', $deployDir.'/releases', '', 0, $release);
 
         $deployment = new \Dxw\Whippet\Deployment(
             $this->getFactory(),

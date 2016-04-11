@@ -1,11 +1,11 @@
 <?php
 
-namespace Dxw\Whippet\Modules;
+namespace Dxw\Whippet;
 
 class Release
 {
-    use Helpers\WhippetHelpers;
-    use Helpers\ManifestIo;
+    use Modules\Helpers\WhippetHelpers;
+    use Modules\Helpers\ManifestIo;
 
     public $number = 0;
     public $time = 0;
