@@ -5,7 +5,9 @@
         "dxw/rubbishthorclone": "dev-master",
         "aura/autoload": "2.x-dev",
         "nikita2206/result": "dev-master",
-        "kevinlebrun/colors.php": "dev-master"
+        "kevinlebrun/colors.php": "dev-master",
+        "symfony/console": "^3.0",
+        "php-di/php-di": "^5.2"
     },
     "bin": ["bin/whippet"],
     "require-dev": {

@@ -81,29 +81,46 @@ trait Helpers
         return new \Dxw\Whippet\Files\WhippetJson($data);
     }
 
-    private function getFactory()
+    private function newFactory()
     {
-        $factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
+        if (!isset($this->factoryNewInstance)) {
+            $this->factoryNewInstance = [];
+        }
+
+        if (!isset($this->factoryCallStatic)) {
+            $this->factoryCallStatic = [];
+        }
+
+        $this->factory = $this->getMockBuilder('\\Dxw\\Whippet\\Factory')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $factory->method('newInstance')
+        $this->factory->method('newInstance')
         ->will($this->returnValueMap($this->factoryNewInstance));
 
-        $factory->method('callStatic')
+        $this->factory->method('callStatic')
         ->will($this->returnValueMap($this->factoryCallStatic));
+    }
 
-        return $factory;
+    private function getFactory()
+    {
+        $this->newFactory();
+
+        return $this->factory;
     }
 
     private function addFactoryNewInstance()
     {
         $this->factoryNewInstance[] = func_get_args();
+
+        $this->newFactory();
     }
 
     private function addFactoryCallStatic()
     {
         $this->factoryCallStatic[] = func_get_args();
+
+        $this->newFactory();
     }
 
     private function getProjectDirectory($dir)
