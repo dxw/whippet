@@ -2,17 +2,22 @@
 
 // Per-project configuration
 if (file_exists('/usr/src/app/config/server.php')) {
-  require('/usr/src/app/config/server.php');
+    require('/usr/src/app/config/server.php');
 }
 
 // Per-host configuration (for setting WP_SITEURL to http://x.local etc)
 if (file_exists('/usr/src/app/config/server-local.php')) {
-  require('/usr/src/app/config/server-local.php');
+    require('/usr/src/app/config/server-local.php');
 }
 
 // Password nerfing
 if (!defined('DISABLE_PASSWORD_NERFING')) {
-  function wp_check_password(){return true;}
+    function wp_check_password(){return true;}
+}
+
+// WP_DEBUG off by default
+if (!defined('WP_DEBUG')) {
+    define('WP_DEBUG', false);
 }
 
 // mu-plugins
