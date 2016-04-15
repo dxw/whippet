@@ -20,6 +20,11 @@ if (!defined('WP_DEBUG')) {
     define('WP_DEBUG', false);
 }
 
+// For some reason this is not being set correctly by default
+if (!defined('DB_CHARSET')) {
+    define('DB_CHARSET', 'utf8mb4');
+}
+
 // mu-plugins
 define('WPMU_PLUGIN_DIR', '/usr/src/mu-plugins');
 
