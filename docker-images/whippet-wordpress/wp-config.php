@@ -10,6 +10,22 @@ if (file_exists('/usr/src/app/config/server-local.php')) {
     require('/usr/src/app/config/server-local.php');
 }
 
+// Populate globals from any env vars starting with WORDPRESS_
+foreach ($_ENV as $k => $v) {
+    $match = 'WORDPRESS_';
+    if (substr($k, 0, strlen($match)) !== $match) {
+        continue;
+    }
+
+    $const = substr($k, strlen($match));
+
+    if (defined($const)) {
+        continue;
+    }
+
+    define($const, $v);
+}
+
 // Password nerfing
 if (!defined('DISABLE_PASSWORD_NERFING')) {
     function wp_check_password(){return true;}
