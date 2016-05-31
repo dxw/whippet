@@ -30,8 +30,8 @@ class Server extends \RubbishThorClone
     {
         $this->whippet_init();
 
-        exec('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress 2>/dev/null');
-        exec('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress 2>/dev/null');
+        exec('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress whippet_beanstalk 2>/dev/null');
+        exec('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress whippet_beanstalk 2>/dev/null');
     }
 
   /*
@@ -77,12 +77,17 @@ class Server extends \RubbishThorClone
           echo "Mailcatcher container failed to start\n";
           exit(1);
       }
+      exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_beanstalk schickling/beanstalkd 2>/dev/null', $output, $return);
+      if ($return !== 0) {
+          echo "Beanstalk container failed to start\n";
+          exit(1);
+      }
       exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql 2>/dev/null', $output, $return);
       if ($return !== 0) {
           echo "MySQL container failed to start\n";
           exit(1);
       }
-      exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:8000 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher -e PROJECT_ID='.escapeshellarg(md5($this->project_dir)).' thedxw/whippet-wordpress 2>/dev/null', $output, $return);
+      exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 8000:8000 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher --link=whippet_beanstalk:beanstalk -e PROJECT_ID='.escapeshellarg(md5($this->project_dir)).' thedxw/whippet-wordpress 2>/dev/null', $output, $return);
       if ($return !== 0) {
           echo "WordPress container failed to start\n";
           exit(1);

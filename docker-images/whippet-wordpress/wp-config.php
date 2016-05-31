@@ -41,6 +41,9 @@ if (!defined('DB_CHARSET')) {
     define('DB_CHARSET', 'utf8mb4');
 }
 
+// beanstalk
+define('BEANSTALKD_HOST', getenv('BEANSTALK_PORT_11300_TCP_ADDR'));
+
 // mu-plugins
 define('WPMU_PLUGIN_DIR', '/usr/src/mu-plugins');
 
