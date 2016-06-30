@@ -1,11 +1,11 @@
 <?php
 
-namespace Dxw\Whippet\Modules;
+namespace Dxw\Whippet;
 
 class Release
 {
-    use Helpers\WhippetHelpers;
-    use Helpers\ManifestIo;
+    use Modules\Helpers\WhippetHelpers;
+    use Modules\Helpers\ManifestIo;
 
     public $number = 0;
     public $time = 0;
@@ -38,8 +38,16 @@ class Release
             $force = false;
         }
 
-        // Got plugins.lock?
-        if (!$this->plugins_lock_file || !file_exists($this->plugins_lock_file)) {
+        // Got whippet.{json,lock} or plugins.lock?
+        if (is_file($this->project_dir.'/whippet.json') && is_file($this->project_dir.'/whippet.lock')) {
+            $factory = new \Dxw\Whippet\Factory();
+            $installer = new \Dxw\Whippet\Dependencies\Installer(
+                $factory,
+                new \Dxw\Whippet\ProjectDirectory($this->project_dir)
+            );
+        } elseif ($this->plugins_lock_file && file_exists($this->plugins_lock_file)) {
+            $installer = new Plugin();
+        } else {
             echo "Couldn't find plugins.lock in the project directory. (Did you run whippet plugins install?)\n";
             die(1);
         }
@@ -76,8 +84,11 @@ class Release
         }
 
         // Make sure wp-content is up to date
-        $plugin = new Plugin();
-        $plugin->install();
+        $result = $installer->install(true);
+        if ($result->isErr()) {
+            echo sprintf("ERROR: %s\n", $result->getErr());
+            exit(1);
+        }
 
         // Copy over wp-content
         $this->recurse_copy("{$this->project_dir}/wp-content", "{$this->release_dir}/wp-content");

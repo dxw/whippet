@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "deed9d987fe4ba0af9a1ecab12ea7397",
+    "hash": "ee25d54728feafe7658503062d1b5683",
     "packages": [
         {
             "name": "aura/autoload",
@@ -83,6 +83,57 @@
             "time": "2016-03-30 20:17:49"
         },
         {
+            "name": "kevinlebrun/colors.php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kevinlebrun/colors.php.git",
+                "reference": "28725a25f6173897df71ce6a8b3bbddd4d9143df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kevinlebrun/colors.php/zipball/28725a25f6173897df71ce6a8b3bbddd4d9143df",
+                "reference": "28725a25f6173897df71ce6a8b3bbddd4d9143df",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "1.0.*",
+                "squizlabs/php_codesniffer": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Colors": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Le Brun",
+                    "email": "lebrun.k@gmail.com",
+                    "homepage": "http://kevinlebrun.fr",
+                    "role": "developer"
+                }
+            ],
+            "description": "Colors for PHP CLI scripts",
+            "homepage": "https://github.com/kevinlebrun/colors.php",
+            "keywords": [
+                "cli",
+                "color",
+                "colors",
+                "console",
+                "shell"
+            ],
+            "time": "2016-01-31 20:02:02"
+        },
+        {
             "name": "mjackson/optionparser",
             "version": "dev-master",
             "source": {
@@ -104,6 +155,45 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "time": "2015-03-17 16:57:12"
+        },
+        {
+            "name": "nikita2206/result",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikita2206/result.git",
+                "reference": "7b08cb5a2ecd79843d34aec3902b0ea973a92473"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikita2206/result/zipball/7b08cb5a2ecd79843d34aec3902b0ea973a92473",
+                "reference": "7b08cb5a2ecd79843d34aec3902b0ea973a92473",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Result\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Nefedov",
+                    "email": "inefedor@gmail.com"
+                }
+            ],
+            "description": "Result data type (just like in Rust)",
+            "time": "2016-03-25 16:02:11"
         },
         {
             "name": "pear/console_table",
@@ -247,6 +337,52 @@
             ],
             "homepage": "https://github.com/dxw/phar-install",
             "time": "2016-02-17 13:55:06"
+        },
+        {
+            "name": "mikey179/vfsStream",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikey179/vfsStream.git",
+                "reference": "233f48f1146a7f520ad603c46481abcfe39e979d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/233f48f1146a7f520ad603c46481abcfe39e979d",
+                "reference": "233f48f1146a7f520ad603c46481abcfe39e979d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "org\\bovigo\\vfs\\": "src/main/php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Frank Kleine",
+                    "homepage": "http://frankkleine.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Virtual file system to mock the real file system in unit tests.",
+            "homepage": "http://vfs.bovigo.org/",
+            "time": "2016-03-23 19:42:51"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -1154,7 +1290,10 @@
     "stability-flags": {
         "dxw/rubbishthorclone": 20,
         "aura/autoload": 20,
-        "dxw/phar-install": 20
+        "nikita2206/result": 20,
+        "kevinlebrun/colors.php": 20,
+        "dxw/phar-install": 20,
+        "mikey179/vfsstream": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
