@@ -25,6 +25,14 @@ class WhippetLock extends Base
 
     public function addDependency(/* string */ $type, /* string */ $name, /* string */ $src, /* string */ $revision)
     {
+        if (isset($this->data[$type])) {
+            foreach ($this->data[$type] as $key => $dependency) {
+                if ($name === $dependency['name']) {
+                    array_splice($this->data[$type], $key, 1);
+                }
+            }
+        }
+
         $this->data[$type][] = [
             'name' => $name,
             'src' => $src,
