@@ -105,6 +105,7 @@ class Deploy
 
                 while (file_exists($broken_release)) {
                     $broken_release = $broken_release_prefix."_{$count}";
+                    $count++;
                 }
 
                 rename("{$new_release->release_dir}", "{$broken_release}");
