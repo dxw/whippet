@@ -114,6 +114,38 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
         ], $whippetLock->getDependencies('plugins'));
     }
 
+    public function testAddDependencyThatAlreadyExists()
+    {
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
+            'plugins' => [
+                [
+                    'name' => 'my-other-plugin',
+                    'src' => 'git@git.dxw.net:foobar/bat',
+                    'revision' => 'zzz',
+                ],
+                [
+                    'name' => 'my-plugin',
+                    'src' => 'git@git.dxw.net:foobar/baz',
+                    'revision' => '456789',
+                ],
+            ],
+        ]);
+
+        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.dxw.net:foobar/baz', '123abc');
+        $this->assertEquals([
+            [
+                'name' => 'my-other-plugin',
+                'src' => 'git@git.dxw.net:foobar/bat',
+                'revision' => 'zzz',
+            ],
+            [
+                'name' => 'my-plugin',
+                'src' => 'git@git.dxw.net:foobar/baz',
+                'revision' => '123abc',
+            ],
+        ], $whippetLock->getDependencies('plugins'));
+    }
+
     public function testSaveToPath()
     {
         $dir = $this->getDir();
