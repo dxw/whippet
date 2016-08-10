@@ -64,13 +64,15 @@ class Updater
             $this->lockFile = $result->unwrap();
         }
 
+        $this->newLockFile = $this->factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
+
         return \Result\Result::ok();
     }
 
     private function updateHash()
     {
         $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
-        $this->lockFile->setHash($jsonHash);
+        $this->newLockFile->setHash($jsonHash);
     }
 
     private function loadGitignore()

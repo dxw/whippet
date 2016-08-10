@@ -39,9 +39,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             $addDependency
         );
 
-        $whippetLock->expects($this->exactly(1))
-        ->method('setHash')
-        ->with($hash);
+        if ($hash !== null) {
+            $whippetLock->expects($this->exactly(1))
+            ->method('setHash')
+            ->with($hash);
+        } else {
+            $whippetLock->expects($this->exactly(0))
+            ->method('setHash');
+        }
 
         $whippetLock->expects($this->exactly($path === null ? 0 : 1))
         ->method('saveToPath')
@@ -612,5 +617,51 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertTrue($result->isErr());
         $this->assertEquals('missing sources', $result->getErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
+    }
+
+    public function testUpdateRemovingDeps()
+    {
+        $dir = $this->getDir();
+
+        $whippetJson = $this->getWhippetJson([
+            'src' => [
+                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            ],
+            'plugins' => [
+                ['name' => 'my-plugin', 'ref' => 'v1.6'],
+            ],
+        ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
+
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/plugins/my-plugin\n",
+        ], true, false);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
+
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+
+        $newWhippetLock = $this->getWhippetLockWritable([
+            ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
+        ], sha1('foobar'), $dir.'/whippet.lock', []);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
+
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater(
+            $this->getFactory(),
+            $this->getProjectDirectory($dir)
+        );
+
+        ob_start();
+        $result = $dependencies->update();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        // $this->assertEquals("[Updating plugins/my-plugin]\n[Removing plugins/my-other-plugin]\n", $output);
+        $this->assertEquals("[Updating plugins/my-plugin]\n", $output);
     }
 }
