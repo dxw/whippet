@@ -97,11 +97,13 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
             ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
@@ -151,10 +153,12 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
 
@@ -204,10 +208,12 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
 
@@ -248,8 +254,10 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], false, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, null, []);
+        $newWhippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::err('oh no'));
 
@@ -292,10 +300,12 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'foobar', '27ba906'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'foobar', 'v1.4', \Result\Result::ok('27ba906'));
 
@@ -335,10 +345,12 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'master', \Result\Result::ok('27ba906'));
 
@@ -367,8 +379,10 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([], sha1('foobar'), $dir.'/whippet.lock', []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
@@ -415,11 +429,13 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', []);
+        $newWhippetLock = $this->getWhippetLockWritable([
             ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
             ['plugins', 'my-plugin', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'd961c3d'],
         ], sha1('foobar'), $dir.'/whippet.lock', []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
@@ -467,15 +483,17 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([
-            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
-        ], sha1('foobar'), $dir.'/whippet.lock', [
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, $dir.'/whippet.lock', [
             ['themes', []],
             ['plugins', [
                 ['name' => 'removed-plugin'],
             ]],
         ]);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $newWhippetLock = $this->getWhippetLockWritable([
+            ['themes', 'my-theme', 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906'],
+        ], sha1('foobar'), $dir.'/whippet.lock', []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
@@ -599,8 +617,10 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         ], false, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+        $oldWhippetLock = $this->getWhippetLockWritable([], null, null, []);
+        $newWhippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($oldWhippetLock));
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetLock', [], $newWhippetLock);
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
