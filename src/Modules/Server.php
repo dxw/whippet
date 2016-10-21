@@ -116,7 +116,7 @@ class Server extends \RubbishThorClone
       $this->whippet_init();
 
       if ($command === 'connect' || $command === null) {
-          passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
+          passthru('docker run -e TERM=xterm --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
       } elseif ($command === 'dump') {
           passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysqldump -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
       } elseif ($command === 'undump') {
