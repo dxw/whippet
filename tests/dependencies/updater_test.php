@@ -12,7 +12,9 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $getIgnores = $gitignore->method('get_ignores');
         if ($warnOnGet) {
-            $getIgnores->will($this->returnCallback(function () { trigger_error('$warOnGet set but not prevented', E_USER_WARNING); }));
+            $getIgnores->will($this->returnCallback(function () {
+                trigger_error('$warOnGet set but not prevented', E_USER_WARNING);
+            }));
         } else {
             $getIgnores->willReturn($get);
         }

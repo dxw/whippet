@@ -160,7 +160,9 @@ class Deploy
         //
 
         $releases = glob(realpath("{$this->releases_dir}").'/*', GLOB_ONLYDIR);
-        uasort($releases, function ($a, $b) { return filemtime($b) - filemtime($a); });
+        uasort($releases, function ($a, $b) {
+            return filemtime($b) - filemtime($a);
+        });
 
         foreach (array_slice($releases, $keep) as $dir) {
             $this->recurse_rmdir($dir);
