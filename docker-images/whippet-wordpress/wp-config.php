@@ -28,7 +28,10 @@ foreach ($_ENV as $k => $v) {
 
 // Password nerfing
 if (!defined('DISABLE_PASSWORD_NERFING')) {
-    function wp_check_password(){return true;}
+    function wp_check_password()
+    {
+        return true;
+    }
 }
 
 // WP_DEBUG off by default
