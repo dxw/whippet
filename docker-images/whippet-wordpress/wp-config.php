@@ -44,6 +44,14 @@ if (!defined('DB_CHARSET')) {
     define('DB_CHARSET', 'utf8mb4');
 }
 
+// Set URLs if they aren't set already
+if (!defined('WP_SITEURL')) {
+    define('WP_SITEURL', 'http://localhost');
+}
+if (!defined('WP_HOME')) {
+    define('WP_HOME', 'http://localhost');
+}
+
 // beanstalk
 define('BEANSTALKD_HOST', getenv('BEANSTALK_PORT_11300_TCP_ADDR'));
 
