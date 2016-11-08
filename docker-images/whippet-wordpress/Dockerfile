@@ -19,5 +19,3 @@ COPY php.ini /usr/local/etc/php/
 COPY wordpress.conf /etc/apache2/sites-enabled/
 COPY mu-plugins /usr/src/mu-plugins/
 COPY wp-config.php /var/www/html/wp-config.php
-
-EXPOSE 80
