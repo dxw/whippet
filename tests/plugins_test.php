@@ -32,6 +32,11 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         return [$return, $stdout, $stderr];
     }
 
+    private function whippetPluginsInstallCmd()
+    {
+        return $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+    }
+
     private function createTestDir()
     {
         $this->createWhippetRepo($this->dir);
@@ -44,7 +49,6 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         mkdir($dir.'/wp-content');
         mkdir($dir.'/wp-content/plugins');
         file_put_contents($dir.'/.gitignore', "\n");
-        file_put_contents($dir.'/plugins', '');
     }
 
     private function createPluginGitRepo($dir)
@@ -62,7 +66,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n; a good comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->whippetPluginsInstallCmd();
 
         $this->assertEquals(0, $return);
         $this->assertNoErrors($stderr);
@@ -73,7 +77,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n# a bad comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->whippetPluginsInstallCmd();
 
         $this->assertEquals(1, $return);
         $this->assertNoErrors($stderr);
@@ -85,7 +89,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n # a bad comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->whippetPluginsInstallCmd();
 
         $this->assertEquals(1, $return);
         $this->assertNoErrors($stderr);
