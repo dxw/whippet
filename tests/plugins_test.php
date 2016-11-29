@@ -69,6 +69,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         list($return, $stdout, $stderr) = $this->whippetPluginsInstallCmd();
 
         $this->assertEquals(0, $return);
+        $this->assertContains('The plugins subcommand is deprecated and will be removed in a future release', $stdout);
         $this->assertNoErrors($stderr);
     }
 
