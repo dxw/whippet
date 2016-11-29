@@ -13,7 +13,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         exec('rm -rf '.$this->dir);
     }
 
-    public function cmd($cmd, $cwd = null)
+    private function cmd($cmd, $cwd = null)
     {
         $process = proc_open($cmd, [
             1 => ['pipe', 'w'],
@@ -32,7 +32,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         return [$return, $stdout, $stderr];
     }
 
-    public function createTestDir()
+    private function createTestDir()
     {
         $this->createWhippetRepo($this->dir);
         $this->createPluginGitRepo($this->dir);
