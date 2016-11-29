@@ -2,6 +2,17 @@
 
 class PluginsTest extends PHPUnit_Framework_TestCase
 {
+    public function SetUp()
+    {
+        $this->dir = 'tests/plugins-test-dir';
+        mkdir($this->dir);
+    }
+
+    public function TearDown()
+    {
+        exec('rm -rf '.$this->dir);
+    }
+
     public function cmd($cmd, $cwd = null)
     {
         $process = proc_open($cmd, [
@@ -23,11 +34,8 @@ class PluginsTest extends PHPUnit_Framework_TestCase
 
     public function createTestDir()
     {
-        $this->dir = $dir = 'tests/plugins-test-dir';
-        exec('rm -rf '.$dir);
-        mkdir($dir);
-        $this->createWhippetRepo($dir);
-        $this->createPluginGitRepo($dir);
+        $this->createWhippetRepo($this->dir);
+        $this->createPluginGitRepo($this->dir);
     }
 
     private function createWhippetRepo($dir)
