@@ -23,17 +23,24 @@ class PluginsTest extends PHPUnit_Framework_TestCase
 
     public function createTestDir()
     {
-        # Create Whippet repo
         $this->dir = $dir = 'tests/plugins-test-dir';
         exec('rm -rf '.$dir);
         mkdir($dir);
+        $this->createWhippetRepo($dir);
+        $this->createPluginGitRepo($dir);
+    }
+
+    private function createWhippetRepo($dir)
+    {
         mkdir($dir.'/config');
         mkdir($dir.'/wp-content');
         mkdir($dir.'/wp-content/plugins');
         file_put_contents($dir.'/.gitignore', "\n");
         file_put_contents($dir.'/plugins', '');
+    }
 
-        # Create a plugin git repo
+    private function createPluginGitRepo($dir)
+    {
         mkdir($dir.'/git-repo');
         mkdir($dir.'/git-repo/advanced-custom-fields');
         list($return, $stdout, $stderr) = $this->cmd('git init', $dir.'/git-repo/advanced-custom-fields');
