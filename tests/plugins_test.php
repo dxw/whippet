@@ -65,11 +65,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
 
         $this->assertEquals(0, $return);
-
-        $this->assertNotContains('PHP Fatal error', $stderr);
-        $this->assertNotContains('PHP Warning', $stderr);
-        $this->assertNotContains('PHP Notice', $stderr);
-        $this->assertNotContains('PHP Deprecated', $stderr);
+        $this->assertNoErrors($stderr);
     }
 
     public function testDeprecatedCommentSyntax()
@@ -80,11 +76,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
 
         $this->assertEquals(1, $return);
-
-        $this->assertNotContains('PHP Fatal error', $stderr);
-        $this->assertNotContains('PHP Warning', $stderr);
-        $this->assertNotContains('PHP Notice', $stderr);
-        $this->assertNotContains('PHP Deprecated', $stderr);
+        $this->assertNoErrors($stderr);
     }
 
     public function testDeprecatedCommentSyntax2()
@@ -96,10 +88,14 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
 
         $this->assertEquals(1, $return);
+        $this->assertNoErrors($stderr);
+    }
 
-        $this->assertNotContains('PHP Fatal error', $stderr);
-        $this->assertNotContains('PHP Warning', $stderr);
-        $this->assertNotContains('PHP Notice', $stderr);
-        $this->assertNotContains('PHP Deprecated', $stderr);
+    private function assertNoErrors($output)
+    {
+        $this->assertNotContains('PHP Fatal error', $output);
+        $this->assertNotContains('PHP Warning', $output);
+        $this->assertNotContains('PHP Notice', $output);
+        $this->assertNotContains('PHP Deprecated', $output);
     }
 }
