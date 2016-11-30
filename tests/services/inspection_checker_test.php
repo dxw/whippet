@@ -75,6 +75,15 @@ class Inspection_Checker_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected_message, $result->unwrap());
     }
 
+    public function testUnknownType()
+    {
+        $checker = new \Dxw\Whippet\Services\InspectionChecker($this->fakeInspectionsApi());
+        $result = $checker->check('hedgehogs', []);
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals("Unknown type 'hedgehogs'", $result->getErr());
+    }
+
     private function fakeInspectionsApi()
     {
         $stub = $this->createMock('\\Dxw\\Whippet\\Services\\InspectionsApi');
