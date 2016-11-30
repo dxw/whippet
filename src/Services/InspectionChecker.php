@@ -27,6 +27,11 @@ class InspectionChecker
     private function check_plugin($dependency)
     {
         $result = $this->inspectionsApi->get_inspections($dependency['name']);
+
+        if ($result->isErr()) {
+            return \Result\Result::err("Error fetching plugin inspections from API: '".$result->getErr()."'");
+        }
+
         $inspections = $result->unwrap();
         if (empty($inspections)) {
             return \Result\Result::ok('[WARNING] No inspections for this plugin');
