@@ -10,7 +10,8 @@ class Dependencies extends \RubbishThorClone
 
         $this->factory = new \Dxw\Whippet\Factory();
         $this->projectDirectory = \Dxw\Whippet\ProjectDirectory::find(getcwd());
-        $this->inspectionChecker = new \Dxw\Whippet\Services\InspectionChecker();
+        $inspections_api = new \Dxw\Whippet\Services\InspectionsApi();
+        $this->inspectionChecker = new \Dxw\Whippet\Services\InspectionChecker($inspections_api);
     }
 
     public function commands()
