@@ -97,6 +97,19 @@ class Json_Api_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected_result, $result->unwrap());
     }
 
+    public function testInvalidJSON()
+    {
+        $base_api = $this->fakeBaseApi();
+        $base_api->shouldReceive('get')
+                 ->andReturn(\Result\Result::ok('<html><body>a webpage</body></html>'));
+
+        $api = new \Dxw\Whippet\Services\JsonApi($base_api);
+        $result = $api->get('http://apisite.com/api/endpoint');
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals('Received invalid JSON when requesting http://apisite.com/api/endpoint', $result->getErr());
+    }
+
     public function testApiError()
     {
         $base_api = $this->fakeBaseApi();
