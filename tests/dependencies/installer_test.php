@@ -50,7 +50,19 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
-        $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n[Adding plugins/another-plugin]\ngit clone output\ngit checkout output\n", $output);
+        $expectedOutput = <<<'EOT'
+[Adding themes/my-theme]
+git clone output
+git checkout output
+[Adding plugins/my-plugin]
+git clone output
+git checkout output
+[Adding plugins/another-plugin]
+git clone output
+git checkout output
+
+EOT;
+        $this->assertEquals($expectedOutput, $output);
     }
 
     public function testInstallThemeAlreadyCloned()
