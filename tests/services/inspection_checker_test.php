@@ -84,6 +84,25 @@ class Inspection_Checker_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("Unknown type 'hedgehogs'", $result->getErr());
     }
 
+    public function testApiError()
+    {
+        $api = $this->fakeInspectionsApi();
+        $api->expects($this->once())
+            ->method('get_inspections')
+            ->willReturn(\Result\Result::err('Something went wrong'));
+
+        $my_plugin = [
+            'name' => 'my-plugin',
+            'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+            'revision' => '123456',
+        ];
+        $checker = new \Dxw\Whippet\Services\InspectionChecker($api);
+        $result = $checker->check('plugins', $my_plugin);
+
+        $this->assertTrue($result->isErr());
+        $this->assertEquals("Error fetching plugin inspections from API: 'Something went wrong'", $result->getErr());
+    }
+
     private function fakeInspectionsApi()
     {
         $stub = $this->createMock('\\Dxw\\Whippet\\Services\\InspectionsApi');
