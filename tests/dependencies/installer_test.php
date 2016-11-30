@@ -4,31 +4,42 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
+    public function tearDown()
+    {
+        \Mockery::close();
+    }
+
     public function testInstallAll()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
         file_put_contents($dir.'/whippet.lock', 'foobar');
 
+        $my_theme = [
+            'name' => 'my-theme',
+            'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+            'revision' => '27ba906',
+        ];
+
+        $my_plugin = [
+            'name' => 'my-plugin',
+            'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+            'revision' => '123456',
+        ];
+
+        $another_plugin = [
+            'name' => 'another-plugin',
+            'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
+            'revision' => '789abc',
+        ];
+
         $whippetLock = $this->getWhippetLock(sha1('foobar'), [
             'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
-                    'revision' => '27ba906',
-                ],
+                $my_theme,
             ],
             'plugins' => [
-                [
-                    'name' => 'my-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
-                    'revision' => '123456',
-                ],
-                [
-                    'name' => 'another-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
-                    'revision' => '789abc',
-                ],
+                $my_plugin,
+                $another_plugin,
             ],
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
@@ -40,9 +51,22 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $gitAnotherPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/another-plugin', '789abc');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin);
 
+        $inspection_check_results = function ($type, $dep) {
+            return [
+                'themes' =>  [
+                    'my-theme' => \Result\Result::ok('')
+                ],
+                'plugins' => [
+                    'my-plugin' =>  \Result\Result::ok('[WARNING] No inspections for this plugin'),
+                    'another-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/")
+                ]
+            ][$type][$dep['name']];
+        };
+
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionCheckerWithResults($inspection_check_results)
         );
 
         ob_start();
@@ -57,9 +81,12 @@ git checkout output
 [Adding plugins/my-plugin]
 git clone output
 git checkout output
+[WARNING] No inspections for this plugin
 [Adding plugins/another-plugin]
 git clone output
 git checkout output
+Inspections for this plugin:
+* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/
 
 EOT;
         $this->assertEquals($expectedOutput, $output);
@@ -90,7 +117,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -107,7 +135,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -128,7 +157,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -151,7 +181,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -186,7 +217,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -221,7 +253,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -247,7 +280,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -290,15 +324,31 @@ EOT;
         $gitMyPlugin = $this->getGit(true, null, '123456');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
 
+        $inspection_check_results = function ($type, $dep) {
+            return [
+                'plugins' => [
+                    'my-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - No issues found - https://security.dxw.com/plugins/my-plugin/")
+                ]
+            ][$type][$dep['name']];
+        };
+
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionCheckerWithResults($inspection_check_results)
         );
         ob_start();
         $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
 
-        $this->assertEquals("[Checking plugins/my-plugin]\ngit checkout output\n", $output);
+        $expectedOutput = <<<'EOT'
+[Checking plugins/my-plugin]
+git checkout output
+Inspections for this plugin:
+* 01/05/2015 - No issues found - https://security.dxw.com/plugins/my-plugin/
+
+EOT;
+        $this->assertEquals($expectedOutput, $output);
         $this->assertFalse($result->isErr());
     }
 
@@ -336,7 +386,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
         ob_start();
         $result = $dependencies->installSingle('plugins/my-plugin');
@@ -369,7 +420,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -404,7 +456,8 @@ EOT;
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionChecker()
         );
 
         ob_start();
@@ -414,5 +467,21 @@ EOT;
         $this->assertTrue($result->isErr());
         $this->assertEquals('could not checkout revision', $result->getErr());
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
+    }
+
+    private function fakeInspectionChecker()
+    {
+        return \Mockery::mock('\\Dxw\\Whippet\\Services\\InspectionChecker')
+            ->shouldReceive('check')
+            ->andReturn(\Result\Result::ok(''))
+            ->getMock();
+    }
+
+    private function fakeInspectionCheckerWithResults($result_function)
+    {
+        return \Mockery::mock('\\Dxw\\Whippet\\Services\\InspectionChecker')
+            ->shouldReceive('check')
+            ->andReturnUsing($result_function)
+            ->getMock();
     }
 }

@@ -6,10 +6,12 @@ class Installer
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\ProjectDirectory $dir
+        \Dxw\Whippet\ProjectDirectory $dir,
+        \Dxw\Whippet\Services\InspectionChecker $inspection_checker
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
+        $this->inspectionChecker = $inspection_checker;
     }
 
     public function installAll()
@@ -53,13 +55,22 @@ class Installer
     {
         $count = 0;
 
-        foreach ($dependencies as $type=>$typeDependencies) {
+        foreach ($dependencies as $type => $typeDependencies) {
             foreach ($typeDependencies as $dependency) {
                 $result = $this->installDependency($type, $dependency);
                 if ($result->isErr()) {
                     return $result;
                 }
-                $count ++;
+
+                $result = $this->inspectionChecker->check($type, $dependency);
+                if (!$result->isErr()) {
+                    $inspectionDetails = $result->unwrap();
+                    if (!empty($inspectionDetails)) {
+                        echo sprintf("%s\n", $inspectionDetails);
+                    }
+                }
+
+                ++$count;
             }
         }
 
