@@ -11,6 +11,7 @@
     "bin": ["bin/whippet"],
     "require-dev": {
         "phpunit/phpunit": "4.8.*",
+        "mockery/mockery": "dev-master",
         "dxw/phar-install": "dev-master",
         "mikey179/vfsStream": "~1.6@dev",
         "sebastian/environment": "1.3.6",
