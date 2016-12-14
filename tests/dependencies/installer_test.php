@@ -78,15 +78,18 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 [Adding themes/my-theme]
 git clone output
 git checkout output
+
 [Adding plugins/my-plugin]
 git clone output
 git checkout output
 [WARNING] No inspections for this plugin
+
 [Adding plugins/another-plugin]
 git clone output
 git checkout output
 Inspections for this plugin:
 * 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/
+
 
 EOT;
         $this->assertEquals($expectedOutput, $output);
@@ -126,7 +129,7 @@ EOT;
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
-        $this->assertEquals("[Checking themes/my-theme]\ngit checkout output\n", $output);
+        $this->assertEquals("[Checking themes/my-theme]\ngit checkout output\n\n", $output);
     }
 
     public function testInstallAllMissingWhippetJson()
