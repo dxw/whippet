@@ -66,8 +66,8 @@ EOT;
 
     public function testPluginWithInspectionsGeneratesMessage()
     {
-        $inspection_ok = $this->fakeInspection(date_create('2015-05-01'), 'No issues found', 'https://security.dxw.com/plugins/another_plugin/');
-        $inspection_caution = $this->fakeInspection(date_create('2016-01-23'), 'Use with caution', 'https://security.dxw.com/plugins/another_plugin2/');
+        $inspection_ok = $this->fakeInspection(date_create('2015-05-01'), '2.3.4', 'No issues found', 'https://security.dxw.com/plugins/another_plugin/');
+        $inspection_caution = $this->fakeInspection(date_create('2016-01-23'), '3.0.0', 'Use with caution', 'https://security.dxw.com/plugins/another_plugin2/');
 
         $api = $this->fakeInspectionsApi();
         $api->shouldReceive('get_inspections')
@@ -82,7 +82,7 @@ EOT;
         $result = $checker->check('plugins', $my_plugin);
 
         $this->assertFalse($result->isErr());
-        $expected_message = "Inspections for this plugin:\n* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/\n* 23/01/2016 - Use with caution - https://security.dxw.com/plugins/another_plugin2/";
+        $expected_message = "Inspections for this plugin:\n* 01/05/2015 - 2.3.4 - No issues found - https://security.dxw.com/plugins/another_plugin/\n* 23/01/2016 - 3.0.0 - Use with caution - https://security.dxw.com/plugins/another_plugin2/";
         $this->assertEquals($expected_message, $result->unwrap());
     }
 
@@ -119,10 +119,11 @@ EOT;
     }
 
     # test double
-    private function fakeInspection($date, $result, $url)
+    private function fakeInspection($date, $versions, $result, $url)
     {
         return (object) [
             'date' => $date,
+            'versions' => $versions,
             'result' => $result,
             'url' => $url,
         ];

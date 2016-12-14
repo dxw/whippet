@@ -60,6 +60,6 @@ EOT;
     private function format_inspection($inspection)
     {
         $date = date_format($inspection->date, 'd/m/Y');
-        return sprintf("* %s - %s - %s", $date, $inspection->result, $inspection->url);
+        return sprintf("* %s - %s - %s - %s", $date, $inspection->versions, $inspection->result, $inspection->url);
     }
 }

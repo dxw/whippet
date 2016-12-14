@@ -66,7 +66,7 @@ EOT;
                 ],
                 'plugins' => [
                     'my-plugin' =>  \Result\Result::ok($warning_msg),
-                    'another-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/")
+                    'another-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - 0.1.3 - No issues found - https://security.dxw.com/plugins/another_plugin/")
                 ]
             ][$type][$dep['name']];
         };
@@ -100,7 +100,7 @@ git checkout output
 git clone output
 git checkout output
 Inspections for this plugin:
-* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/
+* 01/05/2015 - 0.1.3 - No issues found - https://security.dxw.com/plugins/another_plugin/
 
 
 EOT;

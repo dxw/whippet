@@ -29,6 +29,7 @@ class InspectionsApi
         return array_map(function ($raw_inspection) {
             return new Inspection(
                 $raw_inspection['date'],
+                $raw_inspection['versions'],
                 $raw_inspection['result'],
                 $raw_inspection['url']
             );
@@ -44,12 +45,14 @@ class InspectionsApi
 class Inspection
 {
     public $date;
+    public $versions;
     public $result;
     public $url;
 
-    public function __construct($date_string, $result, $url)
+    public function __construct($date_string, $versions, $result, $url)
     {
         $this->date = date_create($date_string);
+        $this->versions = $versions;
         $this->result = $result;
         $this->url = $url;
     }

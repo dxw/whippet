@@ -38,6 +38,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
                 'name' => 'Slack',
                 'slug' => 'slack',
                 'date' => '2016-02-29T17:54:15+00:00',
+                'versions' => '1.3.5',
                 'url' => 'https://security.dxw.com/plugins/slack2/',
                 'result' => 'Use with caution'
             ],
@@ -45,6 +46,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
                 'name' => 'Slack',
                 'slug' => 'slack',
                 'date' => '2015-06-17T24:00:12+00:00',
+                'versions' => '1.1.3',
                 'url' => 'https://security.dxw.com/plugins/slack/',
                 'result' => 'No issues found'
             ]
@@ -63,6 +65,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
 
         $inspection = array_shift($result_body);
         $this->assertEquals(date_create('2016-02-29T17:54:15'), $inspection->date);
+        $this->assertEquals('1.3.5', $inspection->versions);
         $this->assertEquals('Use with caution', $inspection->result);
         $this->assertEquals('https://security.dxw.com/plugins/slack2/', $inspection->url);
     }
