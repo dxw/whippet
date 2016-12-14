@@ -53,7 +53,15 @@ class Inspection_Checker_Test extends PHPUnit_Framework_TestCase
         $result = $checker->check('plugins', $my_plugin);
 
         $this->assertFalse($result->isErr());
-        $this->assertEquals('[WARNING] No inspections for this plugin', $result->unwrap());
+        $warning_msg = <<<'EOT'
+#############################################
+#                                           #
+#  WARNING: No inspections for this plugin  #
+#                                           #
+#############################################
+EOT;
+
+        $this->assertEquals($warning_msg, $result->unwrap());
     }
 
     public function testPluginWithInspectionsGeneratesMessage()

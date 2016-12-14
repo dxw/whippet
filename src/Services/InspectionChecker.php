@@ -34,7 +34,14 @@ class InspectionChecker
 
         $inspections = $result->unwrap();
         if (empty($inspections)) {
-            return \Result\Result::ok('[WARNING] No inspections for this plugin');
+            $warning_msg = <<<'EOT'
+#############################################
+#                                           #
+#  WARNING: No inspections for this plugin  #
+#                                           #
+#############################################
+EOT;
+            return \Result\Result::ok($warning_msg);
         } else {
             return \Result\Result::ok($this->inspections_message($inspections));
         }

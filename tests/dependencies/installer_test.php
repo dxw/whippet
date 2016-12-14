@@ -52,12 +52,20 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin);
 
         $inspection_check_results = function ($type, $dep) {
+            $warning_msg = <<<'EOT'
+#############################################
+#                                           #
+#  WARNING: No inspections for this plugin  #
+#                                           #
+#############################################
+EOT;
+
             return [
                 'themes' =>  [
                     'my-theme' => \Result\Result::ok('')
                 ],
                 'plugins' => [
-                    'my-plugin' =>  \Result\Result::ok('[WARNING] No inspections for this plugin'),
+                    'my-plugin' =>  \Result\Result::ok($warning_msg),
                     'another-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - No issues found - https://security.dxw.com/plugins/another_plugin/")
                 ]
             ][$type][$dep['name']];
@@ -82,7 +90,11 @@ git checkout output
 [Adding plugins/my-plugin]
 git clone output
 git checkout output
-[WARNING] No inspections for this plugin
+#############################################
+#                                           #
+#  WARNING: No inspections for this plugin  #
+#                                           #
+#############################################
 
 [Adding plugins/another-plugin]
 git clone output
