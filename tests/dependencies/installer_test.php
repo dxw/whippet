@@ -1,6 +1,6 @@
 <?php
 
-class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
+class DependenciesInstallerTest extends \PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
@@ -106,6 +106,61 @@ Inspections for this plugin:
 EOT;
         $this->assertEquals($expectedOutput, $output);
     }
+
+    public function testInspectionsApiUnavailable()
+    {
+        $dir = $this->getDir();
+        file_put_contents($dir.'/whippet.json', 'foobar');
+        file_put_contents($dir.'/whippet.lock', 'foobar');
+
+        $my_plugin = [
+            'name' => 'my-plugin',
+            'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+            'revision' => '123456',
+        ];
+
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), [
+            'themes' => [],
+            'plugins' => [
+                $my_plugin,
+            ],
+        ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+
+        $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
+
+        $inspection_check_results = function ($type, $dep) {
+            return [
+                'plugins' => [
+                    'my-plugin' =>  \Result\Result::err('foooooo'),
+                ]
+            ][$type][$dep['name']];
+        };
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
+            $this->getFactory(),
+            $this->getProjectDirectory($dir),
+            $this->fakeInspectionCheckerWithResults($inspection_check_results)
+        );
+
+        ob_start();
+        $result = $dependencies->installAll();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $expectedOutput = <<<'EOT'
+[Adding plugins/my-plugin]
+git clone output
+git checkout output
+[ERROR] foooooo
+
+
+EOT;
+
+        $this->assertEquals($expectedOutput, $output);
+    }
+
 
     public function testInstallAllThemeAlreadyCloned()
     {
@@ -362,6 +417,7 @@ git checkout output
 Inspections for this plugin:
 * 01/05/2015 - No issues found - https://security.dxw.com/plugins/my-plugin/
 
+
 EOT;
         $this->assertEquals($expectedOutput, $output);
         $this->assertFalse($result->isErr());
@@ -408,7 +464,7 @@ EOT;
         $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
 
-        $this->assertEquals("[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n", $output);
+        $this->assertEquals("[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n\n", $output);
         $this->assertFalse($result->isErr());
     }
 

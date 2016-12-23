@@ -68,6 +68,9 @@ class Installer
                     if (!empty($inspectionDetails)) {
                         echo sprintf("%s\n", $inspectionDetails);
                     }
+                } else {
+                    $error = $result->getErr();
+                    echo sprintf("[ERROR] %s\n", $error);
                 }
                 echo "\n";
 
