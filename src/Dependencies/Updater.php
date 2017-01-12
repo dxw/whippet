@@ -12,13 +12,62 @@ class Updater
         $this->dir = $dir;
     }
 
-    public function update()
+    public function update($dep = null)
     {
         $result = $this->loadWhippetFiles();
+
         if ($result->isErr()) {
             return $result;
         }
 
+        if (is_null($dep)) {
+            return $this->updateAll();
+        }
+        return $this->updateDependency($dep);
+    }
+
+    private function updateDependency($dep)
+    {
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
+        if ($result->isErr()) {
+            echo "No whippet.lock file exists, you need to run `whippet deps update` to generate one before you can update a specific dependency. \n";
+            return \Result\Result::err(sprintf('whippet.lock: %s', $result->getErr()));
+        }
+
+        if (strpos($dep, '/') === false) {
+            echo "Dependency should be in format [type]/[name]. \n";
+            return \Result\Result::err('Incorrect dependency format');
+        }
+
+        $type = explode('/', $dep)[0];
+        $name = explode('/', $dep)[1];
+        $depArray = $this->jsonFile->getDependency($type, $name);
+        if ($depArray === []) {
+            return \Result\Result::err('No matching dependency in whippet.json');
+        }
+
+        $this->updateHash();
+        $this->loadGitignore();
+
+        echo sprintf("[Updating %s/%s]\n", $type, $depArray['name']);
+        $result = $this->addDependencyToLockfile($type, $depArray);
+        if ($result->isErr()) {
+            return $result;
+        }
+
+        foreach (['themes', 'plugins'] as $type) {
+            foreach ($this->jsonFile->getDependencies($type) as $dep) {
+                $this->addDependencyToGitignore($type, $dep['name']);
+            }
+        }
+        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
+        $this->gitignore->save_ignores(array_unique($this->ignores));
+
+        return \Result\Result::ok();
+    }
+
+    private function updateAll()
+    {
         $this->updateHash();
         $this->loadGitignore();
 

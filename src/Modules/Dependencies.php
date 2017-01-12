@@ -42,13 +42,13 @@ class Dependencies extends \RubbishThorClone
         $this->exitIfError($installer->install());
     }
 
-    public function update()
+    public function update($dep = null)
     {
         $dir = $this->getDirectory();
         $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir);
         $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
 
-        $this->exitIfError($updater->update());
+        $this->exitIfError($updater->update($dep));
         $this->exitIfError($installer->install());
     }
 
