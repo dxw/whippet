@@ -240,6 +240,17 @@ This command will:
 3. Update `.gitignore` with the plugins/themes installed, and remove plugins/themes that are removed from `whippet.json`
 4. Run `whippet deps install`
 
+### whippet deps update [type]/[name]
+
+e.g. `whippet deps update plugins/twitget`
+
+This will:
+
+1. Check the commit hash for the ref of the specified repo, provided it is in `whippet.json`
+2. Update that repo in `whippet.lock`
+3. Update `.gitignore` if the repo was no previously installed
+4. Install the repo at the specified ref
+
 ### whippet plugins install
 
 This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
