@@ -13,6 +13,18 @@ class WhippetJson extends Base
         }
     }
 
+    public function getDependency(/* string */ $type, /* string */ $name)
+    {
+        if (isset($this->data[$type])) {
+            foreach ($this->getDependencies($type) as $dep) {
+                if ($dep['name'] === $name) {
+                    return $dep;
+                }
+            }
+        }
+        return [];
+    }
+
     public function getSources()
     {
         return $this->data['src'];
