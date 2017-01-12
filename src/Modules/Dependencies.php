@@ -49,7 +49,7 @@ class Dependencies extends \RubbishThorClone
         $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
 
         $this->exitIfError($updater->update($dep));
-        $this->exitIfError($installer->install());
+        $this->exitIfError($installer->install($dep));
     }
 
     public function migrate()

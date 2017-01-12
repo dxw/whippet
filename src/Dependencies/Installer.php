@@ -12,13 +12,20 @@ class Installer
         $this->dir = $dir;
     }
 
-    public function install()
+    public function install($dep = null)
     {
         $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
             return $result;
         }
+        if (is_null($dep)) {
+            return $this->installAll();
+        }
+        return $this->installSingle($dep);
+    }
 
+    private function installAll()
+    {
         $count = 0;
 
         foreach (['themes', 'plugins'] as $type) {
@@ -37,6 +44,23 @@ class Installer
         }
 
         return \Result\Result::ok();
+    }
+
+    private function installSingle($dep)
+    {
+        //Will only get here if $dep is valid format and matches an entry in whippet.json
+        $type = explode('/', $dep)[0];
+        $name = explode('/', $dep)[1];
+
+        foreach ($this->lockFile->getDependencies($type) as $dep) {
+            if ($dep['name'] === $name) {
+                $result = $this->installDependency($type, $dep);
+                if ($result->isErr()) {
+                    return $result;
+                }
+                return \Result\Result::ok();
+            }
+        }
     }
 
     private function loadWhippetFiles()
