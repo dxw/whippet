@@ -4,7 +4,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
-    public function testInstall()
+    public function testInstallAll()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -46,14 +46,14 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n[Adding plugins/another-plugin]\ngit clone output\ngit checkout output\n", $output);
     }
 
-    public function testInstallThemeAlreadyCloned()
+    public function testInstallAllThemeAlreadyCloned()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -82,14 +82,14 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Checking themes/my-theme]\ngit checkout output\n", $output);
     }
 
-    public function testInstallMissingWhippetJson()
+    public function testInstallAllMissingWhippetJson()
     {
         $dir = $this->getDir();
 
@@ -99,7 +99,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -107,7 +107,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $output);
     }
 
-    public function testInstallMissingWhippetLock()
+    public function testInstallAllMissingWhippetLock()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -120,7 +120,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -128,7 +128,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $output);
     }
 
-    public function testInstallWrongHash()
+    public function testInstallAllWrongHash()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -143,7 +143,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -151,7 +151,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $output);
     }
 
-    public function testInstallCloneFails()
+    public function testInstallAllCloneFails()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -178,7 +178,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -186,7 +186,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\n", $output);
     }
 
-    public function testInstallCheckoutFails()
+    public function testInstallAllCheckoutFails()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -213,7 +213,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -221,7 +221,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Adding themes/my-theme]\ngit clone output\ngit checkout output\n", $output);
     }
 
-    public function testInstallBlankLockfile()
+    public function testInstallAllBlankLockfile()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -239,7 +239,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install();
+        $result = $dependencies->installAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -283,7 +283,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             $this->getProjectDirectory($dir)
         );
         ob_start();
-        $result = $dependencies->install('plugins/my-plugin');
+        $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
 
         $this->assertEquals("[Checking plugins/my-plugin]\ngit checkout output\n", $output);
@@ -327,7 +327,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
             $this->getProjectDirectory($dir)
         );
         ob_start();
-        $result = $dependencies->install('plugins/my-plugin');
+        $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
 
         $this->assertEquals("[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n", $output);
@@ -361,7 +361,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install('themes/my-theme');
+        $result = $dependencies->installSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -396,7 +396,7 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->install('themes/my-theme');
+        $result = $dependencies->installSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
