@@ -12,21 +12,7 @@ class Updater
         $this->dir = $dir;
     }
 
-    public function update($dep = null)
-    {
-        $result = $this->loadWhippetFiles();
-
-        if ($result->isErr()) {
-            return $result;
-        }
-
-        if (is_null($dep)) {
-            return $this->updateAll();
-        }
-        return $this->updateDependency($dep);
-    }
-
-    private function updateDependency($dep)
+    public function updateSingle($dep)
     {
         $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
         if ($result->isErr()) {
@@ -41,61 +27,72 @@ class Updater
 
         $type = explode('/', $dep)[0];
         $name = explode('/', $dep)[1];
+
+        $result = $this->prepareForUpdate();
+        if ($result->isErr()) {
+            return $result;
+        }
+
         $depArray = $this->jsonFile->getDependency($type, $name);
         if ($depArray === []) {
             return \Result\Result::err('No matching dependency in whippet.json');
         }
 
-        $this->updateHash();
-        $this->loadGitignore();
+        return $this->update([$type=>[$depArray]]);
+    }
 
-        echo sprintf("[Updating %s/%s]\n", $type, $depArray['name']);
-        $result = $this->addDependencyToLockfile($type, $depArray);
+    public function updateAll()
+    {
+        $result = $this->prepareForUpdate();
         if ($result->isErr()) {
             return $result;
         }
 
-        foreach (['themes', 'plugins'] as $type) {
-            foreach ($this->jsonFile->getDependencies($type) as $dep) {
-                $this->addDependencyToGitignore($type, $dep['name']);
-            }
-        }
-        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
-        $this->gitignore->save_ignores(array_unique($this->ignores));
+        $allDependencies = array();
 
-        return \Result\Result::ok();
+        foreach (['themes', 'plugins'] as $type) {
+            $allDependencies[$type] = $this->jsonFile->getDependencies($type);
+        }
+
+        return $this->update($allDependencies);
     }
 
-    private function updateAll()
+    private function update(array $dependencies)
     {
-        $this->updateHash();
-        $this->loadGitignore();
-
         $count = 0;
-
-        foreach (['themes', 'plugins'] as $type) {
-            foreach ($this->jsonFile->getDependencies($type) as $dep) {
+        foreach ($dependencies as $type => $typeDependencies) {
+            foreach ($typeDependencies as $dep) {
                 echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
-
                 $result = $this->addDependencyToLockfile($type, $dep);
                 if ($result->isErr()) {
                     return $result;
                 }
-
-                $this->addDependencyToGitignore($type, $dep['name']);
-
                 ++$count;
             }
         }
-
-        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
-        $this->gitignore->save_ignores(array_unique($this->ignores));
+        $this->saveChanges();
 
         if ($count === 0) {
             echo "whippet.json contains no dependencies\n";
         }
-
         return \Result\Result::ok();
+    }
+
+    private function prepareForUpdate()
+    {
+        $result = $this->loadWhippetFiles();
+        if ($result->isErr()) {
+            return $result;
+        }
+        $this->updateHash();
+        $this->loadGitignore();
+        return \Result\Result::ok();
+    }
+
+    private function saveChanges()
+    {
+        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
+        $this->createGitIgnore();
     }
 
     private function loadWhippetFiles()
@@ -120,6 +117,16 @@ class Updater
     {
         $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
         $this->lockFile->setHash($jsonHash);
+    }
+
+    private function createGitIgnore()
+    {
+        foreach (['themes', 'plugins'] as $type) {
+            foreach ($this->jsonFile->getDependencies($type) as $dep) {
+                $this->addDependencyToGitignore($type, $dep['name']);
+            }
+        }
+        $this->gitignore->save_ignores(array_unique($this->ignores));
     }
 
     private function loadGitignore()

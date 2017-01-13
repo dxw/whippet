@@ -62,7 +62,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         return $whippetLock;
     }
 
-    public function testUpdate()
+    public function testUpdateAll()
     {
         $dir = $this->getDir();
 
@@ -109,14 +109,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
     }
 
-    public function testUpdateWithExistingGitignore()
+    public function testUpdateAllWithExistingGitignore()
     {
         $dir = $this->getDir();
         touch($dir.'/.gitignore');
@@ -161,14 +161,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateWithExistingGitignoreNoDuplication()
+    public function testUpdateAllWithExistingGitignoreNoDuplication()
     {
         $dir = $this->getDir();
         touch($dir.'/.gitignore');
@@ -214,14 +214,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateFailedGitCommand()
+    public function testUpdateAllFailedGitCommand()
     {
         $dir = $this->getDir();
 
@@ -256,7 +256,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -264,7 +264,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateWithExplicitSrc()
+    public function testUpdateAllWithExplicitSrc()
     {
         $dir = $this->getDir();
 
@@ -302,14 +302,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateWithoutRef()
+    public function testUpdateAllWithoutRef()
     {
         $dir = $this->getDir();
 
@@ -345,14 +345,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateBlankJsonfile()
+    public function testUpdateAllBlankJsonfile()
     {
         $dir = $this->getDir();
 
@@ -373,14 +373,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("whippet.json contains no dependencies\n", $output);
     }
 
-    public function testUpdateNoGitignore()
+    public function testUpdateAllNoGitignore()
     {
         $dir = $this->getDir();
 
@@ -427,14 +427,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
     }
 
-    public function testUpdateRemoveFromGitignore()
+    public function testUpdateAllRemoveFromGitignore()
     {
         $dir = $this->getDir();
         touch($dir.'/.gitignore');
@@ -483,14 +483,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateBubbleErrors()
+    public function testUpdateAllBubbleErrors()
     {
         $dir = $this->getDir();
 
@@ -502,7 +502,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -510,7 +510,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $output);
     }
 
-    public function testUpdateNoExistingWhippetLock()
+    public function testUpdateAllNoExistingWhippetLock()
     {
         $dir = $this->getDir();
 
@@ -558,14 +558,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n[Updating plugins/my-plugin]\n", $output);
     }
 
-    public function testUpdateWithBrokenJson()
+    public function testUpdateAllWithBrokenJson()
     {
         $dir = $this->getDir();
 
@@ -608,7 +608,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update();
+        $result = $dependencies->updateAll();
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -616,29 +616,9 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyWithNoLock()
+    public function testUpdateSingleWithNoLock()
     {
         $dir = $this->getDir();
-        $whippetJson = $this->getWhippetJson([
-            'src' => [
-                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
-            ],
-            'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'ref' => 'v1.4',
-                ],
-            ],
-            'plugins' => [
-                [
-                    'name' => 'my-plugin',
-                    'ref' => 'v1.6',
-                ],
-            ],
-        ]);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
-
-        file_put_contents($dir.'/whippet.json', 'foobar');
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found'));
 
@@ -648,7 +628,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('twitget');
+        $result = $dependencies->updateSingle('twitget');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -656,27 +636,9 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('whippet.lock: file not found', $result->getErr());
     }
 
-    public function testUpdateDependencyIncorrectFormat()
+    public function testUpdateSingleIncorrectFormat()
     {
         $dir = $this->getDir();
-        $whippetJson = $this->getWhippetJson([
-            'src' => [
-                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
-            ],
-            'themes' => [
-                [
-                    'name' => 'my-theme',
-                    'ref' => 'v1.4',
-                ],
-            ],
-            'plugins' => [
-                [
-                    'name' => 'my-plugin',
-                    'ref' => 'v1.6',
-                ],
-            ],
-        ]);
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
         file_put_contents($dir.'/whippet.json', 'foobar');
 
@@ -689,7 +651,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('twitget');
+        $result = $dependencies->updateSingle('twitget');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -697,7 +659,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('Incorrect dependency format', $result->getErr());
     }
 
-    public function testUpdateDependencyNoMatch()
+    public function testUpdateSingleNoMatch()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -721,7 +683,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
 
-        $whippetLock = [];
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
@@ -730,14 +692,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('plugins/twitget');
+        $result = $dependencies->updateSingle('plugins/twitget');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
         $this->assertEquals('No matching dependency in whippet.json', $result->getErr());
     }
 
-    public function testUpdateDependencyBrokenJson()
+    public function testUpdateSingleBrokenJson()
     {
         $dir = $this->getDir();
 
@@ -780,7 +742,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -788,7 +750,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyWithExistingGitignore()
+    public function testUpdateSingleWithExistingGitignore()
     {
         $dir = $this->getDir();
         touch($dir.'/.gitignore');
@@ -833,14 +795,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyWithExistingGitignoreNoDuplication()
+    public function testUpdateSingleWithExistingGitignoreNoDuplication()
     {
         $dir = $this->getDir();
         touch($dir.'/.gitignore');
@@ -886,14 +848,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyFailedGitCommand()
+    public function testUpdateSingleFailedGitCommand()
     {
         $dir = $this->getDir();
 
@@ -933,7 +895,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -941,7 +903,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyWithExplicitSrc()
+    public function testUpdateSingleWithExplicitSrc()
     {
         $dir = $this->getDir();
 
@@ -988,14 +950,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyWithoutRef()
+    public function testUpdateSingleWithoutRef()
     {
         $dir = $this->getDir();
 
@@ -1037,14 +999,14 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
-    public function testUpdateDependencyNoGitignore()
+    public function testUpdateSingleNoGitignore()
     {
         $dir = $this->getDir();
 
@@ -1090,7 +1052,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('themes/my-theme');
+        $result = $dependencies->updateSingle('themes/my-theme');
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -1098,7 +1060,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
     }
 
 
-    public function testUpdateDependency()
+    public function testUpdateSingle()
     {
         $dir = $this->getDir();
         file_put_contents($dir.'/whippet.json', 'foobar');
@@ -1143,7 +1105,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $result = $dependencies->update('plugins/my-plugin');
+        $result = $dependencies->updateSingle('plugins/my-plugin');
         $output = ob_get_clean();
 
         $this->assertEquals("[Updating plugins/my-plugin]\n", $output);
