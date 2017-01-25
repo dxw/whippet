@@ -18,6 +18,8 @@ class BaseApi
     {
         try {
             $response = $this->client->get($url);
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            return \Result\Result::err('Failed to connect to '.$url);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             return \Result\Result::err('Failed to receive data from '.$url);
         }
