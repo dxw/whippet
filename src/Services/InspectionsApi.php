@@ -2,6 +2,8 @@
 
 namespace Dxw\Whippet\Services;
 
+use Dxw\Whippet\Models\Inspection;
+
 // Responsible for calling an API and returning information about dxw inspections
 // associated with a plugin
 class InspectionsApi
@@ -75,21 +77,5 @@ class InspectionsApi
     private function url($plugin_slug)
     {
         return $this->host.'/wp-json/v1/inspections/'.$plugin_slug;
-    }
-}
-
-class Inspection
-{
-    public $date;
-    public $versions;
-    public $result;
-    public $url;
-
-    public function __construct($date_string, $versions, $result, $url)
-    {
-        $this->date = date_create($date_string);
-        $this->versions = $versions;
-        $this->result = $result;
-        $this->url = $url;
     }
 }
