@@ -6,7 +6,8 @@
         "dxw/rubbishthorclone": "dev-master",
         "aura/autoload": "2.x-dev",
         "nikita2206/result": "dev-master",
-        "kevinlebrun/colors.php": "dev-master"
+        "kevinlebrun/colors.php": "dev-master",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "bin": ["bin/whippet"],
     "require-dev": {
