@@ -15,7 +15,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
             ->with('https://security.dxw.com/wp-json/v1/inspections/my-plugin')
             ->andReturn(\Result\Result::ok([]));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $api->getInspections('my-plugin');
     }
 
@@ -24,7 +24,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok([]));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertFalse($result->isErr());
@@ -55,7 +55,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok($response));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertFalse($result->isErr());
@@ -94,7 +94,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok($response));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertTrue($result->isErr());
@@ -109,7 +109,7 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
         $json_api->shouldReceive('get')
                  ->andReturn(\Result\Result::err('A failure happened'));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertTrue($result->isErr());

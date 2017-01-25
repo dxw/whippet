@@ -13,7 +13,8 @@ class Dependencies extends \RubbishThorClone
         $base_api = new \Dxw\Whippet\Services\BaseApi();
         $json_api = new \Dxw\Whippet\Services\JsonApi($base_api);
         $inspections_api_host = 'https://security.dxw.com';
-        $inspections_api = new \Dxw\Whippet\Services\InspectionsApi($inspections_api_host, $json_api);
+        $inspections_api_path = '/wp-json/v1/inspections/';
+        $inspections_api = new \Dxw\Whippet\Services\InspectionsApi($inspections_api_host, $inspections_api_path, $json_api);
         $this->inspectionChecker = new \Dxw\Whippet\Services\InspectionChecker($inspections_api);
     }
 

@@ -10,9 +10,11 @@ class InspectionsApi
 {
     public function __construct(
         $host,
+        $path,
         \Dxw\Whippet\Services\JsonApi $json_api
     ) {
         $this->host = $host;
+        $this->path = $path;
         $this->jsonApi = $json_api;
     }
 
@@ -76,6 +78,6 @@ class InspectionsApi
 
     private function url($plugin_slug)
     {
-        return $this->host.'/wp-json/v1/inspections/'.$plugin_slug;
+        return $this->host.$this->path.$plugin_slug;
     }
 }
