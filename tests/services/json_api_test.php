@@ -107,7 +107,7 @@ class Json_Api_Test extends PHPUnit_Framework_TestCase
         $result = $api->get('http://apisite.com/api/endpoint');
 
         $this->assertTrue($result->isErr());
-        $this->assertEquals('Received invalid JSON when requesting http://apisite.com/api/endpoint', $result->getErr());
+        $this->assertEquals('Failed to parse response body as JSON when requesting http://apisite.com/api/endpoint', $result->getErr());
     }
 
     public function testApiError()

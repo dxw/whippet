@@ -24,7 +24,7 @@ class JsonApi
 
         $response_as_array = json_decode($response->unwrap(), true);
         if (is_null($response_as_array)) {
-            return \Result\Result::err('Received invalid JSON when requesting '.$url);
+            return \Result\Result::err('Failed to parse response body as JSON when requesting '.$url);
         }
         return \Result\Result::ok($response_as_array);
     }
