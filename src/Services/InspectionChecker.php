@@ -15,16 +15,16 @@ class InspectionChecker
     public function check($type, $dependency)
     {
         switch ($type) {
-        case 'themes':
-            return \Result\Result::ok('');
-        case 'plugins':
-            return $this->check_plugin($dependency);
-        default:
-            return \Result\Result::err("Unknown type '".$type."'");
+            case 'themes':
+                return \Result\Result::ok('');
+            case 'plugins':
+                return $this->checkPlugin($dependency);
+            default:
+                return \Result\Result::err("Unknown type '".$type."'");
         }
     }
 
-    private function check_plugin($dependency)
+    private function checkPlugin($dependency)
     {
         $result = $this->inspectionsApi->getInspections($dependency['name']);
 
@@ -43,21 +43,21 @@ class InspectionChecker
 EOT;
             return \Result\Result::ok($warning_msg);
         } else {
-            return \Result\Result::ok($this->inspections_message($inspections));
+            return \Result\Result::ok($this->inspectionsMessage($inspections));
         }
     }
 
-    private function inspections_message($inspections)
+    private function inspectionsMessage($inspections)
     {
         $lines = [];
         $lines[] = "Inspections for this plugin:";
         foreach ($inspections as $inspection) {
-            $lines[] = $this->format_inspection($inspection);
+            $lines[] = $this->formatInspection($inspection);
         }
         return implode("\n", $lines);
     }
 
-    private function format_inspection($inspection)
+    private function formatInspection($inspection)
     {
         $date = date_format($inspection->date, 'd/m/Y');
         return sprintf("* %s - %s - %s - %s", $date, $inspection->versions, $inspection->result, $inspection->url);
