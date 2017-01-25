@@ -1,2 +1,5 @@
 /vendor
 /tests/plugins-test-dir
+/docker-images/.DS_Store
+/docker-images/whippet-wordpress/.DS_Store
+npm-debug.log
