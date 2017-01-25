@@ -20,7 +20,11 @@ class InspectionsApi
         if ($result->isErr()) {
             return $result;
         }
-        $inspections = $this->buildInspections($result->unwrap());
+        $inspections_data = $result->unwrap();
+        if (!$this->validateInspections($inspections_data)) {
+            return \Result\Result::err("Couldn't extract inspections from JSON response");
+        }
+        $inspections = $this->buildInspections($inspections_data);
         return \Result\Result::ok($inspections);
     }
 
@@ -34,6 +38,38 @@ class InspectionsApi
                 $raw_inspection['url']
             );
         }, $raw_inspections);
+    }
+
+    private function validateInspections($raw_inspections)
+    {
+        if (!is_array($raw_inspections)) {
+            return false;
+        }
+
+        foreach ($raw_inspections as $raw_inspection) {
+            if (!$this->validateInspection($raw_inspection)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function validateInspection($raw_inspection)
+    {
+        $keys = [
+            'date',
+            'versions',
+            'result',
+            'url',
+        ];
+
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $raw_inspection)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function url($plugin_slug)

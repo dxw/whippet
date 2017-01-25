@@ -70,6 +70,39 @@ class Inspections_Api_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('https://security.dxw.com/plugins/slack2/', $inspection->url);
     }
 
+    public function testWithInspectionsWithMissingFields()
+    {
+        $response = [
+            [
+                'name' => 'Slack',
+                'slug' => 'slack',
+                'date' => '2016-02-29T17:54:15+00:00',
+                'versions' => '1.3.5',
+                'url' => 'https://security.dxw.com/plugins/slack2/',
+                'result' => 'Use with caution'
+            ],
+            [
+                'name' => 'Slack',
+                'slug' => 'slack',
+                'date' => '2015-06-17T24:00:12+00:00',
+                'versions' => '1.1.3',
+                'url' => 'https://security.dxw.com/plugins/slack/',
+                // missing result
+            ]
+        ];
+
+        $json_api = $this->fakeJsonApi();
+        $json_api->shouldReceive('get')->andReturn(\Result\Result::ok($response));
+
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $result = $api->getInspections('my-plugin');
+
+        $this->assertTrue($result->isErr());
+
+        $error_message = $result->getErr();
+        $this->assertEquals("Couldn't extract inspections from JSON response", $error_message);
+    }
+
     public function testApiError()
     {
         $json_api = $this->fakeJsonApi();
