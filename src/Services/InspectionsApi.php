@@ -14,7 +14,7 @@ class InspectionsApi
         $this->jsonApi = $json_api;
     }
 
-    public function get_inspections($plugin_slug)
+    public function getInspections($plugin_slug)
     {
         $result = $this->jsonApi->get($this->url($plugin_slug));
         if ($result->isErr()) {

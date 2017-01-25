@@ -24,7 +24,7 @@ class Inspection_Checker_Test extends PHPUnit_Framework_TestCase
     public function testPluginCallsAPI()
     {
         $api = $this->fakeInspectionsApi();
-        $api->shouldReceive('get_inspections')
+        $api->shouldReceive('getInspections')
             ->once()
             ->with('my-plugin')
             ->andReturn(\Result\Result::ok([]));
@@ -41,7 +41,7 @@ class Inspection_Checker_Test extends PHPUnit_Framework_TestCase
     public function testPluginWithNoInspectionsGeneratesMessage()
     {
         $api = $this->fakeInspectionsApi();
-        $api->shouldReceive('get_inspections')
+        $api->shouldReceive('getInspections')
             ->andReturn(\Result\Result::ok([]));
 
         $my_plugin = [
@@ -70,7 +70,7 @@ EOT;
         $inspection_caution = $this->fakeInspection(date_create('2016-01-23'), '3.0.0', 'Use with caution', 'https://security.dxw.com/plugins/another_plugin2/');
 
         $api = $this->fakeInspectionsApi();
-        $api->shouldReceive('get_inspections')
+        $api->shouldReceive('getInspections')
             ->andReturn(\Result\Result::ok([$inspection_ok, $inspection_caution]));
 
         $my_plugin = [
@@ -98,7 +98,7 @@ EOT;
     public function testApiError()
     {
         $api = $this->fakeInspectionsApi();
-        $api->shouldReceive('get_inspections')
+        $api->shouldReceive('getInspections')
             ->andReturn(\Result\Result::err('Something went wrong'));
 
         $my_plugin = [
