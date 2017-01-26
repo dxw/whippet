@@ -6,10 +6,12 @@ class Installer
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\ProjectDirectory $dir
+        \Dxw\Whippet\ProjectDirectory $dir,
+        \Dxw\Whippet\Services\InspectionChecker $inspection_checker
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
+        $this->inspectionChecker = $inspection_checker;
     }
 
     public function install()
@@ -26,6 +28,13 @@ class Installer
                 $result = $this->installDependency($type, $dep);
                 if ($result->isErr()) {
                     return $result;
+                }
+                $result = $this->inspectionChecker->check($type, $dep);
+                if (!$result->isErr()) {
+                    $inspectionDetails = $result->unwrap();
+                    if (!empty($inspectionDetails)) {
+                        echo sprintf("%s\n", $inspectionDetails);
+                    }
                 }
 
                 ++$count;

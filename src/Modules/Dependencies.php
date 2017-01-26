@@ -10,6 +10,10 @@ class Dependencies extends \RubbishThorClone
 
         $this->factory = new \Dxw\Whippet\Factory();
         $this->projectDirectory = \Dxw\Whippet\ProjectDirectory::find(getcwd());
+        $base_api = new \Dxw\Whippet\Services\BaseApi();
+        $json_api = new \Dxw\Whippet\Services\JsonApi($base_api);
+        $inspections_api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', $json_api);
+        $this->inspectionChecker = new \Dxw\Whippet\Services\InspectionChecker($inspections_api);
     }
 
     public function commands()
@@ -37,7 +41,7 @@ class Dependencies extends \RubbishThorClone
     public function install()
     {
         $dir = $this->getDirectory();
-        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker);
 
         $this->exitIfError($installer->install());
     }
@@ -46,7 +50,7 @@ class Dependencies extends \RubbishThorClone
     {
         $dir = $this->getDirectory();
         $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir);
-        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir);
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker);
 
         $this->exitIfError($updater->update());
         $this->exitIfError($installer->install());
