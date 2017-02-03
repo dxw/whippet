@@ -6,10 +6,12 @@ class Installer
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\ProjectDirectory $dir
+        \Dxw\Whippet\ProjectDirectory $dir,
+        \Dxw\Whippet\Files\WhippetLock $lockFile
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
+        $this->lockFile = $lockFile;
     }
 
     public function install()
@@ -44,12 +46,6 @@ class Installer
         if (!is_file($this->dir.'/whippet.json')) {
             return \Result\Result::err('whippet.json not found');
         }
-
-        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
-        if ($result->isErr()) {
-            return \Result\Result::err(sprintf('whippet.lock: %s', $result->getErr()));
-        }
-        $this->lockFile = $result->unwrap();
 
         $hash = sha1(file_get_contents($this->dir.'/whippet.json'));
         if ($this->lockFile->getHash() !== $hash) {

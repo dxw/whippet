@@ -42,7 +42,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -78,7 +79,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -92,10 +94,12 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
     public function testInstallMissingWhippetJson()
     {
         $dir = $this->getDir();
+        $whippetLock = $this->getWhippetLock('123123', []);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -104,27 +108,6 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $result->isErr());
         $this->assertEquals('whippet.json not found', $result->getErr());
-        $this->assertEquals('', $output);
-    }
-
-    public function testInstallMissingWhippetLock()
-    {
-        $dir = $this->getDir();
-        file_put_contents($dir.'/whippet.json', 'foobar');
-
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::err('file not found'));
-
-        $dependencies = new \Dxw\Whippet\Dependencies\Installer(
-            $this->getFactory(),
-            $this->getProjectDirectory($dir)
-        );
-
-        ob_start();
-        $result = $dependencies->install();
-        $output = ob_get_clean();
-
-        $this->assertEquals(true, $result->isErr());
-        $this->assertEquals('whippet.lock: file not found', $result->getErr());
         $this->assertEquals('', $output);
     }
 
@@ -139,7 +122,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -174,7 +158,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -209,7 +194,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -235,7 +221,8 @@ class Dependencies_Installer_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
