@@ -1,6 +1,8 @@
 <?php
 
-class PluginsTest extends PHPUnit_Framework_TestCase
+namespace Dxw\Whippet\Tests;
+
+class PluginsTest extends \PHPUnit_Framework_TestCase
 {
     public function cmd($cmd, $cwd = null)
     {
@@ -24,7 +26,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
     public function createTestDir()
     {
         # Create Whippet repo
-        $this->dir = $dir = 'tests/plugins-test-dir';
+        $this->dir = $dir = 'tests/tmp/install-plugins';
         exec('rm -rf '.$dir);
         mkdir($dir);
         mkdir($dir.'/config');
@@ -47,7 +49,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n; a good comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->cmd('../../../bin/whippet plugins install', $this->dir);
 
         $this->assertEquals(0, $return);
 
@@ -62,7 +64,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n# a bad comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->cmd('../../../bin/whippet plugins install', $this->dir);
 
         $this->assertEquals(1, $return);
 
@@ -78,7 +80,7 @@ class PluginsTest extends PHPUnit_Framework_TestCase
         $this->createTestDir();
         file_put_contents($this->dir.'/plugins', "source = \"git-repo/\"\nadvanced-custom-fields=\n # a bad comment\n");
 
-        list($return, $stdout, $stderr) = $this->cmd('../../bin/whippet plugins install', dirname(__DIR__).'/'.$this->dir);
+        list($return, $stdout, $stderr) = $this->cmd('../../../bin/whippet plugins install', $this->dir);
 
         $this->assertEquals(1, $return);
 
