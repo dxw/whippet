@@ -105,7 +105,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -157,7 +158,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -210,7 +212,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -252,7 +255,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -298,7 +302,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -341,7 +346,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -369,7 +375,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -423,7 +430,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -479,7 +487,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -495,10 +504,12 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $dir = $this->getDir();
 
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::err('a WhippetJson error'));
+        $whippetLock = $this->getWhippetLock(sha1('foobar'), []);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -554,7 +565,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();
@@ -604,7 +616,8 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
-            $this->getProjectDirectory($dir)
+            $this->getProjectDirectory($dir),
+            $whippetLock
         );
 
         ob_start();

@@ -30,7 +30,7 @@ class UpdateDependenciesTest extends \PHPUnit_Framework_TestCase
 }
 EOT;
         $this->createTestDir();
-        file_put_contents($this->dir.'/whippet.json', '{"foo":"bar"}');
+        file_put_contents($this->dir.'/whippet.json', $this->dummyWhippetJsonContents());
         file_put_contents($this->dir.'/whippet.lock', $lockfile);
 
         list($return, $stdout, $stderr) = $this->whippetDepsInstallCmd();
@@ -55,7 +55,7 @@ EOT;
 }
 EOT;
         $this->createTestDir();
-        file_put_contents($this->dir.'/whippet.json', '{"foo":"bar"}');
+        file_put_contents($this->dir.'/whippet.json', $this->dummyWhippetJsonContents());
         file_put_contents($this->dir.'/whippet.lock', $lockfile);
 
         list($return, $stdout, $stderr) = $this->whippetDepsInstallCmd();
@@ -68,7 +68,7 @@ EOT;
     public function testInvalidLockfile()
     {
         $this->createTestDir();
-        file_put_contents($this->dir.'/whippet.json', '');
+        file_put_contents($this->dir.'/whippet.json', $this->dummyWhippetJsonContents());
         file_put_contents($this->dir.'/whippet.lock', 'foo');
 
         list($return, $stdout, $stderr) = $this->whippetDepsInstallCmd();
@@ -81,7 +81,7 @@ EOT;
     public function testMissingLockfile()
     {
         $this->createTestDir();
-        file_put_contents($this->dir.'/whippet.json', '');
+        file_put_contents($this->dir.'/whippet.json', $this->dummyWhippetJsonContents());
 
         list($return, $stdout, $stderr) = $this->whippetDepsInstallCmd();
 
@@ -145,5 +145,19 @@ EOT;
         $this->assertEquals(0, $return, 'Error running git command');
         list($return, $stdout, $stderr) = $this->cmd('git commit --allow-empty -m Meow', $dir.'/git-repo/advanced-custom-fields');
         $this->assertEquals(0, $return, 'Error running git command');
+    }
+
+    private function dummyWhippetJsonContents()
+    {
+        return <<<EOT
+{
+    "src": {
+         "plugins": "git@git.dxw.net:wordpress-plugins/"
+     },
+    "plugins": [
+        {"name": "my-plugin", "ref": "v1.6"}
+    ]
+}
+EOT;
     }
 }

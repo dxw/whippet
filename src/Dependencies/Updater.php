@@ -6,10 +6,12 @@ class Updater
 {
     public function __construct(
         \Dxw\Whippet\Factory $factory,
-        \Dxw\Whippet\ProjectDirectory $dir
+        \Dxw\Whippet\ProjectDirectory $dir,
+        \Dxw\Whippet\Files\WhippetLock $lockFile
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
+        $this->lockFile = $lockFile;
     }
 
     public function update()

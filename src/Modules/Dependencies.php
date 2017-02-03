@@ -44,9 +44,7 @@ class Dependencies extends \RubbishThorClone
         $dir = $this->getDirectory();
 
         $result = $this->getWhippetLock($dir, $this->factory);
-
         $this->exitIfError($result);
-
         $lockFile = $result->unwrap();
 
         $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $lockFile);
@@ -58,14 +56,21 @@ class Dependencies extends \RubbishThorClone
     {
         $dir = $this->getDirectory();
 
-        $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir);
+        $result = $this->getWhippetLock($dir, $this->factory);
+        if ($result->isErr()) {
+            $lockFile = $this->newWhippetLock($this->factory);
+        } else {
+            $lockFile = $result->unwrap();
+        }
+
+        $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir, $lockFile);
 
         $this->exitIfError($updater->update());
+
         $result = $this->getWhippetLock($dir, $this->factory);
-
         $this->exitIfError($result);
-
         $lockFile = $result->unwrap();
+
         $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $lockFile);
         $this->exitIfError($installer->install());
     }
@@ -84,5 +89,10 @@ class Dependencies extends \RubbishThorClone
             return \Result\Result::Err(sprintf('whippet.lock: %s', $result->getErr()));
         }
         return $result;
+    }
+
+    private function newWhippetLock($factory)
+    {
+        return $factory->newInstance('\\Dxw\\Whippet\\Files\\WhippetLock', []);
     }
 }
