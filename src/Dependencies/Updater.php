@@ -123,7 +123,7 @@ class Updater
     {
         foreach (['themes', 'plugins'] as $type) {
             foreach ($this->jsonFile->getDependencies($type) as $dep) {
-                $this->addDependencyToGitignore($type, $dep['name']);
+                $this->addDependencyToIgnoresArray($type, $dep['name']);
             }
         }
         $this->gitignore->save_ignores(array_unique($this->ignores));
@@ -150,7 +150,7 @@ class Updater
         }
     }
 
-    private function addDependencyToGitignore($type, $name)
+    private function addDependencyToIgnoresArray($type, $name)
     {
         $this->ignores[] = $this->getGitignoreDependencyLine($type, $name);
     }
