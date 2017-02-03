@@ -186,14 +186,25 @@ class Updater
             return \Result\Result::err('missing sources');
         }
 
-        $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
+        $commitResult = $this->fetchLatestRevisionData($src, $ref);
 
         if ($commitResult->isErr()) {
-            return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
+            return $commitResult;
         }
 
         $this->lockFile->addDependency($dependency->type(), $dependency->name(), $src, $commitResult->unwrap());
 
         return \Result\Result::ok();
+    }
+
+    private function fetchLatestRevisionData($src, $ref)
+    {
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
+
+        if ($result->isErr()) {
+            return \Result\Result::err(sprintf('git command failed: %s', $result->getErr()));
+        }
+
+        return $result;
     }
 }
