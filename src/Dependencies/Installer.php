@@ -62,16 +62,7 @@ class Installer
                     return $result;
                 }
 
-                $result = $this->inspectionChecker->check($type, $dependency);
-                if (!$result->isErr()) {
-                    $inspectionDetails = $result->unwrap();
-                    if (!empty($inspectionDetails)) {
-                        echo sprintf("%s\n", $inspectionDetails);
-                    }
-                } else {
-                    $error = $result->getErr();
-                    echo sprintf("[ERROR] %s\n", $error);
-                }
+                echo $this->inspectionDetailsMessage($type, $dependency);
                 echo "\n";
 
                 ++$count;
@@ -128,5 +119,23 @@ class Installer
         }
 
         return \Result\Result::ok();
+    }
+
+    private function inspectionDetailsMessage($type, $dep)
+    {
+        $result = $this->inspectionChecker->check($type, $dep);
+
+        if (!$result->isErr()) {
+            $inspectionDetails = $result->unwrap();
+            if (!empty($inspectionDetails)) {
+                $message = sprintf("%s\n", $inspectionDetails);
+            } else {
+                $message = null;
+            }
+        } else {
+            $error = $result->getErr();
+            $message = sprintf("[ERROR] %s\n", $error);
+        }
+        return $message;
     }
 }
