@@ -22,9 +22,14 @@ class Dependencies extends \RubbishThorClone
     private function exitIfError(\Result\Result $result)
     {
         if ($result->isErr()) {
-            echo sprintf("ERROR: %s\n", $result->getErr());
-            exit(1);
+            $this->exitWithError($result->getErr());
         }
+    }
+
+    private function exitWithError($error)
+    {
+        echo sprintf("ERROR: %s\n", $error);
+        exit(1);
     }
 
     private function getDirectory()
