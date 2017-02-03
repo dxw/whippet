@@ -59,6 +59,8 @@ class Updater
 
     private function update(array $dependencies)
     {
+        $this->updateHash();
+        $this->loadGitignore();
         $count = 0;
         foreach ($dependencies as $type => $typeDependencies) {
             foreach ($typeDependencies as $dep) {
@@ -84,8 +86,6 @@ class Updater
         if ($result->isErr()) {
             return $result;
         }
-        $this->updateHash();
-        $this->loadGitignore();
         return \Result\Result::ok();
     }
 

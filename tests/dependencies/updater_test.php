@@ -26,7 +26,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         return $gitignore;
     }
 
-    private function getWhippetLockWritable(array $addDependency, /* string */ $hash, /* string */ $path, array $getDependencies)
+    private function getWhippetLockWritable(array $addDependency, /* string */ $hash, /* string */ $path, array $getDependencies, /* boolean */ $setHash = true)
     {
         $whippetLock = $this->getMockBuilder('\\Dxw\\Whippet\\Files\\WhippetLock')
         ->disableOriginalConstructor()
@@ -41,7 +41,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
             $addDependency
         );
 
-        $whippetLock->expects($this->exactly(1))
+        $whippetLock->expects($this->exactly($setHash === true ? 1 : 0))
         ->method('setHash')
         ->with($hash);
 
@@ -683,7 +683,7 @@ class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, [], false);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
