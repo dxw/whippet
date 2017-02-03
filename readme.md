@@ -248,7 +248,7 @@ This will:
 
 1. Check the commit hash for the ref of the specified repo, provided it is in `whippet.json`
 2. Update that repo in `whippet.lock`
-3. Update `.gitignore` if the repo was no previously installed
+3. Update `.gitignore` if the repo was not previously installed
 4. Install the repo at the specified ref
 
 ### whippet plugins install
