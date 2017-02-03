@@ -38,7 +38,8 @@ class Updater
             return \Result\Result::err('No matching dependency in whippet.json');
         }
 
-        return $this->update([$type=>[$dep]]);
+        $sources = $this->jsonFile->getSources();
+        return $this->update([$type=>[$dep]], $sources);
     }
 
     public function updateAll()
@@ -50,14 +51,16 @@ class Updater
 
         $allDependencies = array();
 
+
         foreach (['themes', 'plugins'] as $type) {
             $allDependencies[$type] = $this->jsonFile->getDependencies($type);
         }
 
-        return $this->update($allDependencies);
+        $sources = $this->jsonFile->getSources();
+        return $this->update($allDependencies, $sources);
     }
 
-    private function update(array $dependencies)
+    private function update(array $dependencies, array $sources)
     {
         $this->updateHash();
         $this->loadGitignore();
@@ -65,7 +68,7 @@ class Updater
         foreach ($dependencies as $type => $typeDependencies) {
             foreach ($typeDependencies as $dep) {
                 echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
-                $result = $this->addDependencyToLockfile($type, $dep);
+                $result = $this->addDependencyToLockfile($type, $dep, $sources);
                 if ($result->isErr()) {
                     return $result;
                 }
@@ -162,12 +165,11 @@ class Updater
         return '/wp-content/'.$type.'/'.$name."\n";
     }
 
-    private function addDependencyToLockfile($type, array $dep)
+    private function addDependencyToLockfile($type, array $dep, $sources)
     {
         if (isset($dep['src'])) {
             $src = $dep['src'];
         } else {
-            $sources = $this->jsonFile->getSources();
             if (!isset($sources[$type])) {
                 return \Result\Result::err('missing sources');
             }

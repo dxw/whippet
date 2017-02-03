@@ -27,6 +27,10 @@ class WhippetJson extends Base
 
     public function getSources()
     {
-        return $this->data['src'];
+        if (isset($this->data['src'])) {
+            return $this->data['src'];
+        } else {
+            return [];
+        }
     }
 }
