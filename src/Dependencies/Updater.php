@@ -12,7 +12,7 @@ class Updater
         $this->dir = $dir;
     }
 
-    public function updateSingle($dep)
+    public function updateSingle($input_dep)
     {
         $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
         if ($result->isErr()) {
@@ -20,13 +20,13 @@ class Updater
             return \Result\Result::err(sprintf('whippet.lock: %s', $result->getErr()));
         }
 
-        if (strpos($dep, '/') === false) {
+        if (strpos($input_dep, '/') === false) {
             echo "Dependency should be in format [type]/[name]. \n";
             return \Result\Result::err('Incorrect dependency format');
         }
 
-        $type = explode('/', $dep)[0];
-        $name = explode('/', $dep)[1];
+        $type = explode('/', $input_dep)[0];
+        $name = explode('/', $input_dep)[1];
 
         $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
