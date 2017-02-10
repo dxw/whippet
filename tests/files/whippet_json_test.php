@@ -36,4 +36,32 @@ class Files_WhippetJson_Test extends PHPUnit_Framework_TestCase
             'plugins' => 'git@git.dxw.net:wordpress-plugins/',
         ], $whippetJson->getSources());
     }
+
+    public function testGetDependencyNoMatch()
+    {
+        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+            'plugins' => [
+                [
+                    'name' => 'advanced-custom-fields',
+                    'ref' => 'foobar',
+                ],
+            ],
+        ]);
+
+        $this->assertEquals([], $whippetJson->getDependency('plugins', 'twitget'));
+    }
+
+    public function testGetDependency()
+    {
+        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+            'plugins' => [
+                [
+                    'name' => 'twitget',
+                    'ref' => 'foobar',
+                ],
+            ],
+        ]);
+
+        $this->assertEquals(['name'=>'twitget', 'ref'=>'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
+    }
 }

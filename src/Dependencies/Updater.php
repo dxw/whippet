@@ -12,41 +12,87 @@ class Updater
         $this->dir = $dir;
     }
 
-    public function update()
+    public function updateSingle($dep)
+    {
+        $result = $this->factory->callStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $this->dir.'/whippet.lock');
+        if ($result->isErr()) {
+            echo "No whippet.lock file exists, you need to run `whippet deps update` to generate one before you can update a specific dependency. \n";
+            return \Result\Result::err(sprintf('whippet.lock: %s', $result->getErr()));
+        }
+
+        if (strpos($dep, '/') === false) {
+            echo "Dependency should be in format [type]/[name]. \n";
+            return \Result\Result::err('Incorrect dependency format');
+        }
+
+        $type = explode('/', $dep)[0];
+        $name = explode('/', $dep)[1];
+
+        $result = $this->prepareForUpdate();
+        if ($result->isErr()) {
+            return $result;
+        }
+
+        $dep = $this->jsonFile->getDependency($type, $name);
+        if ($dep === []) {
+            return \Result\Result::err('No matching dependency in whippet.json');
+        }
+
+        return $this->update([$type=>[$dep]]);
+    }
+
+    public function updateAll()
+    {
+        $result = $this->prepareForUpdate();
+        if ($result->isErr()) {
+            return $result;
+        }
+
+        $allDependencies = array();
+
+        foreach (['themes', 'plugins'] as $type) {
+            $allDependencies[$type] = $this->jsonFile->getDependencies($type);
+        }
+
+        return $this->update($allDependencies);
+    }
+
+    private function update(array $dependencies)
+    {
+        $this->updateHash();
+        $this->loadGitignore();
+        $count = 0;
+        foreach ($dependencies as $type => $typeDependencies) {
+            foreach ($typeDependencies as $dep) {
+                echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
+                $result = $this->addDependencyToLockfile($type, $dep);
+                if ($result->isErr()) {
+                    return $result;
+                }
+                ++$count;
+            }
+        }
+        $this->saveChanges();
+
+        if ($count === 0) {
+            echo "whippet.json contains no dependencies\n";
+        }
+        return \Result\Result::ok();
+    }
+
+    private function prepareForUpdate()
     {
         $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
             return $result;
         }
-
-        $this->updateHash();
-        $this->loadGitignore();
-
-        $count = 0;
-
-        foreach (['themes', 'plugins'] as $type) {
-            foreach ($this->jsonFile->getDependencies($type) as $dep) {
-                echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
-
-                $result = $this->addDependencyToLockfile($type, $dep);
-                if ($result->isErr()) {
-                    return $result;
-                }
-
-                $this->addDependencyToGitignore($type, $dep['name']);
-
-                ++$count;
-            }
-        }
-
-        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
-        $this->gitignore->save_ignores(array_unique($this->ignores));
-
-        if ($count === 0) {
-            echo "whippet.json contains no dependencies\n";
-        }
-
         return \Result\Result::ok();
+    }
+
+    private function saveChanges()
+    {
+        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
+        $this->createGitIgnore();
     }
 
     private function loadWhippetFiles()
@@ -73,6 +119,16 @@ class Updater
         $this->lockFile->setHash($jsonHash);
     }
 
+    private function createGitIgnore()
+    {
+        foreach (['themes', 'plugins'] as $type) {
+            foreach ($this->jsonFile->getDependencies($type) as $dep) {
+                $this->addDependencyToIgnoresArray($type, $dep['name']);
+            }
+        }
+        $this->gitignore->save_ignores(array_unique($this->ignores));
+    }
+
     private function loadGitignore()
     {
         $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
@@ -94,7 +150,7 @@ class Updater
         }
     }
 
-    private function addDependencyToGitignore($type, $name)
+    private function addDependencyToIgnoresArray($type, $name)
     {
         $this->ignores[] = $this->getGitignoreDependencyLine($type, $name);
     }
