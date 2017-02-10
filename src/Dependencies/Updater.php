@@ -124,10 +124,7 @@ class Updater
     {
         $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
 
-        $this->ignores = [];
-        if (is_file($this->dir.'/.gitignore')) {
-            $this->ignores = $this->gitignore->get_ignores();
-        }
+        $this->ignores = $this->gitignore->get_ignores();
 
         // Iterate through locked dependencies and remove from gitignore
         foreach (['themes', 'plugins'] as $type) {

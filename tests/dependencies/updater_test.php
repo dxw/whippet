@@ -15,7 +15,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $getIgnores = $gitignore->method('get_ignores');
         if ($warnOnGet) {
             $getIgnores->will($this->returnCallback(function () {
-                trigger_error('$warOnGet set but not prevented', E_USER_WARNING);
+                trigger_error('$warnOnGet set but not prevented', E_USER_WARNING);
             }));
         } else {
             $getIgnores->willReturn($get);
@@ -121,7 +121,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAllWithExistingGitignore()
     {
         $dir = $this->getDir();
-        touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -173,7 +172,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAllWithExistingGitignoreNoDuplication()
     {
         $dir = $this->getDir();
-        touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -411,7 +409,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, true);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -439,7 +437,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testUpdateAllRemoveFromGitignore()
     {
         $dir = $this->getDir();
-        touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -755,7 +752,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testUpdateSingleWithExistingGitignore()
     {
         $dir = $this->getDir();
-        touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -807,7 +803,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testUpdateSingleWithExistingGitignoreNoDuplication()
     {
         $dir = $this->getDir();
-        touch($dir.'/.gitignore');
 
         $whippetJson = $this->getWhippetJson([
             'src' => [
@@ -1037,7 +1032,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, true);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([

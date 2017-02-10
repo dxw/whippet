@@ -24,7 +24,11 @@ class Gitignore
      */
     public function get_ignores()
     {
-        return $this->ensure_closing_newline(file($this->ignore_file));
+        if ($this->fileExists()) {
+            return $this->ensure_closing_newline(file($this->ignore_file));
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -52,5 +56,10 @@ class Gitignore
         }
 
         return $ignores;
+    }
+
+    private function fileExists()
+    {
+      is_file($this->ignore_file);
     }
 }
