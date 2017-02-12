@@ -2,6 +2,8 @@
 
 namespace Dxw\Whippet\Dependencies;
 
+use Dxw\Whippet\Models\Dependency;
+
 class Updater
 {
     public function __construct(
@@ -41,8 +43,13 @@ class Updater
         $lockedDependency = $this->lockFile->getDependency($type, $name);
 
         $sources = $this->jsonFile->getSources();
-        $dep['type']= $type;
-        return $this->update([$dep], [$lockedDependency], $sources);
+        if (isset($sources[$type])) {
+            $default_repo = $sources[$type];
+        } else {
+            $default_repo = null;
+        }
+
+        return $this->update([new Dependency($dep, $type, $default_repo)], [$lockedDependency]);
     }
 
     public function updateAll()
@@ -52,29 +59,34 @@ class Updater
             return $result;
         }
 
+        $sources = $this->jsonFile->getSources();
+
         $allDependencies = array();
 
         foreach (['themes', 'plugins'] as $type) {
-            $typeDependencies = $this->jsonFile->getDependencies($type);
-            $typeDependencies = array_map(function ($typeDep) use ($type) {
-                $typeDep['type'] = $type;
-                return $typeDep;
-            }, $typeDependencies);
+            if (isset($sources[$type])) {
+                $default_repo = $sources[$type];
+            } else {
+                $default_repo = null;
+            }
 
+            $typeDeps = $this->jsonFile->getDependencies($type);
+            $typeDependencies = array_map(function ($dep) use ($type, $default_repo) {
+                return new Dependency($dep, $type, $default_repo);
+            }, $typeDeps);
             $allDependencies = array_merge($allDependencies, $typeDependencies);
         }
 
         if (count($allDependencies) > 0) {
             $lockedDependencies = $this->getLockedDependencies($this->lockFile);
-            $sources = $this->jsonFile->getSources();
-            return $this->update($allDependencies, $lockedDependencies, $sources);
+            return $this->update($allDependencies, $lockedDependencies);
         } else {
             echo "whippet.json contains no dependencies\n";
             return \Result\Result::ok();
         }
     }
 
-    private function update(array $dependencies, array $lockedDependencies, array $sources)
+    private function update(array $dependencies, array $lockedDependencies)
     {
         $gitignore = $this->loadGitignore();
         $ignores = $gitignore->get_ignores();
@@ -82,12 +94,12 @@ class Updater
 
         $this->updateHash();
         foreach ($dependencies as $dep) {
-            echo sprintf("[Updating %s/%s]\n", $dep['type'], $dep['name']);
-            $result = $this->addDependencyToLockfile($dep, $sources);
+            echo sprintf("[Updating %s/%s]\n", $dep->type(), $dep->name());
+            $result = $this->addDependencyToLockfile($dep);
             if ($result->isErr()) {
                 return $result;
             }
-            $ignores[] = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
+            $ignores[] = $this->getGitignoreDependencyLine($dep->type(), $dep->name());
         }
 
         $gitignore->save_ignores(array_unique($ignores));
@@ -165,20 +177,13 @@ class Updater
         return '/wp-content/'.$type.'/'.$name."\n";
     }
 
-    private function addDependencyToLockfile(array $dep, $sources)
+    private function addDependencyToLockfile($dependency)
     {
-        if (isset($dep['src'])) {
-            $src = $dep['src'];
-        } else {
-            if (!isset($sources[$dep['type']])) {
-                return \Result\Result::err('missing sources');
-            }
-            $src = $sources[$dep['type']].$dep['name'];
-        }
+        $src = $dependency->src();
+        $ref = $dependency->ref();
 
-        $ref = 'master';
-        if (isset($dep['ref'])) {
-            $ref = $dep['ref'];
+        if (!isset($src)) {
+            return \Result\Result::err('missing sources');
         }
 
         $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
@@ -187,7 +192,7 @@ class Updater
             return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
         }
 
-        $this->lockFile->addDependency($dep['type'], $dep['name'], $src, $commitResult->unwrap());
+        $this->lockFile->addDependency($dependency->type(), $dependency->name(), $src, $commitResult->unwrap());
 
         return \Result\Result::ok();
     }
