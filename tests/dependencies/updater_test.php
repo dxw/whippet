@@ -1,6 +1,8 @@
 <?php
 
-class Dependencies_Updater_Test extends PHPUnit_Framework_TestCase
+namespace Dxw\Whippet;
+
+class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
