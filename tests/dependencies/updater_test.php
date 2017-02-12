@@ -356,10 +356,10 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $gitignore = $this->getGitignore([], [], true, true);
+        $gitignore = $this->getGitignore([], [], false, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
-        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), $dir.'/whippet.lock', []);
+        $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, [], false);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(

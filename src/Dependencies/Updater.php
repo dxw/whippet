@@ -64,9 +64,14 @@ class Updater
             $allDependencies = array_merge($allDependencies, $typeDependencies);
         }
 
-        $lockedDependencies = $this->getLockedDependencies($this->lockFile);
-        $sources = $this->jsonFile->getSources();
-        return $this->update($allDependencies, $lockedDependencies, $sources);
+        if (count($allDependencies) > 0) {
+            $lockedDependencies = $this->getLockedDependencies($this->lockFile);
+            $sources = $this->jsonFile->getSources();
+            return $this->update($allDependencies, $lockedDependencies, $sources);
+        } else {
+            echo "whippet.json contains no dependencies\n";
+            return \Result\Result::ok();
+        }
     }
 
     private function update(array $dependencies, array $lockedDependencies, array $sources)
@@ -76,8 +81,6 @@ class Updater
         $ignores = $this->deleteDepsFromIgnores($ignores, $lockedDependencies);
 
         $this->updateHash();
-
-        $count = 0;
         foreach ($dependencies as $dep) {
             echo sprintf("[Updating %s/%s]\n", $dep['type'], $dep['name']);
             $result = $this->addDependencyToLockfile($dep, $sources);
@@ -85,15 +88,11 @@ class Updater
                 return $result;
             }
             $ignores[] = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
-            ++$count;
         }
 
         $gitignore->save_ignores(array_unique($ignores));
         $this->lockFile->saveToPath($this->dir.'/whippet.lock');
 
-        if ($count === 0) {
-            echo "whippet.json contains no dependencies\n";
-        }
         return \Result\Result::ok();
     }
 
