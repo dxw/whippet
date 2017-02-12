@@ -41,7 +41,8 @@ class Updater
         $lockedDependency = $this->lockFile->getDependency($type, $name);
 
         $sources = $this->jsonFile->getSources();
-        return $this->update([$type=>[$dep]], [$lockedDependency], $sources);
+        $dep['type']= $type;
+        return $this->update([$dep], [$lockedDependency], $sources);
     }
 
     public function updateAll()
@@ -53,9 +54,14 @@ class Updater
 
         $allDependencies = array();
 
-
         foreach (['themes', 'plugins'] as $type) {
-            $allDependencies[$type] = $this->jsonFile->getDependencies($type);
+            $typeDependencies = $this->jsonFile->getDependencies($type);
+            $typeDependencies = array_map(function ($typeDep) use ($type) {
+                $typeDep['type'] = $type;
+                return $typeDep;
+            }, $typeDependencies);
+
+            $allDependencies = array_merge($allDependencies, $typeDependencies);
         }
 
         $lockedDependencies = $this->getLockedDependencies($this->lockFile);
@@ -72,16 +78,14 @@ class Updater
         $this->updateHash();
 
         $count = 0;
-        foreach ($dependencies as $type => $typeDependencies) {
-            foreach ($typeDependencies as $dep) {
-                echo sprintf("[Updating %s/%s]\n", $type, $dep['name']);
-                $result = $this->addDependencyToLockfile($type, $dep, $sources);
-                if ($result->isErr()) {
-                    return $result;
-                }
-                $ignores[] = $this->getGitignoreDependencyLine($type, $dep['name']);
-                ++$count;
+        foreach ($dependencies as $dep) {
+            echo sprintf("[Updating %s/%s]\n", $dep['type'], $dep['name']);
+            $result = $this->addDependencyToLockfile($dep, $sources);
+            if ($result->isErr()) {
+                return $result;
             }
+            $ignores[] = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
+            ++$count;
         }
 
         $gitignore->save_ignores(array_unique($ignores));
@@ -162,15 +166,15 @@ class Updater
         return '/wp-content/'.$type.'/'.$name."\n";
     }
 
-    private function addDependencyToLockfile($type, array $dep, $sources)
+    private function addDependencyToLockfile(array $dep, $sources)
     {
         if (isset($dep['src'])) {
             $src = $dep['src'];
         } else {
-            if (!isset($sources[$type])) {
+            if (!isset($sources[$dep['type']])) {
                 return \Result\Result::err('missing sources');
             }
-            $src = $sources[$type].$dep['name'];
+            $src = $sources[$dep['type']].$dep['name'];
         }
 
         $ref = 'master';
@@ -184,7 +188,7 @@ class Updater
             return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
         }
 
-        $this->lockFile->addDependency($type, $dep['name'], $src, $commitResult->unwrap());
+        $this->lockFile->addDependency($dep['type'], $dep['name'], $src, $commitResult->unwrap());
 
         return \Result\Result::ok();
     }
