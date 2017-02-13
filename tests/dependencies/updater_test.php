@@ -6,20 +6,15 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
-    private function getGitignore(array $get, array $save, /* bool */ $saveIgnores, /* bool */ $warnOnGet)
+    private function getGitignore(array $get, array $save, /* bool */ $getIgnores, /* bool */ $saveIgnores)
     {
         $gitignore = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Gitignore')
         ->disableOriginalConstructor()
         ->getMock();
 
-        $getIgnores = $gitignore->method('get_ignores');
-        if ($warnOnGet) {
-            $getIgnores->will($this->returnCallback(function () {
-                trigger_error('$warnOnGet set but not prevented', E_USER_WARNING);
-            }));
-        } else {
-            $getIgnores->willReturn($get);
-        }
+        $gitignore->expects($this->exactly($getIgnores ? 1 : 0))
+        ->method('get_ignores')
+        ->willReturn($get);
 
         $gitignore->expects($this->exactly($saveIgnores ? 1 : 0))
         ->method('save_ignores')
@@ -93,7 +88,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -146,7 +141,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -198,7 +193,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -242,7 +237,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], false, false);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
@@ -286,7 +281,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -329,7 +324,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -361,7 +356,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $gitignore = $this->getGitignore([], [], true, false);
+        $gitignore = $this->getGitignore([], [], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), $dir.'/whippet.lock', []);
@@ -409,7 +404,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -460,7 +455,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         ], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/unmanaged-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -538,7 +533,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -592,7 +587,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], false, false);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
@@ -726,7 +721,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], false, false);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
@@ -777,7 +772,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -829,7 +824,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
             "/node_modules\n",
             "/vendor\n",
             "/wp-content/themes/my-theme\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -878,7 +873,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-        ], false, false);
+        ], true, false);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([], sha1('foobar'), null, []);
@@ -931,7 +926,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/twitget\n"
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -980,7 +975,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -1032,7 +1027,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -1093,7 +1088,7 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
         "/wp-content/plugins/my-plugin\n", ], [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, false);
+        ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
