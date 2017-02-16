@@ -84,7 +84,7 @@ class Release
         }
 
         // Make sure wp-content is up to date
-        $result = $installer->install(true);
+        $result = $installer->installAll();
         if ($result->isErr()) {
             echo sprintf("ERROR: %s\n", $result->getErr());
             exit(1);
