@@ -9,9 +9,12 @@ RUN docker-php-ext-install gd
 # mod_rewrite
 RUN a2enmod rewrite
 
+# install git
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -r /var/lib/apt/lists/*
+
 # install wordpress
-RUN curl --silent https://wordpress.org/latest.tar.gz > /usr/src/latest.tar.gz \
-    && tar -C /usr/src -xzf /usr/src/latest.tar.gz \
+RUN git clone https://github.com/dxw/WordPress-1.git /usr/src/wordpress \
+    && git -C /usr/src/wordpress checkout feature/inline-js \
     && rm -rf /var/www/html /usr/src/wordpress/wp-content \
     && mv /usr/src/wordpress /var/www/html
 
