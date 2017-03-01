@@ -1028,7 +1028,6 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         $gitignore = $this->getGitignore([], [
             "/wp-content/themes/my-theme\n",
-            "/wp-content/plugins/my-plugin\n",
         ], true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 

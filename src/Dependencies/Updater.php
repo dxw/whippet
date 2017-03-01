@@ -78,7 +78,7 @@ class Updater
                 ++$count;
             }
         }
-        $this->saveChanges();
+        $this->saveChanges($dependencies);
 
         if ($count === 0) {
             echo "whippet.json contains no dependencies\n";
@@ -86,10 +86,10 @@ class Updater
         return \Result\Result::ok();
     }
 
-    private function saveChanges()
+    private function saveChanges($dependencies)
     {
         $this->lockFile->saveToPath($this->dir.'/whippet.lock');
-        $this->createGitIgnore();
+        $this->createGitIgnore($dependencies);
     }
 
     private function loadWhippetFiles()
@@ -116,10 +116,10 @@ class Updater
         $this->lockFile->setHash($jsonHash);
     }
 
-    private function createGitIgnore()
+    private function createGitIgnore($dependencies)
     {
-        foreach (['themes', 'plugins'] as $type) {
-            foreach ($this->jsonFile->getDependencies($type) as $dep) {
+        foreach ($dependencies as $type => $typeDependencies) {
+            foreach ($typeDependencies as $dep) {
                 $this->addDependencyToIgnoresArray($type, $dep['name']);
             }
         }
