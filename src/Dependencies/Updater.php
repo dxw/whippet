@@ -127,15 +127,29 @@ class Updater
         $this->ignores = $this->gitignore->get_ignores();
 
         // Iterate through locked dependencies and remove from gitignore
-        foreach (['themes', 'plugins'] as $type) {
-            foreach ($this->lockFile->getDependencies($type) as $dep) {
-                $line = $this->getGitignoreDependencyLine($type, $dep['name']);
-                $index = array_search($line, $this->ignores);
-                if ($index !== false) {
-                    unset($this->ignores[$index]);
-                }
+        $lockedDependencies = $this->getLockedDependencies();
+        foreach ($lockedDependencies as $dep) {
+            $line = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
+            $index = array_search($line, $this->ignores);
+            if ($index !== false) {
+                unset($this->ignores[$index]);
             }
         }
+    }
+
+    private function getLockedDependencies()
+    {
+        $lockDependencies = [];
+        foreach (['themes', 'plugins'] as $type) {
+            $typeDependencies = $this->lockFile->getDependencies($type);
+            $typeDependencies = array_map(function ($typeDep) use ($type) {
+                $typeDep['type'] = $type;
+                return $typeDep;
+            }, $typeDependencies);
+
+            $lockDependencies = array_merge($lockDependencies, $typeDependencies);
+        }
+        return $lockDependencies;
     }
 
     private function addDependencyToIgnoresArray($type, $name)
