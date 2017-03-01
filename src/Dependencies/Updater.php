@@ -38,8 +38,10 @@ class Updater
             return \Result\Result::err('No matching dependency in whippet.json');
         }
 
+        $lockedDependency = $this->lockFile->getDependency($type, $name);
+
         $sources = $this->jsonFile->getSources();
-        return $this->update([$type=>[$dep]], $sources);
+        return $this->update([$type=>[$dep]], [$lockedDependency], $sources);
     }
 
     public function updateAll()
@@ -56,14 +58,15 @@ class Updater
             $allDependencies[$type] = $this->jsonFile->getDependencies($type);
         }
 
+        $lockedDependencies = $this->getLockedDependencies($this->lockFile);
         $sources = $this->jsonFile->getSources();
-        return $this->update($allDependencies, $sources);
+        return $this->update($allDependencies, $lockedDependencies, $sources);
     }
 
-    private function update(array $dependencies, array $sources)
+    private function update(array $dependencies, array $lockedDependencies, array $sources)
     {
         $this->updateHash();
-        $this->loadGitignore();
+        $this->loadGitignore($lockedDependencies);
         $count = 0;
         foreach ($dependencies as $type => $typeDependencies) {
             foreach ($typeDependencies as $dep) {
@@ -123,14 +126,13 @@ class Updater
         $this->gitignore->save_ignores(array_unique($this->ignores));
     }
 
-    private function loadGitignore()
+    private function loadGitignore($lockedDependencies)
     {
         $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
 
         $this->ignores = $this->gitignore->get_ignores();
 
         // Iterate through locked dependencies and remove from gitignore
-        $lockedDependencies = $this->getLockedDependencies();
         foreach ($lockedDependencies as $dep) {
             $line = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
             $index = array_search($line, $this->ignores);
@@ -140,11 +142,11 @@ class Updater
         }
     }
 
-    private function getLockedDependencies()
+    private function getLockedDependencies($lockFile)
     {
         $lockDependencies = [];
         foreach (['themes', 'plugins'] as $type) {
-            $typeDependencies = $this->lockFile->getDependencies($type);
+            $typeDependencies = $lockFile->getDependencies($type);
             $typeDependencies = array_map(function ($typeDep) use ($type) {
                 $typeDep['type'] = $type;
                 return $typeDep;
