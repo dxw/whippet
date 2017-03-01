@@ -28,7 +28,7 @@ class Updater
         $type = explode('/', $dep)[0];
         $name = explode('/', $dep)[1];
 
-        $result = $this->prepareForUpdate();
+        $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
             return $result;
         }
@@ -43,7 +43,7 @@ class Updater
 
     public function updateAll()
     {
-        $result = $this->prepareForUpdate();
+        $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
             return $result;
         }
@@ -76,15 +76,6 @@ class Updater
 
         if ($count === 0) {
             echo "whippet.json contains no dependencies\n";
-        }
-        return \Result\Result::ok();
-    }
-
-    private function prepareForUpdate()
-    {
-        $result = $this->loadWhippetFiles();
-        if ($result->isErr()) {
-            return $result;
         }
         return \Result\Result::ok();
     }
