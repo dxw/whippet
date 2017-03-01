@@ -1,5 +1,8 @@
 FROM php:apache
 
+# vi
+RUN apt-get update && apt-get install -y --no-install-recommends vim-tiny && rm -r /var/lib/apt/lists/*
+
 # mysqli
 RUN docker-php-ext-install mysqli
 # gd
