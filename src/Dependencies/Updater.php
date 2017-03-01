@@ -65,8 +65,12 @@ class Updater
 
     private function update(array $dependencies, array $lockedDependencies, array $sources)
     {
+        $gitignore = $this->loadGitignore();
+        $ignores = $gitignore->get_ignores();
+        $ignores = $this->deleteDepsFromIgnores($ignores, $lockedDependencies);
+
         $this->updateHash();
-        $this->loadGitignore($lockedDependencies);
+
         $count = 0;
         foreach ($dependencies as $type => $typeDependencies) {
             foreach ($typeDependencies as $dep) {
@@ -75,10 +79,13 @@ class Updater
                 if ($result->isErr()) {
                     return $result;
                 }
+                $ignores[] = $this->getGitignoreDependencyLine($type, $dep['name']);
                 ++$count;
             }
         }
-        $this->saveChanges($dependencies);
+
+        $gitignore->save_ignores(array_unique($ignores));
+        $this->lockFile->saveToPath($this->dir.'/whippet.lock');
 
         if ($count === 0) {
             echo "whippet.json contains no dependencies\n";
@@ -116,30 +123,23 @@ class Updater
         $this->lockFile->setHash($jsonHash);
     }
 
-    private function createGitIgnore($dependencies)
+    private function loadGitignore()
     {
-        foreach ($dependencies as $type => $typeDependencies) {
-            foreach ($typeDependencies as $dep) {
-                $this->addDependencyToIgnoresArray($type, $dep['name']);
-            }
-        }
-        $this->gitignore->save_ignores(array_unique($this->ignores));
+        return $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
     }
 
-    private function loadGitignore($lockedDependencies)
+    private function deleteDepsFromIgnores($ignores, $lockedDependencies)
     {
-        $this->gitignore = $this->factory->newInstance('\\Dxw\\Whippet\\Git\\Gitignore', (string) $this->dir);
-
-        $this->ignores = $this->gitignore->get_ignores();
-
         // Iterate through locked dependencies and remove from gitignore
         foreach ($lockedDependencies as $dep) {
             $line = $this->getGitignoreDependencyLine($dep['type'], $dep['name']);
-            $index = array_search($line, $this->ignores);
+            $index = array_search($line, $ignores);
             if ($index !== false) {
-                unset($this->ignores[$index]);
+                unset($ignores[$index]);
             }
         }
+
+        return $ignores;
     }
 
     private function getLockedDependencies($lockFile)
@@ -155,11 +155,6 @@ class Updater
             $lockDependencies = array_merge($lockDependencies, $typeDependencies);
         }
         return $lockDependencies;
-    }
-
-    private function addDependencyToIgnoresArray($type, $name)
-    {
-        $this->ignores[] = $this->getGitignoreDependencyLine($type, $name);
     }
 
     private function getGitignoreDependencyLine($type, $name)
