@@ -75,7 +75,7 @@ class Release
         $wp->clone_repo($this->application_config->wordpress->repository);
         $wp->checkout($this->application_config->wordpress->revision);
 
-        foreach (['wp-content', '.git', 'readme.html', 'wp-config-sample.php'] as $delete) {
+        foreach (['wp-content', '.git'] as $delete) {
             if (is_dir("{$this->release_dir}/$delete")) {
                 $this->recurse_rmdir("{$this->release_dir}/$delete");
             } else {
