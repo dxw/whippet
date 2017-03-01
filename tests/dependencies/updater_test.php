@@ -923,10 +923,11 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $gitignore = $this->getGitignore([], [
-            "/wp-content/themes/my-theme\n",
-            "/wp-content/plugins/twitget\n"
-        ], true, true);
+        $ignored_files = [
+                "/wp-content/themes/my-theme\n",
+                "/wp-content/plugins/twitget\n",
+        ];
+        $gitignore = $this->getGitignore($ignored_files, $ignored_files, true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
@@ -972,10 +973,11 @@ class DependenciesUpdaterTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($dir.'/whippet.json', 'foobar');
 
-        $gitignore = $this->getGitignore([], [
+        $ignored_files = [
             "/wp-content/themes/my-theme\n",
             "/wp-content/plugins/my-plugin\n",
-        ], true, true);
+        ];
+        $gitignore = $this->getGitignore($ignored_files, $ignored_files, true, true);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
 
         $whippetLock = $this->getWhippetLockWritable([
