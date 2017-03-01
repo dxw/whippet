@@ -13,6 +13,18 @@ class WhippetLock extends Base
         return $this->data[$type];
     }
 
+    public function getDependency(/* string */ $type, /* string */ $name)
+    {
+        if (isset($this->data[$type])) {
+            foreach ($this->getDependencies($type) as $dep) {
+                if ($dep['name'] === $name) {
+                    return $dep;
+                }
+            }
+        }
+        return [];
+    }
+
     public function getHash()
     {
         return $this->data['hash'];

@@ -73,6 +73,40 @@ class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
         ], $whippetLock->unwrap()->getDependencies('themes'));
     }
 
+    public function testGetDependencyNoMatch()
+    {
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
+            'plugins' => [
+                [
+                    'name' => 'advanced-custom-fields',
+                    'src' => 'git@git.dxw.net:wordpress-plugins/advanced-custom-fields',
+                    'revision' => '27ba906',
+                ],
+            ],
+        ]);
+
+        $this->assertEquals([], $whippetLock->getDependency('plugins', 'twitget'));
+    }
+
+    public function testGetDependency()
+    {
+        $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
+            'plugins' => [
+                [
+                    'name' => 'twitget',
+                    'src' => 'git@git.dxw.net:wordpress-plugins/twitget',
+                    'revision' => '37qr12',
+                ],
+            ],
+        ]);
+
+        $this->assertEquals([
+            'name' => 'twitget',
+            'src' => 'git@git.dxw.net:wordpress-plugins/twitget',
+            'revision' => '37qr12',
+        ], $whippetLock->getDependency('plugins', 'twitget'));
+    }
+
     public function testGetHash()
     {
         $whippetLock = new \Dxw\Whippet\Files\WhippetLock([
