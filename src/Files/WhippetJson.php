@@ -4,6 +4,8 @@ namespace Dxw\Whippet\Files;
 
 class WhippetJson
 {
+    private $hash;
+
     public static function fromString(/* string */ $json)
     {
         $data = json_decode($json, true);
@@ -11,7 +13,9 @@ class WhippetJson
             return \Result\Result::err('invalid JSON');
         }
 
-        return \Result\Result::ok(new static($data));
+        $hash = sha1($json);
+
+        return \Result\Result::ok(new static($data, $hash));
     }
 
     public static function fromFile(/* string */ $path)
@@ -23,9 +27,10 @@ class WhippetJson
         return self::fromString(file_get_contents($path));
     }
 
-    public function __construct(array $data)
+    public function __construct(array $data, /* string */ $hash)
     {
         $this->data = $data;
+        $this->hash = $hash;
     }
 
     public function saveToPath(/* string */ $path)
@@ -57,5 +62,10 @@ class WhippetJson
     public function getSources()
     {
         return $this->data['src'];
+    }
+
+    public function getHash()
+    {
+        return $this->hash;
     }
 }

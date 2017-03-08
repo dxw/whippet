@@ -78,7 +78,7 @@ trait Helpers
 
     private function getWhippetJson(array $data)
     {
-        return new \Dxw\Whippet\Files\WhippetJson($data);
+        return new \Dxw\Whippet\Files\WhippetJson($data, 'abc123');
     }
 
     private function getFactory()

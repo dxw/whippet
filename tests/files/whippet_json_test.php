@@ -12,7 +12,7 @@ class FilesWhippetJsonTest extends \PHPUnit_Framework_TestCase
             'plugins' => [
                 ['name' => 'advanced-custom-fields'],
             ],
-        ]);
+        ], 'foo');
 
         $this->assertEquals([
             ['name' => 'advanced-custom-fields'],
@@ -21,7 +21,7 @@ class FilesWhippetJsonTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDependenciesBlank()
     {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([]);
+        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([], '');
 
         $this->assertEquals([], $whippetJson->getDependencies('plugins'));
     }
@@ -32,7 +32,7 @@ class FilesWhippetJsonTest extends \PHPUnit_Framework_TestCase
             'src' => [
                 'plugins' => 'git@git.dxw.net:wordpress-plugins/',
             ],
-        ]);
+        ], 'foo');
 
         $this->assertEquals([
             'plugins' => 'git@git.dxw.net:wordpress-plugins/',
@@ -46,9 +46,9 @@ class FilesWhippetJsonTest extends \PHPUnit_Framework_TestCase
                 [
                     'name' => 'advanced-custom-fields',
                     'ref' => 'foobar',
-                ],
+                ]
             ],
-        ]);
+        ], 'foo');
 
         $this->assertEquals([], $whippetJson->getDependency('plugins', 'twitget'));
     }
@@ -62,8 +62,14 @@ class FilesWhippetJsonTest extends \PHPUnit_Framework_TestCase
                     'ref' => 'foobar',
                 ],
             ],
-        ]);
+        ], 'foo');
 
         $this->assertEquals(['name'=>'twitget', 'ref'=>'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
+    }
+
+    public function testGetHash()
+    {
+        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([], 'wibble123');
+        $this->assertEquals('wibble123', $whippetJson->getHash());
     }
 }
