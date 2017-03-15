@@ -251,7 +251,7 @@ This will:
 3. Update `.gitignore` if the repo was not previously installed
 4. Install the repo at the specified ref
 
-### whippet plugins install
+### whippet deps install
 
 This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
 
