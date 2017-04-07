@@ -16,6 +16,8 @@ namespace Dxw\Whippet\Git;
  **/
 class Git
 {
+    protected $command_separators = ['&&', '||'];
+
     public function __construct($repo_path)
     {
         $this->repo_path = $repo_path;
@@ -26,7 +28,7 @@ class Git
         $output = array();
         $return = '';
 
-        exec("git init {$dir}", $output, $return);
+        exec(sprintf('git init %s', escapeshellarg($dir)), $output, $return);
 
         return array($output, $return);
     }
@@ -38,28 +40,28 @@ class Git
 
     public function checkout($revision)
     {
-        list($output, $return) = $this->run_command("git fetch -a && git checkout {$revision}");
+        list($output, $return) = $this->run_command(['git', 'fetch', '-a', '&&', 'git', 'checkout', $revision]);
 
         return $this->check_git_return('Checkout failed', $return, $output);
     }
 
     public function hard_reset($revision = 'HEAD')
     {
-        list($output, $return) = $this->run_command("git reset --hard {$revision}");
+        list($output, $return) = $this->run_command(['git', 'reset', '--hard', $revision]);
 
         return $this->check_git_return('Reset --hard failed', $return, $output);
     }
 
     public function mixed_reset($revision = 'HEAD')
     {
-        list($output, $return) = $this->run_command("git reset --mixed {$revision}");
+        list($output, $return) = $this->run_command(['git', 'reset', '--mixed', $revision]);
 
         return $this->check_git_return('Reset --mixed failed', $return, $output);
     }
 
     public function clone_repo($repository)
     {
-        list($output, $return) = $this->run_command("git clone {$repository} {$this->repo_path}", false);
+        list($output, $return) = $this->run_command(['git', 'clone', $repository, $this->repo_path], false);
 
         if (!$this->check_git_return('Clone failed', $return, $output)) {
             return false;
@@ -72,7 +74,7 @@ class Git
     {
         $tmpdir = $this->get_tmpdir();
 
-        list($output, $return) = $this->run_command("git clone --no-checkout {$repository} {$tmpdir}", false);
+        list($output, $return) = $this->run_command(['git', 'clone', '--no-checkout', $repository, $tmpdir], false);
 
         if (!$this->check_git_return('No-checkout clone failed', $return, $output)) {
             return false;
@@ -85,7 +87,7 @@ class Git
 
     public function submodule_update()
     {
-        list($output, $return) = $this->run_command('git submodule update --init --recursive');
+        list($output, $return) = $this->run_command(['git', 'submodule', 'update', '--init', '--recursive']);
 
         if (!$this->check_git_return('submodule update failed', $return, $output)) {
             return false;
@@ -96,7 +98,7 @@ class Git
 
     public function submodule_status()
     {
-        list($output, $return) = $this->run_command('git submodule status');
+        list($output, $return) = $this->run_command(['git', 'submodule', 'status']);
 
         if (!$this->check_git_return('submodule status failed', $return, $output)) {
             return false;
@@ -126,7 +128,7 @@ class Git
 
     public function submodule_add($repo, $path)
     {
-        list($output, $return) = $this->run_command("git submodule add {$repo} {$path}");
+        list($output, $return) = $this->run_command(['git', 'submodule', 'add', $repo, $path]);
 
         if (!$this->check_git_return('submodule status failed', $return, $output)) {
             return false;
@@ -137,12 +139,12 @@ class Git
 
     public function delete_repo()
     {
-        $this->run_command("rm -rf {$this->repo_path}", false);
+        $this->run_command(['rm', '-rf', $this->repo_path], false);
     }
 
     public function current_commit()
     {
-        list($output, $return) = $this->run_command('git rev-parse HEAD');
+        list($output, $return) = $this->run_command(['git', 'rev-parse', 'HEAD']);
 
         if (!$this->check_git_return('Checkout failed', $return, $output)) {
             return false;
@@ -153,7 +155,7 @@ class Git
 
     public function local_revision_commit($revision)
     {
-        list($output, $return) = $this->run_command('git show-ref');
+        list($output, $return) = $this->run_command(['git', 'show-ref']);
 
         if (!$this->check_git_return('show-ref failed', $return, $output)) {
             return false;
@@ -170,7 +172,7 @@ class Git
 
     public function get_remotes()
     {
-        list($output, $return) = $this->run_command('git remote -v');
+        list($output, $return) = $this->run_command(['git', 'remote', '-v']);
 
         if (!$this->check_git_return('git remote failed', $return, $output)) {
             return false;
@@ -193,7 +195,7 @@ class Git
 
     public function remote_revision_commit($revision)
     {
-        list($output, $return) = $this->run_command('git ls-remote');
+        list($output, $return) = $this->run_command(['git', 'ls-remote']);
 
         if (!$this->check_git_return('ls-remote failed', $return, $output)) {
             return false;
@@ -210,28 +212,28 @@ class Git
 
     public function fetch()
     {
-        list($output, $return) = $this->run_command('git fetch -a');
+        list($output, $return) = $this->run_command(['git', 'fetch', '-a']);
 
         return $this->check_git_return('Checkout failed', $return, $output);
     }
 
     public function rm($path, $rf = false)
     {
-        list($output, $return) = $this->run_command('git rm '.($rf ? '-rf' : '')." {$path}");
+        list($output, $return) = $this->run_command(['git', 'rm', $rf ? '-rf' : '', $path]);
 
         return $this->check_git_return('rm failed', $return, $output);
     }
 
     public function add($path)
     {
-        list($output, $return) = $this->run_command("git add {$path}");
+        list($output, $return) = $this->run_command(['git', 'add', $path]);
 
         return $this->check_git_return('Add failed', $return, $output);
     }
 
     public function commit($message)
     {
-        list($output, $return) = $this->run_command("git commit -m '{$message}'");
+        list($output, $return) = $this->run_command(['git', 'commit', '-m', $message]);
 
         return $this->check_git_return('Checkout failed', $return, $output);
     }
@@ -286,11 +288,20 @@ class Git
      * $cd If true, Whippet will change its working directory to repo_path before executing $command
      *
      * See also: this::__construct.
+     * @param array $cmd
+     * @param bool $cd
+     * @return array
      */
-    protected function run_command($command, $cd = true)
+    protected function run_command(array $cmd, $cd = true)
     {
         $output = array();
         $return = 0;
+        $command = '';
+
+        foreach ($cmd as $value) {
+            $command .= !in_array($value, $this->command_separators, true) ? escapeshellarg($value) : $value;
+            $command .= ' ';
+        }
 
         if ($cd && !file_exists($this->repo_path)) {
             echo "Error: directory does not exist ({$this->repo_path})\n";
@@ -298,13 +309,13 @@ class Git
         }
 
         if ($cd) {
-            $cd = "cd {$this->repo_path} && ";
+            $cd = sprintf("cd %s && ", escapeshellarg($this->repo_path));
         } else {
             $cd = '';
         }
 
         exec("{$cd}{$command}", $output, $return);
-        // echo ("{$cd}{$command}\n");
+        //echo ("{$cd}{$command}\n");
 
         return array($output, $return);
     }
