@@ -14,14 +14,16 @@ class Dependencies extends \RubbishThorClone
         $json_api = new \Dxw\Whippet\Services\JsonApi($base_api);
         $inspections_api_host = 'https://security.dxw.com';
         $inspections_api_path = '/wp-json/v1/inspections/';
-        $inspections_api = new \Dxw\Whippet\Services\InspectionsApi($inspections_api_host, $inspections_api_path, $json_api);
-        $this->inspectionChecker = new \Dxw\Whippet\Services\InspectionChecker($inspections_api);
+        $this->inspections_api = new \Dxw\Whippet\Services\InspectionsApi($inspections_api_host, $inspections_api_path, $json_api);
     }
 
     public function commands()
     {
-        $this->command('install', 'Installs dependencies');
-        $this->command('update', 'Updates dependencies to their latest versions. Use deps update [type]/[name] to update a specific dependency');
+        $inspections_host_option = function ($option_parser) {
+            $option_parser->addRule('c|disable-inspections-check', 'Disables the calls to the dxw Security API which check for security inspections of plugins');
+        };
+        $this->command('install', 'Installs dependencies', $inspections_host_option);
+        $this->command('update', 'Updates dependencies to their latest versions. Use deps update [type]/[name] to update a specific dependency', $inspections_host_option);
         $this->command('migrate', 'Converts legacy plugins file to whippet.json');
     }
 
@@ -43,7 +45,7 @@ class Dependencies extends \RubbishThorClone
     public function install()
     {
         $dir = $this->getDirectory();
-        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker);
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker());
 
         $this->exitIfError($installer->installAll());
     }
@@ -52,7 +54,7 @@ class Dependencies extends \RubbishThorClone
     {
         $dir = $this->getDirectory();
         $updater = new \Dxw\Whippet\Dependencies\Updater($this->factory, $dir);
-        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker);
+        $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker());
 
         if (is_null($dep)) {
             $this->exitIfError($updater->updateAll());
@@ -68,5 +70,14 @@ class Dependencies extends \RubbishThorClone
         $dir = new \Dxw\Whippet\ProjectDirectory(getcwd());
         $migration = new \Dxw\Whippet\Dependencies\Migration($this->factory, $dir);
         $this->exitIfError($migration->migrate());
+    }
+
+    private function inspectionChecker()
+    {
+        if (isset($this->options->{'disable-inspections-check'})) {
+            return new \Dxw\Whippet\Services\NullInspectionChecker;
+        } else {
+            return new \Dxw\Whippet\Services\InspectionChecker($this->inspections_api);
+        }
     }
 }

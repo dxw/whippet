@@ -7,7 +7,7 @@ class Installer
     public function __construct(
         \Dxw\Whippet\Factory $factory,
         \Dxw\Whippet\ProjectDirectory $dir,
-        \Dxw\Whippet\Services\InspectionChecker $inspection_checker
+        $inspection_checker
     ) {
         $this->factory = $factory;
         $this->dir = $dir;
