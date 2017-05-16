@@ -255,6 +255,21 @@ This will:
 
 This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
 
+### Checking for inspections
+
+Both the `install` and `update` commands will both attempt to check that a
+plugin has had a security inspection by checking the API on
+https://security.dxw.com/
+
+This API is only available to dxw employees, since it contains privately
+published inspections which for various reasons cannot be published. To
+disable these checks pass `-c` when running these commands.
+
+To use a different host for the API (e.g. for development and testing) set an
+environment variable, eg.
+
+    export INSPECTIONS_API_HOST=http://localhost:8000
+
 ## Deploys
 
 To deploy applications using Whippet, first create a directory for your releases:
