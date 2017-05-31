@@ -1,7 +1,11 @@
 <?php
 
+use Dxw\Whippet\Git\Git;
+
 class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
   use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
+
+  protected $whippet_theme_repo = 'git@github.com:dxw/whippet-theme-template.git';
 
   function __construct($options) {
     $this->options = $options;
@@ -21,9 +25,20 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
       mkdir($this->target_dir);
     }
 
-    $this->recurse_copy(dirname(__FILE__) . "/template", $this->target_dir);
-
+    (new Git($this->target_dir))->clone_repo($this->whippet_theme_repo);
     // Delete the spurious .git file
-    unlink("{$this->target_dir}/.git");
+    chdir("{$this->target_dir}");
+    exec('rm -rf .git');
+
+    $namespace = $this->get_namespace_from_target_dir();
+    echo "Setting namespace to {$namespace}\n";
+    exec(sprintf("find . -type f -exec sed -i '' -e 's/MyTheme/%s/g' {} \;", escapeshellarg($namespace)));
    }
+
+  function get_namespace_from_target_dir()
+  {
+    $base_dir = basename($this->target_dir);
+    $words = explode('-', $base_dir);
+    return implode('', array_map('ucfirst', $words));
+  }
 };
