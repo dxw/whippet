@@ -5,7 +5,7 @@ use Dxw\Whippet\Git\Git;
 class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
   use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
-  protected $whippet_theme_repo = 'git@github.com:dxw/whippet-theme-template.git';
+  protected $whippet_theme_repo = 'https://github.com/dxw/whippet-theme-template.git';
 
   function __construct($options) {
     $this->options = $options;
@@ -27,8 +27,8 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
 
     (new Git($this->target_dir))->clone_repo($this->whippet_theme_repo);
     // Delete the spurious .git file
-    chdir("{$this->target_dir}");
-    exec('rm -rf .git');
+    chdir($this->target_dir);
+    $this->recurse_rm('.git');
 
     $namespace = $this->get_namespace_from_target_dir();
     echo "Setting namespace to {$namespace}\n";
