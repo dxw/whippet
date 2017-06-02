@@ -11,7 +11,7 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
     $this->options = $options;
 
     if(isset($this->options->directory)) {
-      $this->target_dir = $this->options->directory;
+      $this->target_dir = getcwd() . '/' . $this->options->directory;
     }
     else {
       $this->target_dir = getcwd() . "/whippet-theme";
@@ -32,7 +32,7 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
 
     $namespace = $this->get_namespace_from_target_dir();
     echo "Setting namespace to {$namespace}\n";
-    exec(sprintf("find . -type f -exec sed -i '' -e 's/MyTheme/%s/g' {} \;", escapeshellarg($namespace)));
+    $this->find_and_replace($this->target_dir, 'MyTheme', $namespace);
    }
 
   function get_namespace_from_target_dir()

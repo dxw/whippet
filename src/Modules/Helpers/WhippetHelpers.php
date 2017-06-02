@@ -167,4 +167,28 @@ trait WhippetHelpers
             exit(1);
         }
     }
+
+    public function find_and_replace($dir, $find, $replaceWith)
+    {
+        $files = $this->recurse_file_search($dir);
+        foreach ($files as $filename) {
+            if (is_file($filename) && is_writable($filename)) {
+                $file = file_get_contents($filename);
+                file_put_contents($filename, str_replace($find, $replaceWith, $file));
+            }
+        }
+    }
+
+    public function recurse_file_search($dir)
+    {
+        $recursive_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
+        $files = [];
+        foreach ($recursive_iterator as $file) {
+            if ($file->isDir()) {
+                continue;
+            }
+            $files[] = $file->getPathname();
+        }
+        return $files;
+    }
 };
