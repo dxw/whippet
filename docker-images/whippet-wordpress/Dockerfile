@@ -8,6 +8,9 @@ RUN docker-php-ext-install mysqli
 # gd
 RUN apt-get update && apt-get install -y --no-install-recommends libpng12-dev && rm -r /var/lib/apt/lists/*
 RUN docker-php-ext-install gd
+# zip
+RUN apt-get update && apt-get install -y --no-install-recommends zlib1g-dev && rm -r /var/lib/apt/lists/*
+RUN docker-php-ext-install zip
 
 # mod_rewrite
 RUN a2enmod rewrite
