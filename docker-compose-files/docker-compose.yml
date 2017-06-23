@@ -1,0 +1,45 @@
+version: "3"
+
+volumes:
+  # docker run --label=com.dxw.whippet=true --label=com.dxw.data=true --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true
+  mysql_data:
+
+services:
+  # docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+
+  # docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_beanstalk schickling/beanstalkd
+  beanstalk:
+    image: schickling/beanstalkd
+
+  # docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql
+  mysql:
+    image: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: foobar
+
+  # docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 80:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher --link=whippet_beanstalk:beanstalk -e PROJECT_ID='.escapeshellarg(md5($this->project_dir)).' thedxw/whippet-wordpress
+  wordpress:
+    image: thedxw/whippet-wordpress
+    ports:
+      - "80:80"
+    links:
+      - mysql
+      - mailcatcher
+      - beanstalk
+    volumes:
+      - .:/usr/src/app
+      - ./wp-content:/var/www/html/wp-content
+    environment:
+      # docker-compose 3 doesn't populate these variables
+      BEANSTALK_PORT_11300_TCP_ADDR: beanstalk
+      MYSQL_PORT_3306_TCP_ADDR: mysql
+      MYSQL_PORT_3306_TCP_PORT: 3306
+      MYSQL_ENV_MYSQL_DATABASE: wordpress
+      MYSQL_ENV_MYSQL_ROOT_PASSWORD: foobar

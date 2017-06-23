@@ -23,15 +23,16 @@ class Server extends \RubbishThorClone
     private function whippet_init()
     {
         $this->_whippet_init();
-        $this->mysql_data = 'whippet_mysql_data_'.preg_replace('/[^a-zA-Z0-9]/', '_', $this->project_dir);
+        $this->project_name = 'whippet_'.preg_replace('/[^a-zA-Z0-9]/', '_', $this->project_dir);
+        $this->yml_path = $this->project_dir.'/docker-compose.yml';
+        $this->args = '--project-name '.$this->project_name.' --file '.$this->yml_path;
     }
 
     private function _stop()
     {
         $this->whippet_init();
 
-        exec('docker stop whippet_mailcatcher whippet_mysql whippet_wordpress whippet_beanstalk 2>/dev/null');
-        exec('docker rm whippet_mailcatcher whippet_mysql whippet_wordpress whippet_beanstalk 2>/dev/null');
+        exec('docker-compose '.$this->args.' down');
     }
 
     /*
@@ -61,37 +62,19 @@ class Server extends \RubbishThorClone
 
         $this->whippet_init();
 
-        # Ensure data container exists
-        exec('docker run --label=com.dxw.whippet=true --label=com.dxw.data=true --name='.escapeshellarg($this->mysql_data).' -v /var/lib/mysql mysql /bin/true 2>/dev/null');
+        // Create docker-compose.yml
+        $ymlFile = file_get_contents(__DIR__.'/../../docker-compose-files/docker-compose.yml');
+        file_put_contents($this->yml_path, $ymlFile);
 
-        # Stop/delete existing containers
+        // Stop/delete existing containers
         echo "Stopping already-running containers\n";
         $this->_stop();
 
         $output = null;
         $return = null;
 
-        # Start other containers
-        exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mailcatcher -p 1080:1080 schickling/mailcatcher 2>/dev/null', $output, $return);
-        if ($return !== 0) {
-            echo "Mailcatcher container failed to start\n";
-            exit(1);
-        }
-        exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_beanstalk schickling/beanstalkd 2>/dev/null', $output, $return);
-        if ($return !== 0) {
-            echo "Beanstalk container failed to start\n";
-            exit(1);
-        }
-        exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_mysql --volumes-from='.escapeshellarg($this->mysql_data).' -e MYSQL_DATABASE=wordpress -e MYSQL_ROOT_PASSWORD=foobar mysql 2>/dev/null', $output, $return);
-        if ($return !== 0) {
-            echo "MySQL container failed to start\n";
-            exit(1);
-        }
-        exec('docker run -d --label=com.dxw.whippet=true --label=com.dxw.data=false --name=whippet_wordpress -v '.escapeshellarg($this->project_dir).':/usr/src/app -v '.escapeshellarg($this->project_dir).'/wp-content:/var/www/html/wp-content -p 80:80 --link=whippet_mysql:mysql --link=whippet_mailcatcher:mailcatcher --link=whippet_beanstalk:beanstalk -e PROJECT_ID='.escapeshellarg(md5($this->project_dir)).' thedxw/whippet-wordpress 2>/dev/null', $output, $return);
-        if ($return !== 0) {
-            echo "WordPress container failed to start\n";
-            exit(1);
-        }
+        // Start containers
+        exec('docker-compose '.$this->args.' up -d');
 
         echo "Started whippet containers\n";
     }
@@ -116,10 +99,13 @@ class Server extends \RubbishThorClone
         $this->whippet_init();
 
         if ($command === 'connect' || $command === null) {
+            die('TODO');
             passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
         } elseif ($command === 'dump') {
+            die('TODO');
             passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -ti --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysqldump -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
         } elseif ($command === 'undump') {
+            die('TODO');
             passthru('docker run --label=com.dxw.whippet=true --label=com.dxw.data=false -i --rm --link=whippet_mysql:mysql mysql sh -c \'MYSQL_PWD="$MYSQL_ENV_MYSQL_ROOT_PASSWORD" exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot "$MYSQL_ENV_MYSQL_DATABASE"\'');
         }
     }
@@ -132,6 +118,7 @@ class Server extends \RubbishThorClone
         $this->whippet_init();
 
         $regexp = '(^CONTAINER ID|whippet_wordpress\s*$|whippet_mysql\s*$|whippet_mailcatcher\s*$|'.$this->mysql_data.'\s*$)';
+        die('TODO');
         passthru('docker ps -a | grep -E '.escapeshellarg($regexp));
     }
 
@@ -142,7 +129,7 @@ class Server extends \RubbishThorClone
     {
         $this->whippet_init();
 
-        passthru('docker logs -f whippet_'.escapeshellarg($container));
+        passthru('docker-compose '.$this->args.' logs -f '.$container);
     }
 
     /*
@@ -152,6 +139,7 @@ class Server extends \RubbishThorClone
     {
         $this->whippet_init();
 
+        die('TODO');
         passthru('docker exec -ti whippet_wordpress bash');
     }
 };
