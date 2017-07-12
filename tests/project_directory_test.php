@@ -4,6 +4,11 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
 {
     use \Helpers;
 
+    public function tearDown()
+    {
+        putenv('WHIPPET_PROJECT_DIRECTORY=');
+    }
+
     public function testGetDirectorySuccess1()
     {
         $dir = $this->getDir();
@@ -106,5 +111,21 @@ class ProjectDirectory_Test extends PHPUnit_Framework_TestCase
         $this->assertFalse($result->isErr());
         $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
         $this->assertEquals($dir, $result->unwrap()->__toString());
+    }
+
+    public function testGetDirectoryWithEnv()
+    {
+        $dir = $this->getDir();
+
+        putenv('WHIPPET_PROJECT_DIRECTORY=/etc');
+        mkdir($dir.'/wp-content');
+        mkdir($dir.'/wp-content/plugins');
+        mkdir($dir.'/wp-content/plugins/my-plugin');
+        touch($dir.'/whippet.json');
+
+        $result = \Dxw\Whippet\ProjectDirectory::find($dir.'/wp-content/plugins/my-plugin');
+        $this->assertFalse($result->isErr());
+        $this->assertInstanceOf('\\Dxw\\Whippet\\ProjectDirectory', $result->unwrap());
+        $this->assertEquals('/etc', $result->unwrap()->__toString());
     }
 }

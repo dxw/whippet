@@ -6,6 +6,11 @@ class ProjectDirectory
 {
     public static function find(/* string */ $cwd)
     {
+        $env = getenv('WHIPPET_PROJECT_DIRECTORY');
+        if ($env) {
+            return \Result\Result::ok(new self($env));
+        }
+
         $path = $cwd;
         while (dirname($path) !== $path) {
             if (is_file($path.'/whippet.json')) {
