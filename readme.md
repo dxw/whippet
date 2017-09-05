@@ -30,17 +30,6 @@ $ git clone --recurse-submodules https://github.com/dxw/whippet.git
 $ composer install
 ```
 
-If you intend to use the Whippet base theme, you will also need:
-
-* npm
-
-Using npm, you will need to install:
-
-* grunt-cli
-* bower
-
-Further instructions for getting started with the base theme can be found in its [readme](https://github.com/dxw/whippet-theme-template/blob/master/README.md)
-
 ### Generate an application
 
 To create a new application, run:
