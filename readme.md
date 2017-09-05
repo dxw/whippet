@@ -30,14 +30,6 @@ $ git clone --recurse-submodules https://github.com/dxw/whippet.git
 $ composer install
 ```
 
-The following commands must be available on your system for Whippet to work correctly:
-
-* git
-* cp
-* mkdir
-* rm
-* ln
-
 If you intend to use the Whippet base theme, you will also need:
 
 * npm
