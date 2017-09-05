@@ -26,8 +26,7 @@ During development, whippet is designed to be used in conjunction with [Whippet 
 To install Whippet, clone this directory and install its dependencies:
 
 ```
-$ git clone https://github.com/dxw/whippet.git
-$ git submodule update --init --recursive
+$ git clone --recurse-submodules https://github.com/dxw/whippet.git
 $ composer install
 ```
 
