@@ -13,9 +13,9 @@ Whippet has a few basic goals:
 5. Facilitating automated testing
 6. Allowing structured test data to be distributed as part of the codebase
 
-At the moment, Whippet can manages plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
+Whippet can manage plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
 
-During development, whippet is designed to be used in conjunction with [Whippet Server](https://github.com/dxw/whippet-server). These projects will be combined at some point in the future.
+During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc) (recommended) or [Whippet Server](https://github.com/dxw/whippet-server).
 
 *Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
@@ -295,57 +295,6 @@ If you are developing within a Whippet-aware theme, whippet will make some thing
 #### whippet theme watch
 
 This command is essentially syntactic sugar for running Grunt. Execute it within a Whippet-enabled theme directory and it will take care of running your grunt tasks as you develop your theme. It runs a variety of tools, including jslint, compiling scss, minification and image compression.
-
-In the future, it will also run automated tests.
-
-## Roadmap
-
-### Reminders
-
-- Deploy will use latest master WP if application.json specifies master, not whatever was current at time of last commit. That is probably bad?
-
-- Cucumber - am now blocked on WP integration. It just sucks without that.
-  - Test environment
-  - Seeds
-    - Seeds (or something) for clean install
-      - whippet db reset?
-      - At what point are we duplicating wp-cli? Should that be bundled in?
-  - Database cleanup (database-cleaner)
-  - WP integration (ruby-wpdb)
-  - Can we avoid HTTP requests/whippet-server when running tests?
-    - Quiet mode makes this much better already
-    - Tests should be run on their own Whippet-Server, in quiet mode
-      - requires allowing multiple whippet-servers
-  - Only run tests for the activated theme
-    - I think this is easy, just by doing cucumber path/to/
-  - Some default features for common WordPress things would be helpful
-    - index, single, page, category, archive, search, 404, analytics... delete whatever is inapplicable
-
-
-### Next
-
-- Refactor console I/O
-- Sort out whippet-server
-- whippet console (using php --auto-prepend-file=init.php -a?)
-  - easier to do after we've sorted out whippet-server
-  - No wait. wpcli does this. wp shell! Can we use that?
-- Add some way to provide a helpful description in a generator
-- whippet generate with no arguments should print an error message
-
-
-### Later
-
-- whippet generate theme
-- whippet console --ruby
-  - See also phpsh.org, which looks nicer than php -a but requires Python
-- whippet server
-  - Make sure it is compatible with other servers, like wp-cli?
-
-
-### Much later
-
-- Should we manage mu-plugins too? Perhaps with a flag in Plugins?
-- Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don't have lots of identical copies of things in application directories.
 
 ## Licence
 
