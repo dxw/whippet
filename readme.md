@@ -19,9 +19,9 @@ During development, whippet is designed to be used in conjunction with [Whippet 
 
 *Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
-# Getting started
+## Getting started
 
-## Install whippet
+### Install whippet
 
 To install Whippet, clone this directory and install its dependencies:
 
@@ -50,7 +50,7 @@ Using npm, you will need to install:
 
 Further instructions for getting started with the base theme can be found in its [readme](https://github.com/dxw/whippet-theme-template/blob/master/README.md)
 
-## Generate an application
+### Generate an application
 
 To create a new application, run:
 
@@ -60,11 +60,11 @@ $ whippet generate app
 
 This will create a new Whippet application in ```./whippet-app```. You can change the location with the -d option. The structure of this application is explained below.
 
-## Configure your application
+### Configure your application
 
 There are a few configuration steps you'll need to follow when you create a new application.
 
-### Set your WordPress version
+#### Set your WordPress version
 
 By default, Whippet uses the current development version of WordPress. If you want to specify a version to develop against, you'll need to edit ```/config/application.json```:
 
@@ -83,24 +83,24 @@ To change the version, replace "master" with the version you'd like:
         "revision": "4.1.1"
 ```
 
-### Add plugins and themes
+#### Add plugins and themes
 
 If you're using any plugins or themes from the codex, you should add them to your `whippet.json` file. For more information, see the [Plugins section](#plugins).
 
-### Give yourself some credit!
+#### Give yourself some credit!
 
 Whippet contains a ```/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/public/``` that you'd like to
 see in the root directory of your website, like the Google webmaster tools file, or a favicon.
 
-### Add or generate a theme
+#### Add or generate a theme
 
 Finally, add a theme to ```/wp-content/themes/``` (or [generate one](Generators) and get devving!
 
-## Run your application
+### Run your application
 
 The recommended method for running a Whippet application is to use the [wpc](https://github.com/dxw/wpc) project.
 
-# Application structure
+## Application structure
 
 An application that uses Whippet must have the following directory structure, and must be a git repository:
 
@@ -114,9 +114,9 @@ An application that uses Whippet must have the following directory structure, an
   - themes      # Themes, which cannot currently be Whippet-managed
 ```
 
-# Commands
+## Commands
 
-## Plugins
+### Plugins
 
 Note: At the moment, Whippet assumes it is running within dxw's infrastructure, and makes some assumptions accordingly. If you run into a problem where this may be the cause, please open an issue.
 
@@ -193,7 +193,7 @@ Finally, you can also specify a repo for an individual plugin or theme explicitl
 }
 ```
 
-### whippet deps update
+#### whippet deps update
 
 This command will:
 
@@ -202,7 +202,7 @@ This command will:
 3. Update `.gitignore` with the plugins/themes installed, and remove plugins/themes that are removed from `whippet.json`
 4. Run `whippet deps install`
 
-### whippet deps update [type]/[name]
+#### whippet deps update [type]/[name]
 
 e.g. `whippet deps update plugins/twitget`
 
@@ -213,11 +213,11 @@ This will:
 3. Update `.gitignore` if the repo was not previously installed
 4. Install the repo at the specified ref
 
-### whippet deps install
+#### whippet deps install
 
 This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
 
-### Checking for inspections
+#### Checking for inspections
 
 Both the `install` and `update` commands will both attempt to check that a
 plugin has had a security inspection by checking the API on
@@ -232,7 +232,7 @@ environment variable, eg.
 
     export INSPECTIONS_API_HOST=http://localhost:8000
 
-## Deploys
+### Deploys
 
 To deploy applications using Whippet, first create a directory for your releases:
 
@@ -253,7 +253,7 @@ When you deploy, Whippet will make sure your app is up to date (per your `whippe
 
 You can then configure your webserver to use the current symlink as your document root, and your application should be available.
 
-### whippet deploy [-f] <directory>
+#### whippet deploy [-f] <directory>
 
 This command will create a new release, using the base <directory> that you specify. In the example above, this would be:
 
@@ -269,39 +269,39 @@ Note also that Whippet, by default, will not deploy your application if the comm
 $ whippet deploy -f /var/local/myapp
 ```
 
-## Generators
+### Generators
 
 Whippet can generate new whippet applications and whippet-aware themes.
 
-### whippet generate <thing>
+#### whippet generate <thing>
 
 Use ```whippet generate -l``` to list available generators. At the time of writing, three are supported.
 
-#### Whippet
+##### Whippet
 
 Generates a new Whippet application with the directory structure in place.
 
-#### Theme
+##### Theme
 
 Generates a Whippet-aware theme with an initial set of templates and tools such as grunt and scss pre-configured.
 
-#### Migration
+##### Migration
 
 Generates a Whippet application from an old-style dxw wp-content repo. (This is probably not useful any more)
 
-## Theme development
+### Theme development
 
 If you are developing within a Whippet-aware theme, whippet will make some things easier.
 
-### whippet theme watch
+#### whippet theme watch
 
 This command is essentially syntactic sugar for running Grunt. Execute it within a Whippet-enabled theme directory and it will take care of running your grunt tasks as you develop your theme. It runs a variety of tools, including jslint, compiling scss, minification and image compression.
 
 In the future, it will also run automated tests.
 
-# Roadmap
+## Roadmap
 
-## Reminders
+### Reminders
 
 - Deploy will use latest master WP if application.json specifies master, not whatever was current at time of last commit. That is probably bad?
 
@@ -323,7 +323,7 @@ In the future, it will also run automated tests.
     - index, single, page, category, archive, search, 404, analytics... delete whatever is inapplicable
 
 
-## Next
+### Next
 
 - Refactor console I/O
 - Sort out whippet-server
@@ -334,7 +334,7 @@ In the future, it will also run automated tests.
 - whippet generate with no arguments should print an error message
 
 
-## Later
+### Later
 
 - whippet generate theme
 - whippet console --ruby
@@ -343,7 +343,7 @@ In the future, it will also run automated tests.
   - Make sure it is compatible with other servers, like wp-cli?
 
 
-## Much later
+### Much later
 
 - Should we manage mu-plugins too? Perhaps with a flag in Plugins?
 - Manage a system-wide shared directory of plugins and wordpresses that gets used by all my many projects, so I don't have lots of identical copies of things in application directories.
