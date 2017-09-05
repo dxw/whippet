@@ -65,7 +65,7 @@ There are a few configuration steps you'll need to follow when you create a new 
 
 #### Set your WordPress version
 
-By default, Whippet uses the current development version of WordPress. If you want to specify a version to develop against, you'll need to edit ```/config/application.json```:
+By default, Whippet uses the current development version of WordPress. If you want to specify a version to develop against, you'll need to edit ```config/application.json```:
 
 ```
 {
@@ -88,12 +88,12 @@ If you're using any plugins or themes from the codex, you should add them to you
 
 #### Give yourself some credit!
 
-Whippet contains a ```/public/humans.txt``` file that you should update with information about your project. You can also add other files to ```/public/``` that you'd like to
+Whippet contains a ```public/humans.txt``` file that you should update with information about your project. You can also add other files to ```public/``` that you'd like to
 see in the root directory of your website, like the Google webmaster tools file, or a favicon.
 
 #### Add or generate a theme
 
-Finally, add a theme to ```/wp-content/themes/``` (or [generate one](Generators) and get devving!
+Finally, add a theme to ```wp-content/themes/``` (or [generate one](Generators) and get devving!
 
 ### Run your application
 
