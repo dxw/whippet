@@ -27,8 +27,17 @@ To install Whippet, clone this directory and install its dependencies:
 
 ```
 $ git clone --recurse-submodules https://github.com/dxw/whippet.git
+$ cd whippet
 $ composer install
 ```
+
+Add the `whippet` tool to your path quickly with:
+
+```
+$ export PATH=$PATH:$PWD/bin
+```
+
+Or add it forever by modifiying your dotfiles however you manage those whether it be via `~/.bashrc` or `~/.zshrc`. 
 
 ### Generate an application
 
