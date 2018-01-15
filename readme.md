@@ -23,11 +23,26 @@ During development, whippet can be used in conjunction with [wpc](https://github
 
 ### Install whippet
 
-To install Whippet, clone this directory and install its dependencies:
+To install Whippet, clone this directory:
 
 ```
 $ git clone --recurse-submodules https://github.com/dxw/whippet.git
+```
+
+Add it to your path:
+```
+$ cp whippet/bin/whippet /usr/local/bin/whippet
+```
+
+Run whippet:
+```
+$ whippet deps install
+```
+
+### For development [install composer](https://getcomposer.org/download/)
+```
 $ composer install
+
 ```
 
 ### Generate an application
