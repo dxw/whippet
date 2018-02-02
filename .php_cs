@@ -1,10 +1,12 @@
 <?php
-
-return \Symfony\CS\Config\Config::create()
-->level(\Symfony\CS\FixerInterface::PSR2_LEVEL)
-->finder(
-    \Symfony\CS\Finder\DefaultFinder::create()
-    ->exclude('generators')
+$config = \PhpCsFixer\Config::create()
+->setFinder(
+    PhpCsFixer\Finder::create()
     ->exclude('vendor')
+    ->exclude('generators')
     ->in(__DIR__)
 );
+\PhpCsFixer\FixerFactory::create()
+->registerBuiltInFixers()
+->useRuleSet(new \PhpCsFixer\RuleSet($config->getRules()));
+return $config;
