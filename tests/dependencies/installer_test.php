@@ -78,7 +78,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -145,7 +145,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -192,7 +192,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -210,7 +210,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -232,7 +232,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -256,7 +256,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertEquals(true, $result->isErr());
@@ -292,7 +292,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -328,7 +328,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
@@ -355,7 +355,7 @@ EOT;
         );
 
         ob_start();
-        $result = $dependencies->installAll();
+        $result = $dependencies->installAll(false);
         $output = ob_get_clean();
 
         $this->assertFalse($result->isErr());
@@ -407,6 +407,7 @@ EOT;
             $this->getProjectDirectory($dir),
             $this->fakeInspectionCheckerWithResults($inspection_check_results)
         );
+        $dependencies->ignoreHash = false;
         ob_start();
         $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
@@ -460,6 +461,7 @@ EOT;
             $this->getProjectDirectory($dir),
             $this->fakeInspectionChecker()
         );
+        $dependencies->ignoreHash = false;
         ob_start();
         $result = $dependencies->installSingle('plugins/my-plugin');
         $output = ob_get_clean();
@@ -494,6 +496,7 @@ EOT;
             $this->getProjectDirectory($dir),
             $this->fakeInspectionChecker()
         );
+        $dependencies->ignoreHash = false;
 
         ob_start();
         $result = $dependencies->installSingle('themes/my-theme');
@@ -530,6 +533,7 @@ EOT;
             $this->getProjectDirectory($dir),
             $this->fakeInspectionChecker()
         );
+        $dependencies->ignoreHash = false;
 
         ob_start();
         $result = $dependencies->installSingle('themes/my-theme');

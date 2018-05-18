@@ -26,7 +26,10 @@ class Dependencies extends \RubbishThorClone
         $inspections_host_option = function ($option_parser) {
             $option_parser->addRule('c|disable-inspections-check', 'Disables the calls to the dxw Security API which check for security inspections of plugins');
         };
-        $this->command('install', 'Installs dependencies', $inspections_host_option);
+        $this->command('install', 'Installs dependencies', function ($option_parser) use ($inspections_host_option) {
+            $inspections_host_option($option_parser);
+            $option_parser->addRule('ignore-hash', 'Do not check hash before installing dependencies');
+        });
         $this->command('update', 'Updates dependencies to their latest versions. Use deps update [type]/[name] to update a specific dependency', $inspections_host_option);
         $this->command('migrate', 'Converts legacy plugins file to whippet.json');
     }
@@ -50,8 +53,9 @@ class Dependencies extends \RubbishThorClone
     {
         $dir = $this->getDirectory();
         $installer = new \Dxw\Whippet\Dependencies\Installer($this->factory, $dir, $this->inspectionChecker());
+        $ignore_hash = isset($this->options->{'ignore-hash'});
 
-        $this->exitIfError($installer->installAll());
+        $this->exitIfError($installer->installAll($ignore_hash));
     }
 
     public function update($dep = null)
@@ -62,7 +66,7 @@ class Dependencies extends \RubbishThorClone
 
         if (is_null($dep)) {
             $this->exitIfError($updater->updateAll());
-            $this->exitIfError($installer->installAll());
+            $this->exitIfError($installer->installAll(false));
         } else {
             $this->exitIfError($updater->updateSingle($dep));
             $this->exitIfError($installer->installSingle($dep));
