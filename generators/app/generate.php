@@ -27,5 +27,21 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
     }
 
     $this->recurse_copy(dirname(__FILE__) . "/template",$this->target_dir);
+
+    $this->setWpVersion();
+   }
+
+   private function setWpVersion()
+   {
+       $appConfig = $this->target_dir . '/config/application.json';
+       $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
+       $data['wordpress']['revision'] = $this->getLatest();
+       file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT)."\n");
+   }
+
+   private function getLatest()
+   {
+       $versionCheck = json_decode(file_get_contents('https://api.wordpress.org/core/version-check/1.7/'), JSON_OBJECT_AS_ARRAY);
+       return $versionCheck['offers'][0]['version'];
    }
 };
