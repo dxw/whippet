@@ -1,6 +1,6 @@
 <?php
 
-class Dependencies_Migration_Test extends PHPUnit_Framework_TestCase
+class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
 {
     use \Helpers;
 

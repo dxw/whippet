@@ -1,6 +1,6 @@
 <?php
 
-class DependenciesInstallerTest extends \PHPUnit_Framework_TestCase
+class DependenciesInstallerTest extends \PHPUnit\Framework\TestCase
 {
     use \Helpers;
 

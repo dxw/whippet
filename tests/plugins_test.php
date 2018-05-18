@@ -1,6 +1,6 @@
 <?php
 
-class PluginsTest extends PHPUnit_Framework_TestCase
+class PluginsTest extends \PHPUnit\Framework\TestCase
 {
     public function cmd($cmd, $cwd = null)
     {

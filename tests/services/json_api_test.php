@@ -1,6 +1,6 @@
 <?php
 
-class Json_Api_Test extends PHPUnit_Framework_TestCase
+class Json_Api_Test extends \PHPUnit\Framework\TestCase
 {
     public function tearDown()
     {
