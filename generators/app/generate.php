@@ -36,7 +36,7 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
        $appConfig = $this->target_dir . '/config/application.json';
        $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
        $data['wordpress']['revision'] = $this->getLatest();
-       file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT)."\n");
+       file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
    }
 
    private function getLatest()
