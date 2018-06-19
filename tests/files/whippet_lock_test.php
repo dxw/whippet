@@ -1,6 +1,6 @@
 <?php
 
-class Files_WhippetLock_Test extends PHPUnit_Framework_TestCase
+class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
 {
     use \Helpers;
 
