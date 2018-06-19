@@ -14,8 +14,10 @@ class Installer
         $this->inspectionChecker = $inspection_checker;
     }
 
-    public function installAll()
+    public function installAll(bool $ignoreHash)
     {
+        $this->ignoreHash = $ignoreHash;
+
         $result = $this->loadWhippetFiles();
         if ($result->isErr()) {
             return $result;
@@ -89,7 +91,7 @@ class Installer
         $this->lockFile = $result->unwrap();
 
         $hash = sha1(file_get_contents($this->dir.'/whippet.json'));
-        if ($this->lockFile->getHash() !== $hash) {
+        if (!$this->ignoreHash && $this->lockFile->getHash() !== $hash) {
             return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
         }
 
