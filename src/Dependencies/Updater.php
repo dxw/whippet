@@ -115,7 +115,12 @@ class Updater
 
     private function updateHash()
     {
-        $jsonHash = sha1(file_get_contents($this->dir.'/whippet.json'));
+        $contents = file_get_contents($this->dir.'/whippet.json');
+
+        // Strip CR for git/Windows compatibility
+        $contents = strtr($contents, ["\r" => '']);
+
+        $jsonHash = sha1($contents);
         $this->lockFile->setHash($jsonHash);
     }
 

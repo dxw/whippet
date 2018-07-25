@@ -88,7 +88,12 @@ class Installer
         }
         $this->lockFile = $result->unwrap();
 
-        $hash = sha1(file_get_contents($this->dir.'/whippet.json'));
+        $contents = file_get_contents($this->dir.'/whippet.json');
+
+        // Strip CR for git/Windows compatibility
+        $contents = strtr($contents, ["\r" => '']);
+
+        $hash = sha1($contents);
         if ($this->lockFile->getHash() !== $hash) {
             return \Result\Result::err('mismatched hash - run `whippet dependencies update` first');
         }
