@@ -9,4 +9,4 @@ You should replace this file with one that gives your team credit for the site y
 ## Whippet is maintained by...
 
 * Harry Metcalfe (@harrym)
-* Tom Adams (@holizz)
+* Mallory Adams
