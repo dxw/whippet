@@ -30,6 +30,12 @@ $ git clone --recurse-submodules https://github.com/dxw/whippet.git
 $ composer install
 ```
 
+You might also want to symlink whippet to somwhere in your path:
+
+```
+sudo ln -s $PWD/bin/whippet /usr/local/bin/whippet
+```
+
 ### Generate an application
 
 To create a new application, run:
