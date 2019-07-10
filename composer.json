@@ -10,6 +10,11 @@
             "Dxw\\Whippet\\": "src/"
         }
     },
+    "config": {
+      "platform": {
+        "php":"7.0"
+      }
+    },
     "require": {
         "dxw/rubbishthorclone": "dev-master",
         "aura/autoload": "^2.0",
