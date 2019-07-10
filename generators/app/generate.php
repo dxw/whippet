@@ -27,6 +27,9 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
     }
 
     $this->recurse_copy(dirname(__FILE__) . "/template",$this->target_dir);
+    if(!isset($this->options->ci)) {
+        $this->recurse_rm($this->target_dir . '/.gitlab-ci.yml');
+    }
 
     $this->setWpVersion();
    }
