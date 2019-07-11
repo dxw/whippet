@@ -17,9 +17,12 @@ class Whippet extends \RubbishThorClone
         $this->command('generate [THING]', 'Generates a thing', function ($option_parser) {
             $option_parser->addRule('l|list', 'Lists available generators');
             $option_parser->addRule('d|directory::', "Override the generator's default creation directory with this one");
+            $option_parser->addRule('c|ci', 'When generating an app, adds a .gitlab-ci.yml template file');
         });
 
-        $this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.');
+        $this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.', function ($option_parser) {
+            $option_parser->addRule('c|ci', 'Adds a .gitlab-ci.yml template file');
+        });
 
         $this->command('migrate OLDPATH NEWPATH', 'Examines an existing wp-content directory and attempts to create an identical Whippet application.');
         $this->command('dependencies SUBCOMMAND', 'Manage dependencies (themes, plugins)');
@@ -48,7 +51,6 @@ class Whippet extends \RubbishThorClone
     public function init($path = false)
     {
         if ($path) {
-            $this->options = new \stdClass();
             $this->options->directory = $path;
         }
 

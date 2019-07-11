@@ -6,9 +6,10 @@ cache:
   directories:
     - vendor
 php:
-  - 7.0
+  - 7.0.22
   - 7.1
   - 7.2
+  - 7.3
 install:
   # For the git tests - TODO
   - git config --global user.email you@example.com && git config --global user.name you

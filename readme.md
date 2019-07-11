@@ -44,7 +44,11 @@ To create a new application, run:
 $ whippet generate app
 ```
 
-This will create a new Whippet application in `./whippet-app`. You can change the location with the `-d` option. The structure of this application is explained below.
+This will create a new Whippet application in `./whippet-app`. The structure of this application is explained below.
+
+You can change the location with the `-d` option. 
+
+If you're using GitLab (e.g. within dxw infrastructure), use the `-c` option to generate a `.gitlab-ci.yml` template file for the app.
 
 ### Configure your application
 
@@ -263,7 +267,7 @@ Whippet can generate new whippet applications and whippet-aware themes.
 
 Use `whippet generate -l` to list available generators. At the time of writing, three are supported.
 
-##### Whippet
+##### App
 
 Generates a new Whippet application with the directory structure in place.
 

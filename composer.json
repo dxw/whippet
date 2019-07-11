@@ -10,6 +10,11 @@
             "Dxw\\Whippet\\": "src/"
         }
     },
+    "config": {
+      "platform": {
+        "php":"7.0.22"
+      }
+    },
     "require": {
         "dxw/rubbishthorclone": "dev-master",
         "aura/autoload": "^2.0",
@@ -22,7 +27,7 @@
         "phpunit/phpunit": "^6.5",
         "mockery/mockery": "^1.1",
         "dxw/phar-install": "^1.1",
-        "mikey179/vfsStream": "^1.6",
-        "friendsofphp/php-cs-fixer": "^2.11"
+        "mikey179/vfsstream": "^1.6",
+        "friendsofphp/php-cs-fixer": "^2.15"
     }
 }
