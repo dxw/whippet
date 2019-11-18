@@ -17,19 +17,19 @@ class DependenciesInstallerTest extends \PHPUnit\Framework\TestCase
 
         $my_theme = [
             'name' => 'my-theme',
-            'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+            'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
             'revision' => '27ba906',
         ];
 
         $my_plugin = [
             'name' => 'my-plugin',
-            'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+            'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
             'revision' => '123456',
         ];
 
         $another_plugin = [
             'name' => 'another-plugin',
-            'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
+            'src' => 'git@git.govpress.com:wordpress-plugins/another-plugin',
             'revision' => '789abc',
         ];
 
@@ -44,11 +44,11 @@ class DependenciesInstallerTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', '27ba906');
+        $gitMyTheme = $this->getGit(false, 'git@git.govpress.com:wordpress-themes/my-theme', '27ba906');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
-        $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $gitMyPlugin = $this->getGit(false, 'git@git.govpress.com:wordpress-plugins/my-plugin', '123456');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
-        $gitAnotherPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/another-plugin', '789abc');
+        $gitAnotherPlugin = $this->getGit(false, 'git@git.govpress.com:wordpress-plugins/another-plugin', '789abc');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/another-plugin', $gitAnotherPlugin);
 
         $inspection_check_results = function ($type, $dep) {
@@ -115,7 +115,7 @@ EOT;
 
         $my_plugin = [
             'name' => 'my-plugin',
-            'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+            'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
             'revision' => '123456',
         ];
 
@@ -127,7 +127,7 @@ EOT;
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $gitMyPlugin = $this->getGit(false, 'git@git.govpress.com:wordpress-plugins/my-plugin', '123456');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
 
         $inspection_check_results = function ($type, $dep) {
@@ -174,7 +174,7 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -274,7 +274,7 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -282,7 +282,7 @@ EOT;
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyTheme = $this->getGit(false, ['with' => 'git@git.dxw.net:wordpress-themes/my-theme', 'return' => false], null);
+        $gitMyTheme = $this->getGit(false, ['with' => 'git@git.govpress.com:wordpress-themes/my-theme', 'return' => false], null);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
@@ -310,7 +310,7 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -318,7 +318,7 @@ EOT;
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
+        $gitMyTheme = $this->getGit(false, 'git@git.govpress.com:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
@@ -372,19 +372,19 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
             'plugins' => [
                 [
                     'name' => 'my-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+                    'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
                     'revision' => '123456',
                 ],
                 [
                     'name' => 'another-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
+                    'src' => 'git@git.govpress.com:wordpress-plugins/another-plugin',
                     'revision' => '789abc',
                 ],
             ],
@@ -433,26 +433,26 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
             'plugins' => [
                 [
                     'name' => 'my-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/my-plugin',
+                    'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
                     'revision' => '123456',
                 ],
                 [
                     'name' => 'another-plugin',
-                    'src' => 'git@git.dxw.net:wordpress-plugins/another-plugin',
+                    'src' => 'git@git.govpress.com:wordpress-plugins/another-plugin',
                     'revision' => '789abc',
                 ],
             ],
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyPlugin = $this->getGit(false, 'git@git.dxw.net:wordpress-plugins/my-plugin', '123456');
+        $gitMyPlugin = $this->getGit(false, 'git@git.govpress.com:wordpress-plugins/my-plugin', '123456');
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
@@ -478,7 +478,7 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -486,7 +486,7 @@ EOT;
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyTheme = $this->getGit(false, ['with' => 'git@git.dxw.net:wordpress-themes/my-theme', 'return' => false], null);
+        $gitMyTheme = $this->getGit(false, ['with' => 'git@git.govpress.com:wordpress-themes/my-theme', 'return' => false], null);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(
@@ -514,7 +514,7 @@ EOT;
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -522,7 +522,7 @@ EOT;
         ]);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $gitMyTheme = $this->getGit(false, 'git@git.dxw.net:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
+        $gitMyTheme = $this->getGit(false, 'git@git.govpress.com:wordpress-themes/my-theme', ['with' => '27ba906', 'return' => false]);
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
 
         $dependencies = new \Dxw\Whippet\Dependencies\Installer(

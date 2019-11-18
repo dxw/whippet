@@ -103,7 +103,7 @@ class Migration
 
             if ($plugin == 'source') {
                 if (empty($data)) {
-                    return \Result\Result::err("Source is empty. It should just specify a repo root:\n\n  source = 'git@git.dxw.net:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.");
+                    return \Result\Result::err("Source is empty. It should just specify a repo root:\n\n  source = 'git@git.govpress.com:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.");
                 }
 
                 $source = $data;

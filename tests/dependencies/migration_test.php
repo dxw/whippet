@@ -22,7 +22,7 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
         $dir = $this->getDir();
 
         file_put_contents($dir.'/plugins', implode("\n", [
-            'source = "git@git.dxw.net:wordpress-plugins/"',
+            'source = "git@git.govpress.com:wordpress-plugins/"',
             'twitget=',
             'acf-options-page=',
             'new-members-only=',
@@ -40,15 +40,15 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
             'jw-player-plugin-for-wordpress=',
             'gravityforms=',
             'unconfirmed=',
-            'oauth2-server = ,git@git.dxw.net:dxw-wp-plugins/oauth2-server',
-            'network-approve-users = v1.1.1,git@git.dxw.net:dxw-wp-plugins/network-approve-users',
+            'oauth2-server = ,git@git.govpress.com:dxw-wp-plugins/oauth2-server',
+            'network-approve-users = v1.1.1,git@git.govpress.com:dxw-wp-plugins/network-approve-users',
         ]));
 
         $whippetJson = $this->getWhippetJsonExpectSavePath($dir.'/whippet.json');
 
         $this->addFactoryNewInstance('\\Dxw\\Whippet\\Files\\WhippetJson', [
             'src' => [
-                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+                'plugins' => 'git@git.govpress.com:wordpress-plugins/',
             ],
             'plugins' => [
                 ['name' => 'twitget'],
@@ -70,18 +70,18 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
                 ['name' => 'unconfirmed'],
                 [
                     'name' => 'oauth2-server',
-                    'src' => 'git@git.dxw.net:dxw-wp-plugins/oauth2-server',
+                    'src' => 'git@git.govpress.com:dxw-wp-plugins/oauth2-server',
                 ],
                 [
                     'name' => 'network-approve-users',
                     'ref' => 'v1.1.1',
-                    'src' => 'git@git.dxw.net:dxw-wp-plugins/network-approve-users',
+                    'src' => 'git@git.govpress.com:dxw-wp-plugins/network-approve-users',
                 ],
             ],
         ], $whippetJson);
 
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.dxw.net:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'v1.4', \Result\Result::ok('27ba906'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-plugins/my-plugin', 'v1.6', \Result\Result::ok('d961c3d'));
 
         $migration = new \Dxw\Whippet\Dependencies\Migration(
             $this->getFactory(),
@@ -102,7 +102,7 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
 
         file_put_contents($dir.'/plugins', implode("\n", [
             '#bad comment',
-            'source = "git@git.dxw.net:wordpress-plugins/"',
+            'source = "git@git.govpress.com:wordpress-plugins/"',
             'twitget=',
         ]));
 
@@ -140,7 +140,7 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
         $output = ob_get_clean();
 
         $this->assertTrue($result->isErr());
-        $this->assertEquals("Source is empty. It should just specify a repo root:\n\n  source = 'git@git.dxw.net:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.", $result->getErr());
+        $this->assertEquals("Source is empty. It should just specify a repo root:\n\n  source = 'git@git.govpress.com:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.", $result->getErr());
         $this->assertEquals('', $output);
 
         $this->assertFalse(file_exists($dir.'/whippet.json'));
@@ -172,7 +172,7 @@ class Dependencies_Migration_Test extends \PHPUnit\Framework\TestCase
         touch($dir.'/whippet.json');
 
         file_put_contents($dir.'/plugins', implode("\n", [
-            'source = "git@git.dxw.net:wordpress-plugins/"',
+            'source = "git@git.govpress.com:wordpress-plugins/"',
             'twitget=',
         ]));
 

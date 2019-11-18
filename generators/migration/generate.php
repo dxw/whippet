@@ -107,7 +107,7 @@ class MigrationGenerator extends \Dxw\Whippet\WhippetGenerator {
 
     // Always start with a fresh file
     // Whippet init adds akismet (as it is part of the WP distro) but we only want it now if it's in $old
-    file_put_contents("{$new}/plugins", "source = \"git@git.dxw.net:wordpress-plugins/\"\n");
+    file_put_contents("{$new}/plugins", "source = \"git@git.govpress.com:wordpress-plugins/\"\n");
 
     echo "Updating Plugins file\n";
     foreach($plugins as $plugin_file => $plugin_data) {
@@ -187,7 +187,7 @@ class MigrationGenerator extends \Dxw\Whippet\WhippetGenerator {
         continue;
       }
 
-      if(strpos($remote, "git@git.dxw.net") === false) {
+      if(strpos($remote, "git@git.govpress.com") === false) {
         $this->manual_fixes[] = "Non-dxw git repo submoduled: {$remote} at {$submodule->dir}";
       }
 
