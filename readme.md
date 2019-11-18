@@ -114,15 +114,15 @@ To manage plugins and themes using Whippet, you make entries in the `whippet.jso
 
 The file should specify a source for plugins and themes. The source should be a base url for a git repo.
 
-If you are a dxw customer, the sources will be `git@git.dxw.net:wordpress-plugins/` and `git@git.dxw.net:wordpress-themes/`. If not, we suggest using `https://github.com/wp-plugins` for plugins.
+If you are a dxw customer, the source will be `git@git.govpress.com:wordpress-plugins/`. If not, we suggest using `https://github.com/wp-plugins` for plugins.
 
 The rest of the file should specify plugins and themes that you want to install. Example:
 
 ```
 {
     "src": {
-        "plugins": "git@git.dxw.net:wordpress-plugins/",
-        "themes": "git@git.dxw.net:wordpress-themes/"
+        "plugins": "git@git.govpress.com:wordpress-plugins/",
+        "themes": "git@git.govpress.com:wordpress-themes/"
     },
     "plugins": [
         {"name": "akismet"}
@@ -138,7 +138,7 @@ The rest of the file should specify plugins and themes that you want to install.
 The `{"name": "akismet"}` instructs Whippet (on request) to install the most recent version of Akismet available in the repo. Whippet will determine a valid repo URL for the akismet plugin by appending the name to the source. In this example:
 
 ```
-git@git.dxw.net:wordpress-plugins/akismet
+git@git.govpress.com:wordpress-plugins/akismet
 ```
 
 You can also specify a particular label or branch that you want to use. Generally, this will either be master (the default) or a tag (for a specific version), but you can use any git reference. So you can do:

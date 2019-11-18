@@ -10,7 +10,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -19,7 +19,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals([
             [
                 'name' => 'my-theme',
-                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                 'revision' => '27ba906',
             ],
         ], $whippetLock->getDependencies('themes'));
@@ -31,7 +31,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -41,7 +41,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals([
             [
                 'name' => 'my-theme',
-                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                 'revision' => '27ba906',
             ],
         ], $whippetLock->unwrap()->getDependencies('themes'));
@@ -55,7 +55,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
             'themes' => [
                 [
                     'name' => 'my-theme',
-                    'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                    'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                     'revision' => '27ba906',
                 ],
             ],
@@ -67,7 +67,7 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals([
             [
                 'name' => 'my-theme',
-                'src' => 'git@git.dxw.net:wordpress-themes/my-theme',
+                'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
                 'revision' => '27ba906',
             ],
         ], $whippetLock->unwrap()->getDependencies('themes'));
@@ -104,11 +104,11 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
     {
         $whippetLock = new \Dxw\Whippet\Files\WhippetLock([]);
 
-        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.dxw.net:foobar/baz', '123abc');
+        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.govpress.com:foobar/baz', '123abc');
         $this->assertEquals([
             [
                 'name' => 'my-plugin',
-                'src' => 'git@git.dxw.net:foobar/baz',
+                'src' => 'git@git.govpress.com:foobar/baz',
                 'revision' => '123abc',
             ],
         ], $whippetLock->getDependencies('plugins'));
@@ -120,27 +120,27 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
             'plugins' => [
                 [
                     'name' => 'my-other-plugin',
-                    'src' => 'git@git.dxw.net:foobar/bat',
+                    'src' => 'git@git.govpress.com:foobar/bat',
                     'revision' => 'zzz',
                 ],
                 [
                     'name' => 'my-plugin',
-                    'src' => 'git@git.dxw.net:foobar/baz',
+                    'src' => 'git@git.govpress.com:foobar/baz',
                     'revision' => '456789',
                 ],
             ],
         ]);
 
-        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.dxw.net:foobar/baz', '123abc');
+        $whippetLock->addDependency('plugins', 'my-plugin', 'git@git.govpress.com:foobar/baz', '123abc');
         $this->assertEquals([
             [
                 'name' => 'my-other-plugin',
-                'src' => 'git@git.dxw.net:foobar/bat',
+                'src' => 'git@git.govpress.com:foobar/bat',
                 'revision' => 'zzz',
             ],
             [
                 'name' => 'my-plugin',
-                'src' => 'git@git.dxw.net:foobar/baz',
+                'src' => 'git@git.govpress.com:foobar/baz',
                 'revision' => '123abc',
             ],
         ], $whippetLock->getDependencies('plugins'));

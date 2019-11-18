@@ -28,12 +28,12 @@ class Files_WhippetJson_Test extends \PHPUnit\Framework\TestCase
     {
         $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
             'src' => [
-                'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+                'plugins' => 'git@git.govpress.com:wordpress-plugins/',
             ],
         ]);
 
         $this->assertEquals([
-            'plugins' => 'git@git.dxw.net:wordpress-plugins/',
+            'plugins' => 'git@git.govpress.com:wordpress-plugins/',
         ], $whippetJson->getSources());
     }
 
