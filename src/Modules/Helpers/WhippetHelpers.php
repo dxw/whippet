@@ -58,7 +58,7 @@ trait WhippetHelpers
             }
             ');
 
-            if (file_put_contents($application_config_file, json_encode($this->application_config,  JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))) {
+            if (file_put_contents($application_config_file, json_encode($this->application_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))) {
                 echo "A default application.json was created\n";
             } else {
                 echo "No config/application.json was found, and no default could be created. Quitting.\n";
@@ -143,14 +143,14 @@ trait WhippetHelpers
 
     private function check_for_missing_whippet_files($project_dir)
     {
-        $whippet_files = array(
+        $whippet_files = [
             'config/',
             'wp-content/',
             'wp-content/plugins/',
             '.gitignore',
-        );
+        ];
 
-        $missing = array();
+        $missing = [];
         foreach ($whippet_files as $file) {
             if (!file_exists("{$project_dir}/{$file}")) {
                 $missing[] = $file;

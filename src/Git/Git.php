@@ -25,12 +25,12 @@ class Git
 
     public static function init($dir)
     {
-        $output = array();
+        $output = [];
         $return = '';
 
         exec(sprintf('git init %s', escapeshellarg($dir)), $output, $return);
 
-        return array($output, $return);
+        return [$output, $return];
     }
 
     public function is_repo()
@@ -104,7 +104,7 @@ class Git
             return false;
         }
 
-        $submodules = array();
+        $submodules = [];
 
         foreach ($output as $line) {
             if (preg_match('/(\+?U?-?)([a-z0-9]{40}) ([^\(]+)([^\)]*)/', trim($line), $matches)) {
@@ -178,7 +178,7 @@ class Git
             return false;
         }
 
-        $remotes = array();
+        $remotes = [];
 
         foreach ($output as $line) {
             if (preg_match('/^([^\s]+)\s+([^\s]+)/', trim($line), $matches)) {
@@ -240,7 +240,7 @@ class Git
 
     protected function parse_ref_list($reflist)
     {
-        $refs = array();
+        $refs = [];
         foreach ($reflist as $line) {
             if (preg_match("/^([a-z0-9]{40})\s+(.+)$/", $line, $matches)) {
                 $ref = new \stdClass();
@@ -294,7 +294,7 @@ class Git
      */
     protected function run_command(array $cmd, $cd = true)
     {
-        $output = array();
+        $output = [];
         $return = 0;
         $command = '';
 
@@ -317,7 +317,7 @@ class Git
         exec("{$cd}{$command}", $output, $return);
         //echo ("{$cd}{$command}\n");
 
-        return array($output, $return);
+        return [$output, $return];
     }
 
     /**
