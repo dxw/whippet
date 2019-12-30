@@ -80,9 +80,7 @@ trait WhippetHelpers
             }
 
             $path = dirname($path);
-        }
-        // dirname returns . or / if you call it on /, depending on platform
-        while ($path !== '.' && $path !== '/');
+        } while ($path !== '.' && $path !== '/'); // dirname returns . or / if you call it on /, depending on platform
 
         return false;
     }
