@@ -45,7 +45,7 @@ class Generate
 
     public function get_generators()
     {
-        $generators = array();
+        $generators = [];
 
         foreach (new \DirectoryIterator($this->generators_dir) as $file) {
             if ($file->isDot()) {

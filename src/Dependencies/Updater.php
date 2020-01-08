@@ -48,7 +48,7 @@ class Updater
             return $result;
         }
 
-        $allDependencies = array();
+        $allDependencies = [];
 
         foreach (['themes', 'plugins'] as $type) {
             $allDependencies[$type] = $this->jsonFile->getDependencies($type);

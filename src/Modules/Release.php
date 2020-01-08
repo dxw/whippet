@@ -43,7 +43,8 @@ class Release
             $factory = new \Dxw\Whippet\Factory();
             $installer = new \Dxw\Whippet\Dependencies\Installer(
                 $factory,
-                new \Dxw\Whippet\ProjectDirectory($this->project_dir)
+                new \Dxw\Whippet\ProjectDirectory($this->project_dir),
+                new \Dxw\Whippet\Services\NullInspectionChecker()
             );
         } elseif ($this->plugins_lock_file && file_exists($this->plugins_lock_file)) {
             $installer = new Plugin();

@@ -174,7 +174,7 @@ class Deploy
         $releases_manifest_file = "{$this->deploy_dir}/releases/manifest.json";
 
         if (!file_exists($releases_manifest_file)) {
-            $this->releases_manifest = array();
+            $this->releases_manifest = [];
         } else {
             $this->releases_manifest = json_decode(file_get_contents($releases_manifest_file));
         }

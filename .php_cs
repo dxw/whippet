@@ -1,12 +1,14 @@
 <?php
-$config = \PhpCsFixer\Config::create()
-->setFinder(
-    PhpCsFixer\Finder::create()
-    ->exclude('vendor')
-    ->exclude('generators')
-    ->in(__DIR__)
-);
-\PhpCsFixer\FixerFactory::create()
-->registerBuiltInFixers()
-->useRuleSet(new \PhpCsFixer\RuleSet($config->getRules()));
-return $config;
+
+$finder = \PhpCsFixer\Finder::create()
+->exclude('generators')
+->exclude('vendor')
+->in(__DIR__);
+
+return \PhpCsFixer\Config::create()
+->setRules([
+    '@PSR2' => true,
+    'array_syntax' => ['syntax' => 'short'],
+])
+
+->setFinder($finder);
