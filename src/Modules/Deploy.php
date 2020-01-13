@@ -73,16 +73,16 @@ class Deploy
                 'wp-content/plugins is missing; is the app properly deployed?' => !file_exists("{$new_release->release_dir}/wp-content/plugins"),
 
                 // Is there stuff in shared? Does it look right?
-                'wp-config.php is not in the shared directory.' => !file_exists("{$new_release->release_dir}/../../shared/wp-config.php"),
-                'uploads directory is not in the shared directory.' => (!file_exists("{$new_release->release_dir}/../../shared/uploads") && !is_link("{$new_release->release_dir}/../../shared/uploads")),
-                "wp-config.php doesn't contain DB_NAME; is it valid?" => !strpos(file_get_contents("{$new_release->release_dir}/../../shared/wp-config.php"), 'DB_NAME'),
+#                'wp-config.php is not in the shared directory.' => !file_exists("{$new_release->release_dir}/../../shared/wp-config.php"),
+#                'uploads directory is not in the shared directory.' => (!file_exists("{$new_release->release_dir}/../../shared/uploads") && !is_link("{$new_release->release_dir}/../../shared/uploads")),
+            #    "wp-config.php doesn't contain DB_NAME; is it valid?" => !strpos(file_get_contents("{$new_release->release_dir}/../../shared/wp-config.php"), 'DB_NAME'),
 
                 //
                 // Did the symlinking work?
                 //
 
-                'wp-config.php is missing; did the symlinking fail?' => !file_exists("{$new_release->release_dir}/wp-config.php"),
-                'wp-content/uploads is missing; did the symlinking fail?' => (!file_exists("{$new_release->release_dir}/wp-content/uploads") && !is_link("{$new_release->release_dir}/../../shared/uploads")),
+#                'wp-config.php is missing; did the symlinking fail?' => !file_exists("{$new_release->release_dir}/wp-config.php"),
+#                'wp-content/uploads is missing; did the symlinking fail?' => (!file_exists("{$new_release->release_dir}/wp-content/uploads") && !is_link("{$new_release->release_dir}/../../shared/uploads")),
             ];
 
             $release_ok = true;

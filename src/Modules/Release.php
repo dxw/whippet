@@ -20,7 +20,7 @@ class Release
         $this->number = $number;
         $this->time = date('r');
         $this->deployed_commit = $git->current_commit();
-        $this->release_dir = "{$releases_dir}/{$this->deployed_commit}";
+        $this->release_dir = "{$releases_dir}/dockerrelease";
     }
 
     public function create(&$force)
@@ -136,8 +136,8 @@ class Release
         //
 
         // Symlinkery
-        symlink(realpath("{$this->release_dir}/../../shared/wp-config.php"), "{$this->release_dir}/wp-config.php");
-        symlink(realpath("{$this->release_dir}/../../shared/uploads"), "{$this->release_dir}/wp-content/uploads");
+#        symlink(realpath("{$this->release_dir}/../../shared/wp-config.php"), "{$this->release_dir}/wp-config.php");
+#        symlink(realpath("{$this->release_dir}/../../shared/uploads"), "{$this->release_dir}/wp-content/uploads");
 
         // FIN
     }
