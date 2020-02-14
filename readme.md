@@ -26,7 +26,7 @@ During development, whippet can be used in conjunction with [wpc](https://github
 To install Whippet, clone this directory and install its dependencies:
 
 ```
-$ git clone --recurse-submodules https://github.com/dxw/whippet.git
+$ git clone https://github.com/dxw/whippet.git
 $ composer install
 ```
 
@@ -46,7 +46,7 @@ $ whippet generate app
 
 This will create a new Whippet application in `./whippet-app`. The structure of this application is explained below.
 
-You can change the location with the `-d` option. 
+You can change the location with the `-d` option.
 
 If you're using GitLab (e.g. within dxw infrastructure), use the `-c` option to generate a `.gitlab-ci.yml` template file for the app.
 
