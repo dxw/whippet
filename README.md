@@ -11,7 +11,7 @@ Whippet has a few basic goals:
 5. Facilitating automated testing
 6. Allowing structured test data to be distributed as part of the codebase
 
-Whippet can manage plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
+Whippet can manage plugins and themes and releases.
 
 During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc).
 
@@ -276,14 +276,6 @@ Generates a Whippet-aware theme with an initial set of templates and tools such 
 ##### Migration
 
 Generates a Whippet application from an old-style dxw wp-content repo. (This is probably not useful any more)
-
-### Theme development
-
-If you are developing within a Whippet-aware theme, whippet will make some things easier.
-
-#### whippet theme watch
-
-This command is essentially syntactic sugar for running Grunt. Execute it within a Whippet-enabled theme directory and it will take care of running your grunt tasks as you develop your theme. It runs a variety of tools, including jslint, compiling scss, minification and image compression.
 
 ## Licence
 
