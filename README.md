@@ -1,5 +1,3 @@
-_The stand-alone web server previously hosted here can now be found at https://github.com/dxw/whippet-server_
-
 # Whippet
 
 This project is a framework for building WordPress applications that eases deployment, plugin management and build steps. Whippet is part of dxw's work to build and host WordPress-based applications that conform more closely to 12-factor principles.
@@ -15,7 +13,7 @@ Whippet has a few basic goals:
 
 Whippet can manage plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
 
-During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc) (recommended) or [Whippet Server](https://github.com/dxw/whippet-server).
+During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc).
 
 *Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
