@@ -273,10 +273,6 @@ Generates a new Whippet application with the directory structure in place.
 
 Generates a Whippet-aware theme with an initial set of templates and tools such as grunt and scss pre-configured.
 
-##### Migration
-
-Generates a Whippet application from an old-style dxw wp-content repo. (This is probably not useful any more)
-
 ## Licence
 
 [MIT](COPYING.txt)
