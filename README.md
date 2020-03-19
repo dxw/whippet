@@ -1,5 +1,3 @@
-_The stand-alone web server previously hosted here can now be found at https://github.com/dxw/whippet-server_
-
 # Whippet
 
 This project is a framework for building WordPress applications that eases deployment, plugin management and build steps. Whippet is part of dxw's work to build and host WordPress-based applications that conform more closely to 12-factor principles.
@@ -13,9 +11,9 @@ Whippet has a few basic goals:
 5. Facilitating automated testing
 6. Allowing structured test data to be distributed as part of the codebase
 
-Whippet can manage plugins and themes and releases and compile stylesheets in Whippet-enabled themes.
+Whippet can manage plugins and themes and releases.
 
-During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc) (recommended) or [Whippet Server](https://github.com/dxw/whippet-server).
+During development, whippet can be used in conjunction with [wpc](https://github.com/dxw/wpc).
 
 *Whippet is under development and should be considered alpha software. If you use it, we'd love to know what you think.*
 
@@ -274,18 +272,6 @@ Generates a new Whippet application with the directory structure in place.
 ##### Theme
 
 Generates a Whippet-aware theme with an initial set of templates and tools such as grunt and scss pre-configured.
-
-##### Migration
-
-Generates a Whippet application from an old-style dxw wp-content repo. (This is probably not useful any more)
-
-### Theme development
-
-If you are developing within a Whippet-aware theme, whippet will make some things easier.
-
-#### whippet theme watch
-
-This command is essentially syntactic sugar for running Grunt. Execute it within a Whippet-enabled theme directory and it will take care of running your grunt tasks as you develop your theme. It runs a variety of tools, including jslint, compiling scss, minification and image compression.
 
 ## Licence
 
