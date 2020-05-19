@@ -17,6 +17,12 @@ During development, whippet can be used in conjunction with [wpc](https://github
 
 ## Getting started
 
+You will need:
+
+* [PHP](https://www.php.net/)
+* [Composer](https://getcomposer.org/)
+* [git](https://git-scm.com/)
+
 ### Install whippet
 
 To install Whippet, clone this directory and install its dependencies:
@@ -26,7 +32,7 @@ $ git clone https://github.com/dxw/whippet.git
 $ composer install
 ```
 
-You might also want to symlink whippet to somwhere in your path:
+You might also want to symlink whippet to somewhere in your path:
 
 ```
 sudo ln -s $PWD/bin/whippet /usr/local/bin/whippet
