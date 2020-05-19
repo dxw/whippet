@@ -8,8 +8,6 @@ Whippet has a few basic goals:
 2. Properly managing plugins and themes, allowing them to be version controlled and easily updated
 3. Managing the creation of releases, including rollbacks
 4. Automating the generation of commonly required objects like new applications and new themes
-5. Facilitating automated testing
-6. Allowing structured test data to be distributed as part of the codebase
 
 Whippet can manage plugins and themes and releases.
 
