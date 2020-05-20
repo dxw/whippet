@@ -46,6 +46,12 @@ The main things you can use Whippet to do are:
 * [Managing themes and plugins](docs/themesandplugins.md)
 * [Deploying a Whippet application](docs/deploy.md)
 
+## Support
+
+For dxw developers who will encounter Whippet in a support context.
+
+See the [Support](docs/support.md) doc.
+
 ## Licence
 
 [MIT](COPYING.txt)
