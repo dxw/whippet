@@ -71,7 +71,7 @@ An application that uses Whippet must have the following directory structure, an
 
 ## Generating a Whippet theme
 
-To create a new Whippet application, run:
+To create a new Whippet theme, run:
 
 ```
 $ whippet generate theme
