@@ -63,11 +63,10 @@ An application that uses Whippet must have the following directory structure, an
 ```
 - config      # Application configuration files
 - public      # Non-WordPress files that should be available via the web
-- seeds       # Seed data for initialising new checkouts and automated testing
 - wp-content  # Your application's wp-content directory
   - mu-plugins  # Must-use plugins
   - plugins     # Plugins (Whippet managed and otherwise)
-  - themes      # Themes, which cannot currently be Whippet-managed
+  - themes      # Themes (Whippet managed and otherwise)
 ```
 
 ## Generating a Whippet theme
