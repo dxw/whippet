@@ -14,7 +14,7 @@ This will create a new Whippet application in `./whippet-app`. The structure of 
 
 You can change the location with the `-d` option.
 
-You can change the location of the WordPress repository set in `config/application.json` with the `-r` option.
+You can change the location of the WordPress core repository set in `config/application.json` with the `-r` option. The default is `https://github.com/WordPress/WordPress.git`.
 
 If you're using GitLab (e.g. within dxw infrastructure), use the `-c` option to generate a `.gitlab-ci.yml` template file for the app.
 
@@ -24,20 +24,20 @@ There are a few configuration steps you'll need to follow when you create a new 
 
 #### Set your WordPress version
 
-By default, Whippet uses the current development version of WordPress. To specify a version to develop against, you'll need to edit `config/application.json`:
+By default, Whippet uses the latest release of WordPress. To specify a version to develop against, you'll need to edit `config/application.json`:
 
 ```
 {
     "wordpress": {
         "repository": "https://github.com/WordPress/WordPress.git",
-        "revision": "master"
+        "revision": "5.4.2"
     }
 }
 ```
 
 You can also change the WordPress repository used here by setting the `-r` option when generating a new Whippet application.
 
-To change the version, replace "master" with the version you'd like:
+To change the version, replace the "revision" value with the version you'd like:
 
 ```
         "revision": "4.1.1"
