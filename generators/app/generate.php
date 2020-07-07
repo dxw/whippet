@@ -31,7 +31,19 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
         $this->recurse_rm($this->target_dir . '/.gitlab-ci.yml');
     }
 
+    if(isset($this->options->repository)) {
+      $this->setWPRepository();
+    }
+
     $this->setWpVersion();
+   }
+
+   private function setWpRepository()
+   {
+      $appConfig = $this->target_dir . '/config/application.json';
+      $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
+      $data['wordpress']['repository'] = $this->options->repository;
+      file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
    }
 
    private function setWpVersion()

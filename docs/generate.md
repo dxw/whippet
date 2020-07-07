@@ -14,6 +14,8 @@ This will create a new Whippet application in `./whippet-app`. The structure of 
 
 You can change the location with the `-d` option.
 
+You can change the location of the WordPress repository set in `config/application.json` with the `-r` option.
+
 If you're using GitLab (e.g. within dxw infrastructure), use the `-c` option to generate a `.gitlab-ci.yml` template file for the app.
 
 ### Configure your application
@@ -32,6 +34,8 @@ By default, Whippet uses the current development version of WordPress. To specif
     }
 }
 ```
+
+You can also change the WordPress repository used here by setting the `-r` option when generating a new Whippet application.
 
 To change the version, replace "master" with the version you'd like:
 
