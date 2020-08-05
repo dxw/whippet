@@ -337,7 +337,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
         ], sha1('foobar'), $dir.'/whippet.lock', []);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'master', \Result\Result::ok('27ba906'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'main', \Result\Result::ok('27ba906'));
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
@@ -991,7 +991,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
         ], sha1('foobar'), $dir.'/whippet.lock', []);
         $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
-        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'master', \Result\Result::ok('27ba906'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'main', \Result\Result::ok('27ba906'));
 
         $dependencies = new \Dxw\Whippet\Dependencies\Updater(
             $this->getFactory(),
