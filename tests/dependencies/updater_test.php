@@ -352,6 +352,50 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals("[Updating themes/my-theme]\n", $output);
     }
 
+    public function testUpdateAllWithoutRefUsingMaster()
+    {
+        $dir = $this->getDir();
+
+        $whippetJson = $this->getWhippetJson([
+            'src' => [
+                'themes' => 'git@git.govpress.com:wordpress-themes/',
+            ],
+            'themes' => [
+                [
+                    'name' => 'my-theme',
+                ],
+            ],
+        ]);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
+
+        file_put_contents($dir.'/whippet.json', 'foobar');
+
+        $gitignore = $this->getGitignore([], [
+            "/wp-content/themes/my-theme\n",
+        ], true, false);
+        $this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Gitignore', $dir, $gitignore);
+
+        $whippetLock = $this->getWhippetLockWritable([
+            ['themes', 'my-theme', 'git@git.govpress.com:wordpress-themes/my-theme', '27ba906'],
+        ], sha1('foobar'), $dir.'/whippet.lock', []);
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'main', \Result\Result::err('no such branch'));
+        $this->addFactoryCallStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', 'git@git.govpress.com:wordpress-themes/my-theme', 'master', \Result\Result::ok('27ba906'));
+
+        $dependencies = new \Dxw\Whippet\Dependencies\Updater(
+            $this->getFactory(),
+            $this->getProjectDirectory($dir)
+        );
+
+        ob_start();
+        $result = $dependencies->updateAll();
+        $output = ob_get_clean();
+
+        $this->assertFalse($result->isErr());
+        $this->assertEquals("[Updating themes/my-theme]\n", $output);
+    }
+
     public function testUpdateAllBlankJsonfile()
     {
         $dir = $this->getDir();
