@@ -25,7 +25,17 @@ You will need:
 
 ### Install whippet
 
-To install Whippet, clone this directory and install its dependencies:
+#### Via homebrew (recommended)
+
+You can install Whippet via Homebrew by running:
+
+```
+brew install dxw/tap/whippet
+```
+
+#### From source
+
+To install Whippet from source, clone this directory and install its dependencies:
 
 ```
 $ git clone https://github.com/dxw/whippet.git
