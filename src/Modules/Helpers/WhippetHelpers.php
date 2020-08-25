@@ -189,4 +189,30 @@ trait WhippetHelpers
         }
         return $files;
     }
+
+    public function download_url_to_file($url, $dest)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        $file = fopen($dest, "w+");
+        fputs($file, $data);
+        fclose($file);
+    }
+
+    public function unzip_to_folder($zip_file, $dest)
+    {
+        $zip = new \ZipArchive;
+        $res = $zip->open($zip_file);
+        if ($res === true) {
+            $zip->extractTo($dest); // directory to extract contents to
+            $zip->close();
+            unlink($zip_file);
+        } else {
+            echo "Unzip failed \n, error code: " . $res;
+        }
+    }
 };
