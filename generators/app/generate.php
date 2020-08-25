@@ -3,6 +3,8 @@
 class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
   use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
+  protected $wordpress_template_zip = 'https://github.com/dxw/wordpress-template/archive/main.zip';
+
   function __construct($options) {
     $this->options = $options;
 
@@ -13,6 +15,7 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
       $this->target_dir = getcwd() . "/whippet-app";
     }
   }
+
 
   function generate() {
     echo "Creating a new whippet application in {$this->target_dir}\n";
@@ -26,16 +29,19 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
       \Dxw\Whippet\Git\Git::init($this->target_dir);
     }
 
-    $this->recurse_copy(dirname(__FILE__) . "/template",$this->target_dir);
-    if(!isset($this->options->ci)) {
-        $this->recurse_rm($this->target_dir . '/.gitlab-ci.yml');
-    }
+    echo "Downloading template zip file \n";
+
+    $this->downloadTemplateZip();
+
+    $this->unzipAndRemoveTemplateZip();
 
     if(isset($this->options->repository)) {
       $this->setWPRepository();
     }
 
     $this->setWpVersion();
+
+    echo "New whippet app successfully generated at {$this->target_dir} \n";
    }
 
    private function setWpRepository()
@@ -58,5 +64,35 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
    {
        $versionCheck = json_decode(file_get_contents('https://api.wordpress.org/core/version-check/1.7/'), JSON_OBJECT_AS_ARRAY);
        return $versionCheck['offers'][0]['version'];
+   }
+
+   private function downloadTemplateZip()
+   {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $this->wordpress_template_zip);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $data = curl_exec ($ch);
+      curl_close ($ch);
+      $file = fopen($this->target_dir . "/wordpress_template.zip", "w+");
+      fputs($file, $data);
+      fclose($file);
+   }
+
+   private function unzipAndRemoveTemplateZip()
+   {
+      $zip = new ZipArchive;
+      $res = $zip->open($this->target_dir . "/wordpress_template.zip");
+      if ($res === TRUE) {
+          $zip->extractTo($this->target_dir); // directory to extract contents to
+          $zip->close();
+          echo "Template .zip extracted \n";
+          unlink($this->target_dir . "/wordpress_template.zip");
+          echo "Template .zip deleted \n";
+      } else {
+          echo "Template unzip failed \n, error code: " . $res;
+      }
+      $this->recurse_copy($this->target_dir . '/wordpress-template-main', $this->target_dir);
+      $this->recurse_rm($this->target_dir . '/wordpress-template-main');
    }
 };
