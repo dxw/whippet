@@ -16,8 +16,6 @@ You can change the location with the `-d` option.
 
 You can change the location of the WordPress core repository set in `config/application.json` with the `-r` option. The default is `https://github.com/WordPress/WordPress.git`.
 
-If you're using GitLab (e.g. within dxw infrastructure), use the `-c` option to generate a `.gitlab-ci.yml` template file for the app.
-
 ### Configure your application
 
 There are a few configuration steps you'll need to follow when you create a new application.

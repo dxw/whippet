@@ -17,12 +17,10 @@ class Whippet extends \RubbishThorClone
         $this->command('generate [THING]', 'Generates a thing', function ($option_parser) {
             $option_parser->addRule('l|list', 'Lists available generators');
             $option_parser->addRule('d|directory::', "Override the generator's default creation directory with this one");
-            $option_parser->addRule('c|ci', 'When generating an app, adds a .gitlab-ci.yml template file');
             $option_parser->addRule('r|repository::', 'When generating an app, override the default application.json WordPress repository with this one');
         });
 
         $this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.', function ($option_parser) {
-            $option_parser->addRule('c|ci', 'Adds a .gitlab-ci.yml template file');
             $option_parser->addRule('r|repository::', 'Override the default application.json WordPress repository with this one');
         });
 
