@@ -1,6 +1,0 @@
-{
-    "wordpress": {
-        "repository": "https://github.com/WordPress/WordPress.git",
-        "revision": "master"
-    }
-}
