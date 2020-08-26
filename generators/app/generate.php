@@ -41,6 +41,11 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
 
     $this->setWpVersion();
 
+    /* zip archives don't preserve permissions, so fix those */
+    exec("chmod 0755 " . $this->target_dir . "/setup/*");
+    exec("chmod 0755 " . $this->target_dir . "/script/*");
+    exec("chmod 0755 " . $this->target_dir . "/bin/*");
+
     echo "New whippet app successfully generated at {$this->target_dir} \n";
   }
 
