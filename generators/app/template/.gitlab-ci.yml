@@ -1,3 +1,0 @@
-include:
-  - project: 'dxw/gitlab-ci-configs'
-    file: 'valid-json.gitlab-ci.yml'
