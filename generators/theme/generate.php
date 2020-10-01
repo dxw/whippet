@@ -5,7 +5,9 @@ use Dxw\Whippet\Git\Git;
 class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
   use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
-  protected $whippet_theme_repo = 'https://github.com/dxw/whippet-theme-template.git';
+  protected $wordpress_template_zip = 'https://github.com/dxw/wordpress-template/archive/main.zip';
+
+  private $unique_temp_id;
 
   function __construct($options) {
     $this->options = $options;
@@ -16,6 +18,8 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
     else {
       $this->target_dir = getcwd() . "/whippet-theme";
     }
+
+    $this->unique_temp_id = uniqid();
   }
 
   function generate() {
@@ -25,20 +29,19 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
       mkdir($this->target_dir);
     }
 
-    (new Git($this->target_dir))->clone_repo($this->whippet_theme_repo);
-    // Delete the spurious .git file
-    chdir($this->target_dir);
-    $this->recurse_rm('.git');
+    $this->downloadAndUnzipTemplate();
+    $this->copyThemeAndRemoveTemplate();
+  }
 
-    $namespace = $this->get_namespace_from_target_dir();
-    echo "Setting namespace to {$namespace}\n";
-    $this->find_and_replace($this->target_dir, 'MyTheme', $namespace);
-   }
-
-  function get_namespace_from_target_dir()
+  private function downloadAndUnzipTemplate()
   {
-    $base_dir = basename($this->target_dir);
-    $words = explode('-', $base_dir);
-    return implode('', array_map('ucfirst', $words));
+    $this->download_url_to_file($this->wordpress_template_zip, '/tmp/wordpress_template_' . $this->unique_temp_id . '.zip');
+    $this->unzip_to_folder('/tmp/wordpress_template_' . $this->unique_temp_id . '.zip', '/tmp/wordpress_template_' . $this->unique_temp_id);
+  }
+
+  private function copyThemeAndRemoveTemplate()
+  {   
+    $this->recurse_copy('/tmp/wordpress_template_' . $this->unique_temp_id . '/wordpress-template-main/wp-content/themes/theme', $this->target_dir);
+    $this->recurse_rm('/tmp/wordpress_template_' . $this->unique_temp_id);
   }
 };
