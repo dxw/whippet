@@ -83,4 +83,4 @@ This will generate a new Whippet-compliant WordPress theme in `./whippet-theme`.
 
 You can change the location with the `-d` option.
 
-The generated theme is based on [Whippet Theme Template](https://github.com/dxw/whippet-theme-template/).
+The generated theme is based on the theme in the [dxw WordPress template](https://github.com/dxw/wordpress-template/).
