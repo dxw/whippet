@@ -177,12 +177,12 @@ class Updater
             $src = $sources[$type].$dep['name'];
         }
 
-        $ref = 'master';
         if (isset($dep['ref'])) {
             $ref = $dep['ref'];
+            $commitResult = $this->fetchRef($src, $ref);
+        } else {
+            $commitResult = $this->fetchDefault($src);
         }
-
-        $commitResult = $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
 
         if ($commitResult->isErr()) {
             return \Result\Result::err(sprintf('git command failed: %s', $commitResult->getErr()));
@@ -191,5 +191,23 @@ class Updater
         $this->lockFile->addDependency($type, $dep['name'], $src, $commitResult->unwrap());
 
         return \Result\Result::ok();
+    }
+
+    private function fetchRef(string $src, string $ref) : \Result\Result
+    {
+        return $this->factory->callStatic('\\Dxw\\Whippet\\Git\\Git', 'ls_remote', $src, $ref);
+    }
+
+    // Fetch the default branch
+    // That may be `main` or `master`
+    private function fetchDefault(string $src) : \Result\Result
+    {
+        $main = $this->fetchRef($src, 'main');
+
+        if (!$main->isErr()) {
+            return $main;
+        }
+
+        return $this->fetchRef($src, 'master');
     }
 }
