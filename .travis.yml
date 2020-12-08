@@ -6,8 +6,6 @@ cache:
   directories:
     - vendor
 php:
-  - 7.0.22
-  - 7.1
   - 7.2
   - 7.3
   - 7.4

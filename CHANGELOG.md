@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - The `-c` option when generating an app to include a `gitlab-ci.yml` file is removed, as this does not exist in the new WordPress template repo.
 - `whippet generate theme` no longer does auto-namespacing based on directory name, because the default namespace is always just `Theme/`.
+- Support for PHP 7.0 and 7.1
 
 
 ## [1.0.1] - 2020-02-14
