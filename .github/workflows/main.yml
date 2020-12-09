@@ -1,0 +1,45 @@
+name: Tests & Linting
+
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:        
+        php-versions: ['7.2', '7.3', '7.4']
+      fail-fast: false
+    name: PHP ${{ matrix.php-versions }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    
+    - name: Install dependencies
+      run: composer install --no-interaction
+
+    - name: git config (required for PluginsTest)
+      run: git config --global user.email you@example.com && git config --global user.name you
+
+    - name: PHPUnit tests
+      run: vendor/bin/phpunit
+    
+    - name: Linting
+      run: vendor/bin/php-cs-fixer fix --dry-run -v --diff
+        
+        
