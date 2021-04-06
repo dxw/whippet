@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2021-04-06
+
+### Added
+- A `-nogitignore` option when generating a theme, that generates a theme without an accompanying `.gitignore` file
+
+### Changed
+- The [WordPress template repo's](https://github.com/dxw/wordpress-template) root `.gitignore` file is used by default when generating a theme
+
 ## [2.0.0] - 2020-12-09
 
 ### Added
