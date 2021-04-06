@@ -17,6 +17,7 @@ class Whippet extends \RubbishThorClone
         $this->command('generate [THING]', 'Generates a thing', function ($option_parser) {
             $option_parser->addRule('l|list', 'Lists available generators');
             $option_parser->addRule('d|directory::', "Override the generator's default creation directory with this one");
+            $option_parser->addRule('n|nogitignore', 'When generating a theme, do not generate the accompanying .gitignore file');
             $option_parser->addRule('r|repository::', 'When generating an app, override the default application.json WordPress repository with this one');
         });
 
