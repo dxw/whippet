@@ -42,6 +42,10 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
   private function copyThemeAndRemoveTemplate()
   {   
     $this->recurse_copy('/tmp/wordpress_template_' . $this->unique_temp_id . '/wordpress-template-main/wp-content/themes/theme', $this->target_dir);
+    copy('/tmp/wordpress_template_' . $this->unique_temp_id . '/wordpress-template-main/.gitignore', $this->target_dir . '/.gitignore');
+    if(isset($this->options->nogitignore)) {
+      unlink($this->target_dir . '/.gitignore');
+    }   
     $this->recurse_rm('/tmp/wordpress_template_' . $this->unique_temp_id);
   }
 };
