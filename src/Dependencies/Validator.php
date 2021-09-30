@@ -51,13 +51,7 @@ class Validator
             }
 
             foreach ($whippetJsonDependencies as $whippetJsonDependency) {
-                $matchFound = false;
-                foreach ($whippetLockDependencies as $whippetLockDependency) {
-                    if ($whippetJsonDependency["name"] == $whippetLockDependency["name"]) {
-                        $matchFound = true;
-                    }
-                }
-                if (!$matchFound) {
+                if (!$this->lockMatchFoundForDependency($whippetJsonDependency, $whippetLockDependencies)) {
                     return \Result\Result::err(sprintf('No entry found in whippet.lock for %s: %s', $type, $whippetJsonDependency["name"]));
                 }
             }
@@ -94,5 +88,16 @@ class Validator
         $contents = strtr($contents, ["\r" => '']);
 
         return sha1($contents);
+    }
+
+    private function lockMatchFoundForDependency($whippetJsonDependency, $whippetLockDependencies)
+    {
+        $matchFound = false;
+        foreach ($whippetLockDependencies as $whippetLockDependency) {
+            if ($whippetJsonDependency["name"] == $whippetLockDependency["name"]) {
+                $matchFound = true;
+            }
+        }
+        return $matchFound;
     }
 }
