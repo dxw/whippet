@@ -101,6 +101,16 @@ This will:
 
 This command will run through the items in `whippet.lock` and clone any missing plugins/themes, or fetch and checkout.
 
+### whippet deps validate
+
+Will check that `whippet.json` and `whippet.lock` are well-formed and aligned with one another, i.e.:
+
+1. Both files are valid JSON
+1. The hash in `whippet.lock` is as expected from the contents of `whippet.json`
+1. There are the same number of dependencies listed in each file
+1. Each dependency in `whippet.json` has a corresponding entry in `whippet.lock`
+1. Each dependency in `whippet.lock` is well-formed, with a name, src and revision
+
 ## Checking for inspections
 
 Both the `install` and `update` commands will both attempt to check that a
