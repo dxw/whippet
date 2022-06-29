@@ -21,7 +21,7 @@
         "aura/autoload": "^2.0",
         "nikita2206/result": "^0.2.0",
         "kevinlebrun/colors.php": "^1.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.5.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
