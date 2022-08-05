@@ -4,7 +4,7 @@ class DependenciesInstallerTest extends \PHPUnit\Framework\TestCase
 {
 	use \Helpers;
 
-	public function tearDown()
+	public function tearDown(): void
 	{
 		\Mockery::close();
 	}

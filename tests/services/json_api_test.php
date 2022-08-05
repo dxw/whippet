@@ -2,7 +2,7 @@
 
 class Json_Api_Test extends \PHPUnit\Framework\TestCase
 {
-	public function tearDown()
+	public function tearDown(): void
 	{
 		\Mockery::close();
 	}

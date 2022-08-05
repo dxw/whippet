@@ -1,6 +1,6 @@
 <phpunit bootstrap="tests/Helpers.php" backupGlobals="false" colors="true">
   <testsuites>
-    <testsuite>
+    <testsuite name="unit_and_integration">
       <directory suffix="_test.php">tests</directory>
     </testsuite>
   </testsuites>
