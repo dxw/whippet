@@ -35,16 +35,22 @@ brew install dxw/tap/whippet
 
 #### From source
 
-To install Whippet from source, clone this directory and install its dependencies:
+Whippet implements the [scripts to rule them all](https://github.com/github/scripts-to-rule-them-all)
+pattern. To install Whippet from source, clone this repository:
 
-```
+```shell
 $ git clone https://github.com/dxw/whippet.git
-$ composer install
+```
+
+Then run the relevant script to setup your environment and install dependencies:
+
+```shell
+./script/setup
 ```
 
 You might also want to symlink whippet to somewhere in your path:
 
-```
+```shell
 sudo ln -s $PWD/bin/whippet /usr/local/bin/whippet
 ```
 
