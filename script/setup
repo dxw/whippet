@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# script/setup: Set up the application for the first time after cloning, or set
+#               it back to the initial unused state.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -f Gemfile ] && [ -d vendor ]; then
+	echo "==> Cleaning installed PHP dependencies..."
+	git clean -x --force -- vendor
+fi
+
+echo "==> Bootstrapping..."
+script/bootstrap
