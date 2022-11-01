@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# script/test: Run the test suite for the application. Optionally pass in a path
+#              to an individual test file to run a single test.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -n "$DEBUG" ]; then
+	set -x
+fi
+
+echo "==> Updating..."
+script/update
+
+TEST_FILE=$1
+
+if [ -n "$TEST_FILE" ]; then
+	echo "==> Running the tests matching '$TEST_FILE'..."
+	./vendor/bin/phpunit "$TEST_FILE"
+else
+	echo "==> Running ShellCheck..."
+	./.shellcheck.sh
+
+	echo "==> Running php-cs-fixer..."
+	./vendor/bin/php-cs-fixer fix --dry-run -v --diff
+
+	echo "==> Running the tests..."
+	./vendor/bin/phpunit
+fi
