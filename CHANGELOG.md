@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+- Added setup and test scripts following the "scripts to rule them all pattern".
+
 ## [2.2.4] - 2022-06-29
 ### Changed
 - Require 6.5.8 as minimum version of `guzzlehttp/guzzle` in `composer.json` as well as `composer.lock`
