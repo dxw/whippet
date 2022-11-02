@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -z "$CI" ]; then
+	if [ -f Brewfile ] && [ "$(uname -s)" = "Darwin" ]; then
+		if ! brew bundle check >/dev/null 2>&1; then
+			echo "==> Installing Homebrew dependencies..."
+			brew bundle install --verbose
+		fi
+	fi
+fi
+
+if [ -f composer.json ]; then
+	echo "==> Installing PHP dependencies using Composer..."
+	composer install
+fi
