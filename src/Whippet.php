@@ -28,6 +28,7 @@ class Whippet extends \RubbishThorClone
         $this->command('migrate OLDPATH NEWPATH', 'Examines an existing wp-content directory and attempts to create an identical Whippet application.');
         $this->command('dependencies SUBCOMMAND', 'Manage dependencies (themes, plugins)');
         $this->command('deps SUBCOMMAND', 'Alias for dependencies');
+        $this->command('version', 'Prints whippet version');
     }
 
     public function plugins($plugin_command)
@@ -83,5 +84,19 @@ class Whippet extends \RubbishThorClone
     public function deps()
     {
         $this->dependencies();
+    }
+
+    public function version()
+    {
+        $whippetPath = dirname(__DIR__);
+        $installedWithBrew = strpos($whippetPath, 'opt/homebrew');
+
+        if ($installedWithBrew) {
+            $whippetVersion = basename($whippetPath);
+        } else {
+            $whippetVersion = substr(`git --git-dir $whippetPath/.git describe --tags`, 1, 5);
+        }
+
+        echo $whippetVersion . "\n";
     }
 };
