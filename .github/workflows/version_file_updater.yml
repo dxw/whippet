@@ -1,0 +1,11 @@
+name: Version file updater
+
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-20.04
+    name: Update version in config/versions.txt
+    steps:
+    - name: git describe
+      run: git describe --tags --abbrev=0 > ../../config/version.txt
