@@ -115,7 +115,7 @@ Will check that `whippet.json` and `whippet.lock` are well-formed and aligned wi
 
 Both the `install` and `update` commands will both attempt to check that a
 plugin has had a security inspection by checking the API on
-https://security.dxw.com/
+https://advisories.dxw.com/
 
 This API is only available to dxw employees, since it contains privately
 published inspections which for various reasons cannot be published. To
