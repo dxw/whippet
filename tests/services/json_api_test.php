@@ -33,20 +33,20 @@ class Json_Api_Test extends \PHPUnit\Framework\TestCase
 
     public function testWithInspections()
     {
-        $response_body = '[{"id":2644,"date":"2016-07-13T17:44:23","date_gmt":"2016-07-13T17:44:23","guid":{"rendered":"https:\/\/security.dxw.com\/?post_type=plugins&#038;p=2644"},"modified":"2016-08-08T18:26:16","modified_gmt":"2016-08-08T18:26:16","slug":"advanced-custom-fields-table-field","type":"plugins","link":"https:\/\/security.dxw.com\/plugins\/advanced-custom-fields-table-field\/","title":{"rendered":"Advanced Custom Fields: Table Field"},"author":5,"_links":{"self":[{"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/plugins\/2644"}],"collection":[{"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/plugins"}],"about":[{"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/types\/plugins"}],"author":[{"embeddable":true,"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/users\/5"}],"version-history":[{"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/plugins\/2644\/revisions"}],"https:\/\/api.w.org\/attachment":[{"href":"https:\/\/security.dxw.com\/wp-json\/wp\/v2\/media?parent=2644"}]}}]';
+        $response_body = '[{"id":2644,"date":"2016-07-13T17:44:23","date_gmt":"2016-07-13T17:44:23","guid":{"rendered":"https:\/\/advisories.dxw.com\/?post_type=plugins&#038;p=2644"},"modified":"2016-08-08T18:26:16","modified_gmt":"2016-08-08T18:26:16","slug":"advanced-custom-fields-table-field","type":"plugins","link":"https:\/\/advisories.dxw.com\/plugins\/advanced-custom-fields-table-field\/","title":{"rendered":"Advanced Custom Fields: Table Field"},"author":5,"_links":{"self":[{"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/plugins\/2644"}],"collection":[{"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/plugins"}],"about":[{"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/types\/plugins"}],"author":[{"embeddable":true,"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/users\/5"}],"version-history":[{"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/plugins\/2644\/revisions"}],"https:\/\/api.w.org\/attachment":[{"href":"https:\/\/advisories.dxw.com\/wp-json\/wp\/v2\/media?parent=2644"}]}}]';
         $expected_result = [
             [
                 "id" => 2644,
                 "date" => "2016-07-13T17:44:23",
                 "date_gmt" => "2016-07-13T17:44:23",
                 "guid" => [
-                    "rendered" => "https://security.dxw.com/?post_type=plugins&#038;p=2644"
+                    "rendered" => "https://advisories.dxw.com/?post_type=plugins&#038;p=2644"
                 ],
                 "modified" => "2016-08-08T18:26:16",
                 "modified_gmt" => "2016-08-08T18:26:16",
                 "slug" => "advanced-custom-fields-table-field",
                 "type" => "plugins",
-                "link" => "https://security.dxw.com/plugins/advanced-custom-fields-table-field/",
+                "link" => "https://advisories.dxw.com/plugins/advanced-custom-fields-table-field/",
                 "title" => [
                     "rendered" => "Advanced Custom Fields: Table Field"
                 ],
@@ -54,33 +54,33 @@ class Json_Api_Test extends \PHPUnit\Framework\TestCase
                 "_links" => [
                     "self" => [
                         [
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/plugins/2644"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/plugins/2644"
                         ]
                     ],
                     "collection" => [
                         [
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/plugins"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/plugins"
                         ]
                     ],
                     "about" => [
                         [
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/types/plugins"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/types/plugins"
                         ]
                     ],
                     "author" => [
                         [
                             "embeddable" => true,
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/users/5"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/users/5"
                         ]
                     ],
                     "version-history" => [
                         [
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/plugins/2644/revisions"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/plugins/2644/revisions"
                         ]
                     ],
                     "https://api.w.org/attachment" => [
                         [
-                            "href" => "https://security.dxw.com/wp-json/wp/v2/media?parent=2644"
+                            "href" => "https://advisories.dxw.com/wp-json/wp/v2/media?parent=2644"
                         ]
                     ]
                 ]
@@ -91,7 +91,7 @@ class Json_Api_Test extends \PHPUnit\Framework\TestCase
         $base_api->shouldReceive('get')->andReturn(\Result\Result::ok($response_body));
 
         $api = new \Dxw\Whippet\Services\JsonApi($base_api);
-        $result = $api->get('https://security.dxw.com/api/endpoint');
+        $result = $api->get('https://advisories.dxw.com/api/endpoint');
 
         $this->assertFalse($result->isErr());
         $this->assertEquals($expected_result, $result->unwrap());

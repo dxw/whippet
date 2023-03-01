@@ -12,10 +12,10 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')
             ->once()
-            ->with('https://security.dxw.com/wp-json/v1/inspections/my-plugin')
+            ->with('https://advisories.dxw.com/wp-json/v1/inspections/my-plugin')
             ->andReturn(\Result\Result::ok([]));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $api->getInspections('my-plugin');
     }
 
@@ -24,7 +24,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok([]));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertFalse($result->isErr());
@@ -39,7 +39,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
                 'slug' => 'slack',
                 'date' => '2016-02-29T17:54:15+00:00',
                 'versions' => '1.3.5',
-                'url' => 'https://security.dxw.com/plugins/slack2/',
+                'url' => 'https://advisories.dxw.com/plugins/slack2/',
                 'result' => 'Use with caution'
             ],
             [
@@ -47,7 +47,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
                 'slug' => 'slack',
                 'date' => '2015-06-17T24:00:12+00:00',
                 'versions' => '1.1.3',
-                'url' => 'https://security.dxw.com/plugins/slack/',
+                'url' => 'https://advisories.dxw.com/plugins/slack/',
                 'result' => 'No issues found'
             ]
         ];
@@ -55,7 +55,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok($response));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertFalse($result->isErr());
@@ -67,7 +67,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals(date_create('2016-02-29T17:54:15'), $inspection->date);
         $this->assertEquals('1.3.5', $inspection->versions);
         $this->assertEquals('Use with caution', $inspection->result);
-        $this->assertEquals('https://security.dxw.com/plugins/slack2/', $inspection->url);
+        $this->assertEquals('https://advisories.dxw.com/plugins/slack2/', $inspection->url);
     }
 
     public function testWithInspectionsWithMissingFields()
@@ -78,7 +78,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
                 'slug' => 'slack',
                 'date' => '2016-02-29T17:54:15+00:00',
                 'versions' => '1.3.5',
-                'url' => 'https://security.dxw.com/plugins/slack2/',
+                'url' => 'https://advisories.dxw.com/plugins/slack2/',
                 'result' => 'Use with caution'
             ],
             [
@@ -86,7 +86,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
                 'slug' => 'slack',
                 'date' => '2015-06-17T24:00:12+00:00',
                 'versions' => '1.1.3',
-                'url' => 'https://security.dxw.com/plugins/slack/',
+                'url' => 'https://advisories.dxw.com/plugins/slack/',
                 // missing result
             ]
         ];
@@ -94,7 +94,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $json_api = $this->fakeJsonApi();
         $json_api->shouldReceive('get')->andReturn(\Result\Result::ok($response));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertTrue($result->isErr());
@@ -109,7 +109,7 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
         $json_api->shouldReceive('get')
                  ->andReturn(\Result\Result::err('A failure happened'));
 
-        $api = new \Dxw\Whippet\Services\InspectionsApi('https://security.dxw.com', '/wp-json/v1/inspections/', $json_api);
+        $api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
         $result = $api->getInspections('my-plugin');
 
         $this->assertTrue($result->isErr());
