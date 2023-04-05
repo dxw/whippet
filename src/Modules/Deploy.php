@@ -111,7 +111,7 @@ class Deploy
 				rename("{$new_release->release_dir}", "{$broken_release}");
 
 				echo "Problems:\n";
-				echo implode($messages, "\n");
+				echo implode("\n", $messages);
 				echo "\n\nRelease did not validate; it has been moved to: $broken_release";
 
 				exit(1);
