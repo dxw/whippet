@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.3.0] - 2023-06-14
 ### Added
 - `whippet deps describe` command, that provides a JSON report on the version tags associated with the commit hashes in `whippet.lock`
+- Add --public switch to deploy cmd to deploy public/ directory separately to the WP app.
 ### Changed
 - FIXed deprecation warning in deploy module
 - Update security.dxw.com to advisories.dxw.com

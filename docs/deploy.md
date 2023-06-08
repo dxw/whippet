@@ -34,3 +34,22 @@ Note also that Whippet, by default, will not deploy your application if the comm
 ```
 $ whippet deploy -f /var/local/myapp
 ```
+
+### Deploying the `public/` directory
+
+By default, the `public/` directory inside a WordPress app will be copied into
+the app directory on deploy.
+
+By passing in the `-p` or `--public` argument, files in `public/` will be deployed
+to a given directory, e.g.:
+
+```
+$ whippet deploy -p /path/to/public
+```
+
+will copy the contents of `public/` to `/path/to/public`, rather than copying
+them into `/var/local/myapp/current/`.
+
+However, if `whippet deploy` is run _after_ `whippet deploy -p <directory>`, the second
+deployment will not remove the files in `public/` that were deployed by the
+first deployment.
