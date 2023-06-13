@@ -374,7 +374,7 @@ class Git
         }
 
         $resultArray = explode('/', $tags_array[0]);
-        $result = end($resultArray);
+        $result = str_replace("^{}", "", end($resultArray));
 
         return \Result\Result::ok($result);
     }
