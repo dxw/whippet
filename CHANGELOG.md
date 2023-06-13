@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- `whippet deps describe` command, that provides a JSON report on the version tags associated with the commit hashes in `whippet.lock`
+### Changed
 - Update security.dxw.com to advisories.dxw.com
 - Added setup and test scripts following the "scripts to rule them all pattern".
 
