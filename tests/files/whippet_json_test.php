@@ -2,66 +2,66 @@
 
 class Files_WhippetJson_Test extends \PHPUnit\Framework\TestCase
 {
-    use \Helpers;
+	use \Helpers;
 
-    public function testGetDependenciesPlugins()
-    {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
-            'plugins' => [
-                ['name' => 'advanced-custom-fields'],
-            ],
-        ]);
+	public function testGetDependenciesPlugins()
+	{
+		$whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+			'plugins' => [
+				['name' => 'advanced-custom-fields'],
+			],
+		]);
 
-        $this->assertEquals([
-            ['name' => 'advanced-custom-fields'],
-        ], $whippetJson->getDependencies('plugins'));
-    }
+		$this->assertEquals([
+			['name' => 'advanced-custom-fields'],
+		], $whippetJson->getDependencies('plugins'));
+	}
 
-    public function testGetDependenciesBlank()
-    {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([]);
+	public function testGetDependenciesBlank()
+	{
+		$whippetJson = new \Dxw\Whippet\Files\WhippetJson([]);
 
-        $this->assertEquals([], $whippetJson->getDependencies('plugins'));
-    }
+		$this->assertEquals([], $whippetJson->getDependencies('plugins'));
+	}
 
-    public function testGetSources()
-    {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
-            'src' => [
-                'plugins' => 'git@git.govpress.com:wordpress-plugins/',
-            ],
-        ]);
+	public function testGetSources()
+	{
+		$whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+			'src' => [
+				'plugins' => 'git@git.govpress.com:wordpress-plugins/',
+			],
+		]);
 
-        $this->assertEquals([
-            'plugins' => 'git@git.govpress.com:wordpress-plugins/',
-        ], $whippetJson->getSources());
-    }
+		$this->assertEquals([
+			'plugins' => 'git@git.govpress.com:wordpress-plugins/',
+		], $whippetJson->getSources());
+	}
 
-    public function testGetDependencyNoMatch()
-    {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
-            'plugins' => [
-                [
-                    'name' => 'advanced-custom-fields',
-                    'ref' => 'foobar',
-                ],
-            ],
-        ]);
+	public function testGetDependencyNoMatch()
+	{
+		$whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+			'plugins' => [
+				[
+					'name' => 'advanced-custom-fields',
+					'ref' => 'foobar',
+				],
+			],
+		]);
 
-        $this->assertEquals([], $whippetJson->getDependency('plugins', 'twitget'));
-    }
+		$this->assertEquals([], $whippetJson->getDependency('plugins', 'twitget'));
+	}
 
-    public function testGetDependency()
-    {
-        $whippetJson = new \Dxw\Whippet\Files\WhippetJson([
-            'plugins' => [
-                [
-                    'name' => 'twitget',
-                    'ref' => 'foobar',
-                ],
-            ],
-        ]);
+	public function testGetDependency()
+	{
+		$whippetJson = new \Dxw\Whippet\Files\WhippetJson([
+			'plugins' => [
+				[
+					'name' => 'twitget',
+					'ref' => 'foobar',
+				],
+			],
+		]);
 
-        $this->assertEquals(['name'=>'twitget', 'ref'=>'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
-    }
+		$this->assertEquals(['name'=>'twitget', 'ref'=>'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
+	}
 }
