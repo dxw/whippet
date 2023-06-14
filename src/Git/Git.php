@@ -352,4 +352,30 @@ class Git
 
         return \Result\Result::ok(explode("\t", $output[0])[0]);
     }
+
+    public static function tag_for_commit($repo, $commit_hash)
+    {
+        exec(sprintf('git ls-remote %s', escapeshellarg($repo)), $output, $return);
+
+        if ($return !== 0) {
+            return \Result\Result::err('git error when attempting to access ' . $repo);
+        }
+
+        if (count($output) === 0) {
+            return \Result\Result::err('no references found for repo ' . $repo);
+        }
+
+        $tags_array = array_values(array_filter($output, function ($ref) use ($commit_hash) {
+            return strpos($ref, $commit_hash) === 0 && strpos($ref, 'refs/tags') !== false;
+        }));
+
+        if (empty($tags_array)) {
+            return \Result\Result::ok('No tags for commit ' . $commit_hash);
+        }
+
+        $resultArray = explode('/', $tags_array[0]);
+        $result = str_replace("^{}", "", end($resultArray));
+
+        return \Result\Result::ok($result);
+    }
 };

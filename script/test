@@ -27,5 +27,5 @@ else
 	./vendor/bin/php-cs-fixer fix --dry-run -v --diff
 
 	echo "==> Running the tests..."
-	./vendor/bin/phpunit
+	./vendor/bin/phpunit && ./vendor/bin/kahlan spec
 fi
