@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update security.dxw.com to advisories.dxw.com
 - Added setup and test scripts following the "scripts to rule them all pattern".
+### Removed
+- Support for PHP versions below 7.4
 
 ## [2.2.4] - 2022-06-29
 ### Changed
