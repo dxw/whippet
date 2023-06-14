@@ -4,3 +4,4 @@
 /docker-images/whippet-wordpress/.DS_Store
 npm-debug.log
 /.php_cs.cache
+/.php-cs-fixer.cache
