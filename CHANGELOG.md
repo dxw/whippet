@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `whippet deps describe` command, that provides a JSON report on the version tags associated with the commit hashes in `whippet.lock`
 ### Changed
+- FIXed deprecation warning in deploy module
 - Update security.dxw.com to advisories.dxw.com
 - Added setup and test scripts following the "scripts to rule them all pattern".
 ### Removed
