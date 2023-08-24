@@ -10,7 +10,7 @@ class Release
 	public $number = 0;
 	public $time = 0;
 
-	public function __construct($releases_dir, $message, $number)
+	public function __construct($releases_dir, $message, $number, $public_dir)
 	{
 		$this->whippet_init();
 		$this->load_plugins_lock();
@@ -21,9 +21,10 @@ class Release
 		$this->time = date('r');
 		$this->deployed_commit = $git->current_commit();
 		$this->release_dir = "{$releases_dir}/{$this->deployed_commit}";
+		$this->public_dir = $public_dir;
 	}
 
-	public function create(&$force)
+	public function create(&$force, &$deploy_public)
 	{
 		//
 		// Does this commit have a release directory already? If so, do nothing
@@ -125,10 +126,11 @@ class Release
 		}
 
 		//
-		// Copy public assets
+		// Deploy public assets or copy them into the app directory
 		//
 		if (is_dir("{$this->project_dir}/public")) {
-			$this->recurse_copy("{$this->project_dir}/public", "{$this->release_dir}");
+			$public_dest = $deploy_public ? $this->public_dir : $this->release_dir;
+			$this->recurse_copy("{$this->project_dir}/public", "{$public_dest}");
 		}
 
 		//

@@ -11,9 +11,10 @@ class Deploy
 		$this->deploy_dir = $dir;
 		$this->releases_dir = "{$this->deploy_dir}/releases";
 		$this->shared_dir = "{$this->deploy_dir}/shared";
+		$this->public_dir = "";
 	}
 
-	public function deploy($force, $keep)
+	public function deploy($force, $keep, $public)
 	{
 		try {
 			//
@@ -33,6 +34,10 @@ class Deploy
 			$this->check_and_create_dir($this->deploy_dir);
 			$this->check_and_create_dir($this->releases_dir);
 			$this->check_and_create_dir($this->shared_dir);
+			if (!empty($public)) {
+				$this->public_dir = $public;
+				$this->check_and_create_dir($this->public_dir);
+			}
 
 			//
 			// Load up the manifest and create the new release
@@ -47,10 +52,10 @@ class Deploy
 				$release_number = 0;
 			}
 
-			$new_release = new Release($this->releases_dir, '', $release_number);
+			$new_release = new Release($this->releases_dir, '', $release_number, $this->public_dir);
 
 			// Make it.
-			$new_release->create($force);
+			$new_release->create($force, $public);
 
 			//
 			// Did everything work?
@@ -192,22 +197,3 @@ class Deploy
 		return file_put_contents("{$this->deploy_dir}/releases/manifest.json", json_encode($this->releases_manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 	}
 };
-
-/*
-/var/data/dxw.com     # app repo
-
-app
-releases
-c1cbf7b2f8ecd7d6befece09f712c85a7c839b      # a working WP deploy
-shared
-wp-config.php
-uploads -> /somewhere/that/uploads/exist
-current -> c1cbf7b2f8ecd7d6befece09f712c85a7c839b
-
-/var/vhosts/dxw.com -> /app/current
-
-
-
-git pull
-whippet deploy /path/to/app
-*/

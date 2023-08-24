@@ -12,6 +12,7 @@ class Whippet extends \RubbishThorClone
 		$this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository", function ($option_parser) {
 			$option_parser->addRule('f|force', 'Force Whippet to deploy, even if a release already exists for this commit');
 			$option_parser->addRule('k|keep::', 'Tells Whippet how many old release directories to keep. Default: 3');
+			$option_parser->addRule('p|public::', 'Deploy public/ in a given directory, adjacent to the app');
 		});
 
 		$this->command('generate [THING]', 'Generates a thing', function ($option_parser) {
@@ -46,7 +47,15 @@ class Whippet extends \RubbishThorClone
 			$this->options->keep = 3;
 		}
 
-		(new Modules\Deploy($dir))->deploy(isset($this->options->force), $this->options->keep);
+		if (!isset($this->options->public)) {
+			$this->options->public = "";
+		}
+
+		(new Modules\Deploy($dir))->deploy(
+			isset($this->options->force),
+			$this->options->keep,
+			$this->options->public
+		);
 	}
 
 	public function init($path = false)
