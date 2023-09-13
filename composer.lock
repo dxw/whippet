@@ -1449,16 +1449,16 @@
         },
         {
             "name": "dxw/php-cs-fixer-config",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dxw/php-cs-fixer-config.git",
-                "reference": "d160cdb3dbcfe28051ad7db48e0072cf607be2b3"
+                "reference": "690a251beb6a3080a2de5adc749675a99e22d9fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dxw/php-cs-fixer-config/zipball/d160cdb3dbcfe28051ad7db48e0072cf607be2b3",
-                "reference": "d160cdb3dbcfe28051ad7db48e0072cf607be2b3",
+                "url": "https://api.github.com/repos/dxw/php-cs-fixer-config/zipball/690a251beb6a3080a2de5adc749675a99e22d9fd",
+                "reference": "690a251beb6a3080a2de5adc749675a99e22d9fd",
                 "shasum": ""
             },
             "require": {
@@ -1466,8 +1466,8 @@
                 "php": "^7.4||^8.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.5",
-                "vimeo/psalm": "^4.10"
+                "phpunit/phpunit": "^9.0",
+                "vimeo/psalm": "^5.15"
             },
             "type": "library",
             "autoload": {
@@ -1481,9 +1481,9 @@
             ],
             "support": {
                 "issues": "https://github.com/dxw/php-cs-fixer-config/issues",
-                "source": "https://github.com/dxw/php-cs-fixer-config/tree/v2.1.0"
+                "source": "https://github.com/dxw/php-cs-fixer-config/tree/v2.1.1"
             },
-            "time": "2022-09-26T11:18:17+00:00"
+            "time": "2023-09-13T12:53:23+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
