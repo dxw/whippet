@@ -4,6 +4,8 @@ namespace Dxw\Whippet\Modules;
 
 class Generate
 {
+	private $generators_dir;
+
 	public function __construct()
 	{
 		$this->generators_dir = WHIPPET_ROOT.'/generators';

@@ -7,6 +7,9 @@ class Plugin extends \RubbishThorClone
 	use Helpers\ManifestIo;
 	use Helpers\WhippetHelpers;
 
+	private $plugins_manifest;
+	private $plugin_dir;
+
 	public function commands()
 	{
 		$this->command('install', 'Deploys the current set of plugins into your project');

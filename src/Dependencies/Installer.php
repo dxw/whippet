@@ -4,6 +4,11 @@ namespace Dxw\Whippet\Dependencies;
 
 class Installer
 {
+	private $factory;
+	private $dir;
+	private $inspectionChecker;
+	private $lockFile;
+
 	public function __construct(
 		\Dxw\Whippet\Factory $factory,
 		\Dxw\Whippet\ProjectDirectory $dir,

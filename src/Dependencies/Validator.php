@@ -4,6 +4,9 @@ namespace Dxw\Whippet\Dependencies;
 
 class Validator
 {
+	private $factory;
+	private $dir;
+
 	public function __construct(
 		\Dxw\Whippet\Factory $factory,
 		\Dxw\Whippet\ProjectDirectory $dir

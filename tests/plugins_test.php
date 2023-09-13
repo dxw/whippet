@@ -2,6 +2,8 @@
 
 class PluginsTest extends \PHPUnit\Framework\TestCase
 {
+	private $dir;
+
 	public function cmd($cmd, $cwd = null)
 	{
 		$process = proc_open($cmd, [

@@ -4,6 +4,11 @@ namespace Dxw\Whippet\Modules\Helpers;
 
 trait WhippetHelpers
 {
+	private $plugins_manifest_file;
+	private $project_dir;
+	private $application_config;
+	private $plugins_lock_file;
+
 	public function check_and_create_dir($dir, $force_empty = false)
 	{
 		if (!file_exists($dir)) {

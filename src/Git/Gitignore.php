@@ -9,6 +9,7 @@ namespace Dxw\Whippet\Git;
  */
 class Gitignore
 {
+	private $ignore_file;
 	/**
 	 * Initialises the class with a .gitignore in a given repository.
 	 *

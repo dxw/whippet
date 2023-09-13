@@ -4,6 +4,10 @@ namespace Dxw\Whippet\Modules;
 
 class Dependencies extends \RubbishThorClone
 {
+	private $factory;
+	private $projectDirectory;
+	private $inspections_api;
+
 	public function __construct()
 	{
 		parent::__construct();

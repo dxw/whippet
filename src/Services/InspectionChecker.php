@@ -6,6 +6,8 @@ namespace Dxw\Whippet\Services;
 // associated with a dependency
 class InspectionChecker
 {
+	private $inspectionsApi;
+
 	public function __construct(
 		\Dxw\Whippet\Services\InspectionsApi $inspections_api
 	) {

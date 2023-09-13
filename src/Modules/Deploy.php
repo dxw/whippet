@@ -6,6 +6,11 @@ class Deploy
 {
 	use Helpers\WhippetHelpers;
 
+	private $deploy_dir;
+	private $releases_dir;
+	private $shared_dir;
+	private $public_dir;
+
 	public function __construct($dir)
 	{
 		$this->deploy_dir = $dir;
