@@ -24,7 +24,7 @@
         "guzzlehttp/guzzle": "^6.5.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
+        "phpunit/phpunit": "^9.0",
         "mockery/mockery": "^1.1",
         "dxw/phar-install": "^1.1",
         "mikey179/vfsstream": "^1.6",

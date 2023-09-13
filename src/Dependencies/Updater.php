@@ -38,7 +38,7 @@ class Updater
 			return \Result\Result::err('No matching dependency in whippet.json');
 		}
 
-		return $this->update([$type=>[$dep]]);
+		return $this->update([$type => [$dep]]);
 	}
 
 	public function updateAll()
