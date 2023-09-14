@@ -62,6 +62,6 @@ class Files_WhippetJson_Test extends \PHPUnit\Framework\TestCase
 			],
 		]);
 
-		$this->assertEquals(['name'=>'twitget', 'ref'=>'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
+		$this->assertEquals(['name' => 'twitget', 'ref' => 'foobar'], $whippetJson->getDependency('plugins', 'twitget'));
 	}
 }

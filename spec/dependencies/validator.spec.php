@@ -15,10 +15,6 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 		);
 	});
 
-	it('exists', function () {
-		$this->validator;
-	});
-
 	describe('->validate()', function () {
 		context('whippet.lock cannot be found, or is invalid JSON', function () {
 			it('returns an error', function () {

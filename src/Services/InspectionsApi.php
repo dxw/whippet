@@ -8,6 +8,10 @@ use Dxw\Whippet\Models\Inspection;
 // associated with a plugin
 class InspectionsApi
 {
+	private $host;
+	private $path;
+	private $jsonApi;
+
 	public function __construct(
 		$host,
 		$path,

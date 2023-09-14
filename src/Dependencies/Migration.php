@@ -4,6 +4,10 @@ namespace Dxw\Whippet\Dependencies;
 
 class Migration
 {
+	private $factory;
+	private $dir;
+	private $pluginsFile;
+
 	public function __construct(
 		\Dxw\Whippet\Factory $factory,
 		\Dxw\Whippet\ProjectDirectory $dir

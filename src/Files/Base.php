@@ -4,6 +4,8 @@ namespace Dxw\Whippet\Files;
 
 abstract class Base
 {
+	public $data;
+
 	public static function fromString(/* string */ $json)
 	{
 		$data = json_decode($json, true);

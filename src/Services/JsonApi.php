@@ -8,6 +8,8 @@ namespace Dxw\Whippet\Services;
 // - converting error codes
 class JsonApi
 {
+	private $baseApi;
+
 	public function __construct(
 		\Dxw\Whippet\Services\BaseApi $base_api
 	) {

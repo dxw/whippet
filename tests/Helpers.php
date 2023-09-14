@@ -2,7 +2,10 @@
 
 trait Helpers
 {
-	public function setUp()
+	private $factoryNewInstance;
+	private $factoryCallStatic;
+
+	public function setUp(): void
 	{
 		$this->factoryNewInstance = [];
 		$this->factoryCallStatic = [];

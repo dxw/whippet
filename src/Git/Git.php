@@ -17,6 +17,7 @@ namespace Dxw\Whippet\Git;
 class Git
 {
 	protected $command_separators = ['&&', '||'];
+	private $repo_path;
 
 	public function __construct($repo_path)
 	{

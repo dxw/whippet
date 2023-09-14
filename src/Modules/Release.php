@@ -9,6 +9,9 @@ class Release
 
 	public $number = 0;
 	public $time = 0;
+	public $deployed_commit;
+	public $release_dir;
+	private $public_dir;
 
 	public function __construct($releases_dir, $message, $number, $public_dir)
 	{

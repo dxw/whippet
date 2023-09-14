@@ -2,6 +2,8 @@
 
 class PluginsTest extends \PHPUnit\Framework\TestCase
 {
+	private $dir;
+
 	public function cmd($cmd, $cwd = null)
 	{
 		$process = proc_open($cmd, [
@@ -51,10 +53,10 @@ class PluginsTest extends \PHPUnit\Framework\TestCase
 
 		$this->assertEquals(0, $return);
 
-		$this->assertNotContains('PHP Fatal error', $stderr);
-		$this->assertNotContains('PHP Warning', $stderr);
-		$this->assertNotContains('PHP Notice', $stderr);
-		$this->assertNotContains('PHP Deprecated', $stderr);
+		$this->assertStringNotContainsString('PHP Fatal error', $stderr);
+		$this->assertStringNotContainsString('PHP Warning', $stderr);
+		$this->assertStringNotContainsString('PHP Notice', $stderr);
+		$this->assertStringNotContainsString('PHP Deprecated', $stderr);
 	}
 
 	public function testDeprecatedCommentSyntax()
@@ -66,10 +68,10 @@ class PluginsTest extends \PHPUnit\Framework\TestCase
 
 		$this->assertEquals(1, $return);
 
-		$this->assertNotContains('PHP Fatal error', $stderr);
-		$this->assertNotContains('PHP Warning', $stderr);
-		$this->assertNotContains('PHP Notice', $stderr);
-		$this->assertNotContains('PHP Deprecated', $stderr);
+		$this->assertStringNotContainsString('PHP Fatal error', $stderr);
+		$this->assertStringNotContainsString('PHP Warning', $stderr);
+		$this->assertStringNotContainsString('PHP Notice', $stderr);
+		$this->assertStringNotContainsString('PHP Deprecated', $stderr);
 	}
 
 	public function testDeprecatedCommentSyntax2()
@@ -82,9 +84,9 @@ class PluginsTest extends \PHPUnit\Framework\TestCase
 
 		$this->assertEquals(1, $return);
 
-		$this->assertNotContains('PHP Fatal error', $stderr);
-		$this->assertNotContains('PHP Warning', $stderr);
-		$this->assertNotContains('PHP Notice', $stderr);
-		$this->assertNotContains('PHP Deprecated', $stderr);
+		$this->assertStringNotContainsString('PHP Fatal error', $stderr);
+		$this->assertStringNotContainsString('PHP Warning', $stderr);
+		$this->assertStringNotContainsString('PHP Notice', $stderr);
+		$this->assertStringNotContainsString('PHP Deprecated', $stderr);
 	}
 }

@@ -4,6 +4,13 @@ namespace Dxw\Whippet\Dependencies;
 
 class Updater
 {
+	private $factory;
+	private $dir;
+	private $lockFile;
+	private $jsonFile;
+	private $ignores;
+	private $gitignore;
+
 	public function __construct(
 		\Dxw\Whippet\Factory $factory,
 		\Dxw\Whippet\ProjectDirectory $dir
@@ -38,7 +45,7 @@ class Updater
 			return \Result\Result::err('No matching dependency in whippet.json');
 		}
 
-		return $this->update([$type=>[$dep]]);
+		return $this->update([$type => [$dep]]);
 	}
 
 	public function updateAll()

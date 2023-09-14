@@ -4,6 +4,8 @@ namespace Dxw\Whippet;
 
 class ProjectDirectory
 {
+	private $path;
+
 	public static function find(/* string */ $cwd)
 	{
 		$path = $cwd;
