@@ -26,9 +26,6 @@ class Plugin extends \RubbishThorClone
 			$this->warningText([
 				'The plugins subcommand is deprecated and will be removed in a future release.',
 				'',
-				'To migrate a `plugins` file to a `whippet.json` file, run the following:',
-				'  $ whippet deps migrate',
-				'',
 				'Once you have a `whippet.json` file, you can run the following instead of `whippet plugins upgrade`:',
 				'  $ whippet deps update',
 				'',

@@ -25,10 +25,6 @@ class Whippet extends \RubbishThorClone
 		$this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.', function ($option_parser) {
 			$option_parser->addRule('r|repository::', 'Override the default application.json WordPress repository with this one');
 		});
-
-		$this->command('migrate OLDPATH NEWPATH', 'Examines an existing wp-content directory and attempts to create an identical Whippet application.');
-		$this->command('dependencies SUBCOMMAND', 'Manage dependencies (themes, plugins)');
-		$this->command('deps SUBCOMMAND', 'Alias for dependencies');
 	}
 
 	public function plugins($plugin_command)
@@ -70,18 +66,6 @@ class Whippet extends \RubbishThorClone
 	public function generate($thing = false)
 	{
 		(new Modules\Generate())->start($thing, $this->options);
-	}
-
-	// TODO: This should just be a generator like any other, but it's currently hard to do one
-	//       command with several different combinations of required arguments. So just a separate
-	//       command for now.
-	public function migrate($old, $new)
-	{
-		$this->options = new \stdClass();
-		$this->options->old = $old;
-		$this->options->new = $new;
-
-		(new Modules\Generate())->start('migration', $this->options);
 	}
 
 	public function dependencies()
