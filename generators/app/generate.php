@@ -42,8 +42,6 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
       $this->setWPRepository();
     }
 
-    $this->setWpVersion();
-
     /* zip archives don't preserve permissions, so fix those */
     exec("chmod 0755 " . $this->target_dir . "/setup/*");
     exec("chmod 0755 " . $this->target_dir . "/script/*");
@@ -63,14 +61,6 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
     $appConfig = $this->target_dir . '/config/application.json';
     $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
     $data['wordpress']['repository'] = $this->options->repository;
-    file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
-  }
-
-  private function setWpVersion()
-  {
-    $appConfig = $this->target_dir . '/config/application.json';
-    $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
-    $data['wordpress']['revision'] = $this->getLatest();
     file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
   }
 
