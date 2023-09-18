@@ -32,7 +32,6 @@ class Dependencies extends \RubbishThorClone
 		};
 		$this->command('install', 'Installs dependencies', $inspections_host_option);
 		$this->command('update', 'Updates dependencies to their latest versions. Use deps update [type]/[name] to update a specific dependency', $inspections_host_option);
-		$this->command('migrate', 'Converts legacy plugins file to whippet.json');
 		$this->command('validate', 'Validate whippet.json and whippet.lock files');
 		$this->command('describe', 'List dependencies and their versions');
 	}
@@ -73,13 +72,6 @@ class Dependencies extends \RubbishThorClone
 			$this->exitIfError($updater->updateSingle($dep));
 			$this->exitIfError($installer->installSingle($dep));
 		}
-	}
-
-	public function migrate()
-	{
-		$dir = new \Dxw\Whippet\ProjectDirectory(getcwd());
-		$migration = new \Dxw\Whippet\Dependencies\Migration($this->factory, $dir);
-		$this->exitIfError($migration->migrate());
 	}
 
 	public function validate()

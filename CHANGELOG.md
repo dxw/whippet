@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for PHP 8
 
+### Removed
+- `whippet migrate` commands.
+
 ## [2.3.0] - 2023-06-14
 ### Added
 - `whippet deps describe` command, that provides a JSON report on the version tags associated with the commit hashes in `whippet.lock`
