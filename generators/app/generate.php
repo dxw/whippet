@@ -27,7 +27,8 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
     }
 
     // Make the target dir a git repo, if it isn't already
-    if(!(new \Dxw\Whippet\Git\Git($this->target_dir))->is_repo()) {
+    $target_repo = new \Dxw\Whippet\Git\Git($this->target_dir);
+    if(!$target_repo->is_repo()) {
       \Dxw\Whippet\Git\Git::init($this->target_dir);
     }
 
@@ -41,12 +42,16 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
       $this->setWPRepository();
     }
 
-    $this->setWpVersion();
-
     /* zip archives don't preserve permissions, so fix those */
     exec("chmod 0755 " . $this->target_dir . "/setup/*");
     exec("chmod 0755 " . $this->target_dir . "/script/*");
     exec("chmod 0755 " . $this->target_dir . "/bin/*");
+
+    // Whippet deploy requires at least one commit in the repo.
+    if (!$target_repo->current_commit()) {
+      $target_repo->add("--all");
+      $target_repo->commit("Initial commit from Whippet");
+    }
 
     echo "New whippet app successfully generated at {$this->target_dir} \n";
   }
@@ -56,14 +61,6 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
     $appConfig = $this->target_dir . '/config/application.json';
     $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
     $data['wordpress']['repository'] = $this->options->repository;
-    file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
-  }
-
-  private function setWpVersion()
-  {
-    $appConfig = $this->target_dir . '/config/application.json';
-    $data = json_decode(file_get_contents($appConfig), JSON_OBJECT_AS_ARRAY);
-    $data['wordpress']['revision'] = $this->getLatest();
     file_put_contents($appConfig, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n");
   }
 
