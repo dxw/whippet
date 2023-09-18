@@ -84,3 +84,17 @@ This will generate a new Whippet-compliant WordPress theme in `./whippet-theme`.
 You can change the location with the `-d` option.
 
 The generated theme is based on the theme in the [dxw WordPress template](https://github.com/dxw/wordpress-template/).
+
+## Generating a Whippet plugin
+
+To create a new Whippet plugin, run:
+
+```
+$ whippet generate plugin
+```
+
+This will generate a new Whippet-compliant WordPress plugin in `./whippet-plugin`.
+
+You can change the location with the `-d` option.
+
+The generated plugin is based on code in the [dxw WordPress plugin template](https://github.com/dxw/wordpress-plugin-template/).
