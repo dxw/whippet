@@ -8,6 +8,8 @@ class ThemeGenerator extends \Dxw\Whippet\WhippetGenerator {
   protected $wordpress_template_zip = 'https://github.com/dxw/wordpress-template/archive/main.zip';
 
   private $unique_temp_id;
+  private $target_dir;
+  private $options = array();
 
   function __construct($options) {
     $this->options = $options;
