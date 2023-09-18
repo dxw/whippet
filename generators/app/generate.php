@@ -4,6 +4,8 @@ class AppGenerator extends \Dxw\Whippet\WhippetGenerator {
   use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
   protected $wordpress_template_zip = 'https://github.com/dxw/wordpress-template/archive/main.zip';
+  private $target_dir;
+  private $options = array();
 
   function __construct($options) {
     $this->options = $options;
