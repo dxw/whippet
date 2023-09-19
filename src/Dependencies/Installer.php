@@ -28,7 +28,7 @@ class Installer
 
 		$dependencies = [];
 
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			$dependencies[$type] = $this->lockFile->getDependencies($type);
 		}
 
