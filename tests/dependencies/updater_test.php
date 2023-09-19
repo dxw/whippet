@@ -53,6 +53,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 			$getDependencies = [
 				['themes', []],
 				['plugins', []],
+				['languages', []],
 			];
 		}
 
@@ -83,6 +84,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -131,6 +133,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -183,6 +186,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -235,6 +239,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -279,6 +284,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'src' => 'foobar',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -322,6 +328,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'name' => 'my-theme',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -365,6 +372,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'name' => 'my-theme',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -445,6 +453,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -493,6 +502,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -515,6 +525,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 			['plugins', [
 				['name' => 'removed-plugin'],
 			]],
+			['languages', []],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -575,6 +586,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -629,6 +641,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -723,6 +736,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -763,6 +777,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -809,6 +824,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -861,6 +877,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.4',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -918,6 +935,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'name' => 'twitget',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -970,6 +988,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'src' => 'foobar',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -1019,6 +1038,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'name' => 'my-plugin',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -1071,6 +1091,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 
@@ -1125,6 +1146,7 @@ class Dependencies_Updater_Test extends \PHPUnit\Framework\TestCase
 					'ref' => 'v1.6',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetJson', 'fromFile', $dir.'/whippet.json', \Result\Result::ok($whippetJson));
 

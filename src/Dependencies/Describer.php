@@ -24,7 +24,7 @@ class Describer
 		}
 		$git = new \Dxw\Whippet\Git\Git($this->dir);
 		$results = [];
-		foreach (DependencyTypes::getDependencyTypes() as $type) {
+		foreach (DependencyTypes::getThemeAndPluginTypes() as $type) {
 			foreach ($this->lockFile->getDependencies($type) as $dep) {
 				$result = $git::tag_for_commit($dep['src'], $dep['revision']);
 				if ($result->isErr()) {

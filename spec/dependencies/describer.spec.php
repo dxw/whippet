@@ -60,19 +60,23 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 				'extends' => '\Dxw\Whippet\Files\WhippetLock',
 				'magicMethods' => true
 			]);
-			allow($whippetLock)->toReceive('getDependencies')->andReturn([
+			allow($whippetLock)->toReceive('getDependencies')->andReturn(
+				[
 				[
 					'name' => 'theme-one',
 					'src' => 'theme-one-src',
 					'revision' => 'commit-hash'
 				]
-			], [
+			],
+				[
 				[
 					'name' => 'plugin-one',
 					'src' => 'plugin-one-src',
 					'revision' => 'commit-hash'
 				],
-			]);
+			],
+				[]
+			);
 			allow($this->factory)->toReceive('callStatic')->andReturn(\Result\Result::ok($whippetLock));
 			$git = Double::instance([
 				'extends' => '\Dxw\Whippet\Git\Git',

@@ -21,6 +21,8 @@ class InspectionChecker
 				return \Result\Result::ok('');
 			case 'plugins':
 				return $this->checkPlugin($dependency);
+			case 'languages':
+				return \Result\Result::ok('');
 			default:
 				return \Result\Result::err("Unknown type '".$type."'");
 		}
