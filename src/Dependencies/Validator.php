@@ -46,7 +46,7 @@ class Validator
 
 		// Check that entries in whippet.json
 		// match entries in whippet.lock
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			$whippetJsonDependencies = $whippetJson->getDependencies($type);
 			$whippetLockDependencies = $whippetLock->getDependencies($type);
 			if (count($whippetJsonDependencies) !== count($whippetLockDependencies)) {

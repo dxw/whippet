@@ -57,7 +57,7 @@ class Updater
 
 		$allDependencies = [];
 
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			$allDependencies[$type] = $this->jsonFile->getDependencies($type);
 		}
 
@@ -133,7 +133,7 @@ class Updater
 
 	private function createGitIgnore()
 	{
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			foreach ($this->jsonFile->getDependencies($type) as $dep) {
 				$this->addDependencyToIgnoresArray($type, $dep['name']);
 			}
@@ -151,7 +151,7 @@ class Updater
 		}
 
 		// Iterate through locked dependencies and remove from gitignore
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			foreach ($this->lockFile->getDependencies($type) as $dep) {
 				$line = $this->getGitignoreDependencyLine($type, $dep['name']);
 				$index = array_search($line, $this->ignores);
