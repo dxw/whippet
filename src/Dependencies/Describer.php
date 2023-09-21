@@ -16,7 +16,7 @@ class Describer
 		$this->dir = $dir;
 	}
 
-	public function describe()
+	public function fetchVersionInformation()
 	{
 		$resultLoad = $this->loadWhippetLock();
 		if ($resultLoad->isErr()) {
@@ -33,7 +33,16 @@ class Describer
 				$results[$type][$dep["name"]] = $result->unwrap();
 			}
 		}
-		$pretty_results = json_encode($results, JSON_PRETTY_PRINT);
+		return \Result\Result::ok($results);
+	}
+
+	public function describe()
+	{
+		$results = $this->fetchVersionInformation();
+		if ($results->isErr()) {
+			return $results;
+		}
+		$pretty_results = json_encode($results->unwrap(), JSON_PRETTY_PRINT);
 		printf($pretty_results);
 
 		return \Result\Result::ok();
