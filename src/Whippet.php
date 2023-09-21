@@ -25,6 +25,8 @@ class Whippet extends \RubbishThorClone
 		$this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.', function ($option_parser) {
 			$option_parser->addRule('r|repository::', 'Override the default application.json WordPress repository with this one');
 		});
+		$this->command('dependencies SUBCOMMAND', 'Manage dependencies (themes, plugins)');
+		$this->command('deps SUBCOMMAND', 'Alias for dependencies');
 	}
 
 	public function plugins($plugin_command)
