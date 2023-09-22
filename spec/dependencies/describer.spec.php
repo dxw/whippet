@@ -46,7 +46,7 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 					'magicMethods' => true
 				]);
 				allow(\Dxw\Whippet\Git\Git::class)->toBe($git);
-				allow($git)->toReceive('::tag_for_commit')->andReturn(\Result\Result::err('Error getting tag'));
+				allow($this->factory)->toReceive('callStatic')->andReturn(\Result\Result::err('Error getting tag'));
 
 				$result = $this->describer->describe();
 
@@ -77,13 +77,11 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 			],
 				[]
 			);
-			allow($this->factory)->toReceive('callStatic')->andReturn(\Result\Result::ok($whippetLock));
-			$git = Double::instance([
-				'extends' => '\Dxw\Whippet\Git\Git',
-				'magicMethods' => true
-			]);
-			allow(\Dxw\Whippet\Git\Git::class)->toBe($git);
-			allow($git)->toReceive('::tag_for_commit')->andReturn(\Result\Result::ok('v1.0.1'), \Result\Result::ok('v3.0'));
+			allow($this->factory)->toReceive('callStatic')->andReturn(
+				\Result\Result::ok($whippetLock),
+				\Result\Result::ok('v1.0.1'),
+				\Result\Result::ok('v3.0')
+			);
 
 			ob_start();
 

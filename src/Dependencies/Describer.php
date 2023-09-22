@@ -16,17 +16,25 @@ class Describer
 		$this->dir = $dir;
 	}
 
-	public function fetchVersionInformation()
+	public function fetchVersionInformation($lockfileData = null)
 	{
-		$resultLoad = $this->loadWhippetLock();
-		if ($resultLoad->isErr()) {
-			return $resultLoad;
+		if (is_null($lockfileData)) {
+			$resultLoad = $this->loadWhippetLock();
+			if ($resultLoad->isErr()) {
+				return $resultLoad;
+			}
+		} else {
+			$this->lockFile = $lockfileData;
 		}
-		$git = new \Dxw\Whippet\Git\Git($this->dir);
 		$results = [];
 		foreach (DependencyTypes::getThemeAndPluginTypes() as $type) {
 			foreach ($this->lockFile->getDependencies($type) as $dep) {
-				$result = $git::tag_for_commit($dep['src'], $dep['revision']);
+				$result = $this->factory->callStatic(
+					'\\Dxw\\Whippet\\Git\\Git',
+					'tag_for_commit',
+					$dep['src'],
+					$dep['revision']
+				);
 				if ($result->isErr()) {
 					return $result;
 				}

@@ -72,6 +72,16 @@ trait WhippetHelpers
 		}
 	}
 
+	public function get_wordpress_core_version()
+	{
+		$config_version = $this->application_config->wordpress->revision;
+		if ($config_version == 'master') {
+			$latest_core_version = json_decode(file_get_contents('https://api.wordpress.org/core/version-check/1.7/'), JSON_OBJECT_AS_ARRAY);
+			return $latest_core_version['offers'][0]['version'];
+		}
+		return $config_version;
+	}
+
 	public function find_file($file, $include_dir = false)
 	{
 		// Starting in the current dir, walk up until we find the file
