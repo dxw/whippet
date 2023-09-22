@@ -28,7 +28,7 @@ class Installer
 
 		$dependencies = [];
 
-		foreach (DependencyTypes::getDependencyTypes() as $type) {
+		foreach (DependencyTypes::getThemeAndPluginTypes() as $type) {
 			$dependencies[$type] = $this->lockFile->getDependencies($type);
 		}
 
@@ -48,10 +48,15 @@ class Installer
 		$name = explode('/', $dep)[1];
 
 		foreach ($this->lockFile->getDependencies($type) as $dep) {
-			if ($dep['name'] === $name) {
-				return $this->install([$type => [$dep]]);
+			if ($dep['name'] === $name || (DependencyTypes::isLanguageType($type) && substr($dep['name'], 0, strlen($name)) === $name)) {
+				$result = $this->install([$type => [$dep]]);
+				if ($result->isErr()) {
+					return $result;
+				}
 			}
 		}
+
+		return \Result\Result::ok();
 	}
 
 	private function install(array $dependencies)
@@ -105,6 +110,58 @@ class Installer
 	}
 
 	private function installDependency($type, $dep)
+	{
+		if (DependencyTypes::isLanguageType($type)) {
+			return $this->installLanguageDependency($dep);
+		}
+		return $this->installThemeOrPluginDependency($type, $dep);
+	}
+
+	/**
+	 * Download, unzip and install a language pack for core, a plugin or a theme.
+	 *
+	 * $dep['name'] will be a language code for WP core, or this format:
+	 *     <lang-code>/<dependency type>/<slug>
+	 * e.g. "en_GB/plugins/classic-editor".
+	 */
+	private function installLanguageDependency($dep)
+	{
+		$type = strpos($dep['name'], '/') !== false ? explode('/', $dep['name'])[1] : '';
+		$slug = strpos($dep['name'], '/') !== false ? explode('/', $dep['name'])[2] : '';
+		$lang = explode('/', $dep['name'])[0];
+
+		$for_dep = strlen($type) > 0 ? " for {$type}/{$slug}" : '';
+		echo sprintf("[Adding languages/%s%s]\n", $lang, $for_dep);
+
+		$dir_s = strval($this->dir);
+		$path = strlen($type) > 0 ? "{$dir_s}/wp-content/languages/{$type}" : "{$dir_s}/wp-content/languages";
+
+		try {
+			$zipFileContents = file_get_contents($dep['src']);
+		} catch (\Exception $exn) {
+			return \Result\Result::err("got error: {$exn->getMessage()} on downloading: {$dep['src']}");
+		}
+		if ($zipFileContents === false) {
+			return \Result\Result::err("could not download {$dep['src']} or file was empty");
+		}
+
+		$tempFile = tempnam(sys_get_temp_dir(), 'temp_zip');
+		file_put_contents($tempFile, $zipFileContents);
+
+		$zip = new \ZipArchive();
+		if ($zip->open($tempFile) === true) {
+			$zip->extractTo($path);
+			$zip->close();
+		} else {
+			return \Result\Result::err("could not unzip file from: {$dep['src']}}");
+		}
+
+		unlink($tempFile);
+
+		return \Result\Result::ok();
+	}
+
+	private function installThemeOrPluginDependency($type, $dep)
 	{
 		$path = $this->dir.'/wp-content/'.$type.'/'.$dep['name'];
 
