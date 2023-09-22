@@ -95,12 +95,12 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 							[
 								'name' => 'advanced-custom-fields-pro'
 							]
-						]);
+						], []);
 					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
 							[
 								'name' => 'akismet'
 							]
-						]);
+						], []);
 					$result = $this->validator->validate();
 					expect($result)->toBeAnInstanceOf(\Result\Result::class);
 					expect($result->getErr())->toEqual('Mismatched dependencies count for type plugins');
@@ -128,7 +128,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 							[
 								'name' => 'advanced-custom-fields-pro'
 							]
-						]);
+						], []);
 					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
 							[
 								'name' => 'akismet'
@@ -136,7 +136,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 							[
 								'name' => 'some-other-plugin'
 							]
-						]);
+						], []);
 					$result = $this->validator->validate();
 					expect($result)->toBeAnInstanceOf(\Result\Result::class);
 					expect($result->getErr())->toEqual('No entry found in whippet.lock for plugins: advanced-custom-fields-pro');
@@ -164,7 +164,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 							[
 								'name' => 'advanced-custom-fields-pro'
 							]
-						]);
+						], []);
 					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
 							[
 								'name' => 'akismet',
@@ -175,7 +175,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 								'name' => 'advanced-custom-fields-pro',
 								'src' => 'a_src_2',
 							]
-						]);
+						], []);
 					$result = $this->validator->validate();
 					expect($result)->toBeAnInstanceOf(\Result\Result::class);
 					expect($result->getErr())->toEqual('Missing revision property in whippet.lock for plugins: advanced-custom-fields-pro');
@@ -203,7 +203,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 							[
 								'name' => 'advanced-custom-fields-pro'
 							]
-						]);
+						], []);
 					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
 							[
 								'name' => 'akismet',
@@ -215,7 +215,244 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 								'src' => 'a_src_2',
 								'revision' => 'a_revision_2'
 							]
-						]);
+						], []);
+					ob_start();
+					$result = $this->validator->validate();
+					$output = ob_get_clean();
+					expect($output)->toEqual("Valid whippet.json and whippet.lock \n");
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->isErr())->toEqual(false);
+				});
+			});
+			context('the JSON file has a language code for lockfile does not', function () {
+				it('returns an error', function () {
+					$whippetContents = '{
+                            "src": {
+                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                            },
+                            "plugins": [
+                                {"name": "akismet"}
+                            ],
+                            "languages": [
+                                {"name": "gibberish"}
+                            ]
+                        }';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+								[
+								'name' => 'akismet'
+								]
+						],
+						[
+								[
+								'name' => 'gibberish'
+								]
+						]
+					);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+						],
+						[]
+					);
+					ob_start();
+					$result = $this->validator->validate();
+					$output = ob_get_clean();
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->getErr())->toEqual('Mismatched dependencies count for type languages');
+				});
+			});
+			context('the JSON file and lockfiles have languages with different codes', function () {
+				it('returns an error', function () {
+					$whippetContents = '{
+                            "src": {
+                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                            },
+                            "plugins": [
+                                {"name": "akismet"}
+                            ],
+                            "languages": [
+                                {"name": "gibberish"}
+                            ]
+                        }';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+								[
+								'name' => 'akismet'
+								]
+						],
+						[
+								[
+								'name' => 'gibberish'
+								]
+						]
+					);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+						],
+						[
+							[
+								'name' => 'en_GB',
+								'src' => 'lang_src',
+								'revision' => 'core_revision'
+							]
+
+						]
+					);
+					ob_start();
+					$result = $this->validator->validate();
+					$output = ob_get_clean();
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->getErr())->toEqual('No entry found in whippet.lock for languages: gibberish');
+				});
+			});
+			context('translations are only available for WP Core', function () {
+				it('returns OK', function () {
+					$whippetContents = '{
+                            "src": {
+                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                            },
+                            "plugins": [
+                                {"name": "akismet"}
+                            ],
+                            "languages": [
+                                {"name": "en_GB"}
+                            ]
+                        }';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+								[
+								'name' => 'akismet'
+								]
+						],
+						[
+								[
+								'name' => 'en_GB'
+								]
+						]
+					);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn(
+						[],
+						[
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+						],
+						[
+							[
+								'name' => 'en_GB',
+								'src' => 'lang_src',
+								'revision' => 'core_revision'
+							]
+						]
+					);
+					ob_start();
+					$result = $this->validator->validate();
+					$output = ob_get_clean();
+					expect($output)->toEqual("Valid whippet.json and whippet.lock \n");
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->isErr())->toEqual(false);
+				});
+			});
+			context('translations are only available several dependencies', function () {
+				it('returns OK', function () {
+					$whippetContents = '{
+                            "src": {
+                                "plugins": "git@git.govpress.com:wordpress-plugins/",
+                                "themes": "git@git.govpress.com:wordpress-themes/"
+                            },
+                            "themes": [
+                                {"name": "twenty"}
+                            ],
+                            "plugins": [
+                                {"name": "akismet"}
+                            ],
+                            "languages": [
+                                {"name": "en_GB"}
+                            ]
+                        }';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn(
+						[
+							[
+								'name' => 'twenty'
+								]
+						],
+						[
+								[
+								'name' => 'akismet'
+								]
+						],
+						[
+								[
+								'name' => 'en_GB'
+								]
+						]
+					);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn(
+						[
+							[
+								'name' => 'twenty',
+								'src' => 't_src_1',
+								'revision' => 't_revision_1'
+							]
+						],
+						[
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+						],
+						[
+							[
+								'name' => 'en_GB',
+								'src' => 'lang_src',
+								'revision' => 'core_revision'
+							],
+							[
+								'name' => 'en_GB/themes/twenty',
+								'src' => 'lang_src_twenty',
+								'revision' => 'twenty_revision'
+							],
+							[
+								'name' => 'en_GB/plugins/akismet',
+								'src' => 'lang_src_akismet',
+								'revision' => 'akismet_revision'
+							]
+						]
+					);
 					ob_start();
 					$result = $this->validator->validate();
 					$output = ob_get_clean();
