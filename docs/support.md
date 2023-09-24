@@ -8,7 +8,7 @@ However, you may well need to use it as part of supporting WordPress sites we ho
 
 ## Common tasks 
 
-### Updating plugins & themes via Whippet 
+### Updating plugins, themes and language packs via Whippet
 
 Run `whippet deps update` in the directory that contains the `whippet.lock` file. 
 
@@ -31,6 +31,10 @@ Manually edit the `whippet.json` file to add an entry to the "plugins" section f
         {"name": "twentyfourteen"},
         {"name": "twentysixteen"},
         {"name": "twentyten"}
+    ],
+    "languages": [
+        {"name": "en_GB"},
+        {"name": "ja"}
     ]
 }
 ```
@@ -51,6 +55,10 @@ And you want to add a plugin called "Foo", you would edit it to look like this:
         {"name": "twentyfourteen"},
         {"name": "twentysixteen"},
         {"name": "twentyten"}
+    ],
+    "languages": [
+        {"name": "en_GB"},
+        {"name": "ja"}
     ]
 }
 ```
@@ -59,7 +67,18 @@ Then run `whippet deps update`.
 
 Commit the updated `whippet.json`, `whippet.lock`, and `.gitignore`.
 
-### Removing a plugin 
+### Adding a language pack
+
+For language packs, note that you can add the language code for the pack (e.g. `nl_NL`) and
+Whippet will automatically install any available language packs for themes and plugins that
+are in the JSON file.
+
+To find out which languages have translation support, please see
+`https://api.wordpress.org/translations/core/1.0/?version={wp-version}` for the relevant
+version of WordPress core. Other relevant APIs can be found
+[in the codex](https://codex.wordpress.org/WordPress.org_API#Translations).
+
+### Removing a plugin
 
 Manually edit the `whippet.json` file to remove the entry for the plugin you want removed.
 
