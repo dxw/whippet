@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for PHP 8
 - `whippet generate plugin` to generate a plugin based on our template repo https://github.com/dxw/wordpress-plugin-template/
 - Psalm compliance
+- Support for managing WordPress language packs as a dependency
 
 ### Removed
 - `whippet migrate` commands.
