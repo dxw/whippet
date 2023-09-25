@@ -41,6 +41,9 @@ class Describer
 				$results[$type][$dep["name"]] = $result->unwrap();
 			}
 		}
+		foreach ($this->lockFile->getDependencies(DependencyTypes::LANGUAGES) as $dep) {
+			$results[DependencyTypes::LANGUAGES][$dep["name"]] = $dep['revision'];
+		}
 		return \Result\Result::ok($results);
 	}
 
@@ -51,7 +54,7 @@ class Describer
 			return $results;
 		}
 		$pretty_results = json_encode($results->unwrap(), JSON_PRETTY_PRINT);
-		printf($pretty_results);
+		printf(stripslashes($pretty_results));
 
 		return \Result\Result::ok();
 	}

@@ -75,7 +75,23 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 					'revision' => 'commit-hash'
 				],
 			],
-				[]
+				[
+				[
+					'name' => 'pt_BR',
+					'src' => 'lange-one-src-for-core',
+					'revision' => '6.3.3'
+				],
+				[
+					'name' => 'pt_BR/plugins/plugin-one',
+					'src' => 'lange-one-src-for-plugin-one',
+					'revision' => '1.2.3'
+				],
+				[
+					'name' => 'pt_BR/themes/theme-one',
+					'src' => 'lange-one-src-for-theme-one',
+					'revision' => '3.2.1'
+				]
+				]
 			);
 			allow($this->factory)->toReceive('callStatic')->andReturn(
 				\Result\Result::ok($whippetLock),
@@ -95,6 +111,11 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 				],
 				'plugins' => [
 					'plugin-one' => 'v3.0'
+				],
+				'languages' => [
+					"pt_BR" => "6.3.3",
+					"pt_BR/plugins/plugin-one" => "1.2.3",
+					"pt_BR/themes/theme-one" => "3.2.1"
 				]
 			]);
 			expect($result->isErr())->toBe(false);
