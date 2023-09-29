@@ -16,7 +16,9 @@ class Json_Api_Test extends \PHPUnit\Framework\TestCase
 			->andReturn(\Result\Result::ok('[]'));
 
 		$api = new \Dxw\Whippet\Services\JsonApi($base_api);
-		$api->get('http://apisite.com/api/endpoint');
+		$result = $api->get('http://apisite.com/api/endpoint');
+		$this->assertFalse($result->isErr());
+		$this->assertEquals([], $result->unwrap());
 	}
 
 	public function testEmptyResponse()
