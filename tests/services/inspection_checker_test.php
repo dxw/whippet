@@ -35,7 +35,8 @@ class Inspection_Checker_Test extends \PHPUnit\Framework\TestCase
 			'revision' => '123456',
 		];
 		$checker = new \Dxw\Whippet\Services\InspectionChecker($api);
-		$checker->check('plugins', $my_plugin);
+		$result = $checker->check('plugins', $my_plugin);
+		$this->assertFalse($result->isErr());
 	}
 
 	public function testPluginWithNoInspectionsGeneratesMessage()
