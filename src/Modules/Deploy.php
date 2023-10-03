@@ -156,7 +156,7 @@ class Deploy
 				$this->releases_manifest[] = $release;
 				$this->save_releases_manifest();
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			echo $e->getMessage();
 
 			exit(1);
