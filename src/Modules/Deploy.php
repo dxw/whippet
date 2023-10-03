@@ -10,6 +10,7 @@ class Deploy
 	private $releases_dir;
 	private $shared_dir;
 	private $public_dir;
+	private $releases_manifest;
 
 	public function __construct($dir)
 	{
@@ -17,6 +18,7 @@ class Deploy
 		$this->releases_dir = "{$this->deploy_dir}/releases";
 		$this->shared_dir = "{$this->deploy_dir}/shared";
 		$this->public_dir = "";
+		$this->releases_manifest = [];
 	}
 
 	public function deploy($force, $keep, $public)
