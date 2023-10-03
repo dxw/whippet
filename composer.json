@@ -29,6 +29,7 @@
         "dxw/phar-install": "^1.1",
         "mikey179/vfsstream": "^1.6",
         "dxw/php-cs-fixer-config": "^2.0",
-        "kahlan/kahlan": "^5.1"
+        "kahlan/kahlan": "^5.1",
+        "vimeo/psalm": "^5.15"
     }
 }
