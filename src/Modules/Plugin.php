@@ -240,7 +240,7 @@ class Plugin extends \RubbishThorClone
 		$ignores = $gitignore->get_ignores();
 
 		foreach (array_keys($this->plugins_locked) as $dir) {
-			$plugin_dir = "/wp-content/plugins/{$dir}\n";
+			$plugin_dir = "/wp-content/plugins/" . strval($dir) . "\n";
 
 			if (array_search($plugin_dir, $ignores) === false) {
 				$ignores[] = $plugin_dir;
