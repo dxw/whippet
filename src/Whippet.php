@@ -2,6 +2,9 @@
 
 namespace Dxw\Whippet;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class Whippet extends \RubbishThorClone
 {
 	public function commands()
