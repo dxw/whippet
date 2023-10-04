@@ -14,8 +14,7 @@ abstract class WhippetGenerator
 		// requires.
 		//
 
-		trigger_error('Generators must declare a constructor', E_USER_FATAL);
-		die();
+		trigger_error('Generators must declare a constructor', E_USER_ERROR);
 	}
 
 	abstract public function generate();
