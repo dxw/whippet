@@ -9,6 +9,7 @@ class Plugin extends \RubbishThorClone
 
 	private $plugins_manifest;
 	private $plugin_dir;
+	private $plugins_locked;
 
 	public function commands()
 	{
