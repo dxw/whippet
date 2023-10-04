@@ -44,7 +44,7 @@ class Generate
 	{
 		echo "Available generators:\n\n";
 		foreach (array_keys($this->get_generators()) as $generator) {
-			echo "  $generator\n";
+			echo strval($generator) . "\n";
 		}
 	}
 
