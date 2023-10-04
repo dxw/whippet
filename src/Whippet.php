@@ -32,12 +32,12 @@ class Whippet extends \RubbishThorClone
 		$this->command('deps SUBCOMMAND', 'Alias for dependencies');
 	}
 
-	public function plugins($plugin_command)
+	public function plugins()
 	{
 		(new Modules\Plugin())->start(array_slice($this->argv, 1));
 	}
 
-	public function theme($plugin_command)
+	public function theme()
 	{
 		(new Modules\Theme())->start(array_slice($this->argv, 1));
 	}

@@ -59,7 +59,7 @@ class Deploy
 				$release_number = 0;
 			}
 
-			$new_release = new Release($this->releases_dir, '', $release_number, $this->public_dir);
+			$new_release = new Release($this->releases_dir, $release_number, $this->public_dir);
 
 			// Make it.
 			$new_release->create($force, $public);
