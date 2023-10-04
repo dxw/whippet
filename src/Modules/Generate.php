@@ -40,7 +40,7 @@ class Generate
 	public function list_generators()
 	{
 		echo "Available generators:\n\n";
-		foreach ($this->get_generators() as $generator => $file) {
+		foreach (array_keys($this->get_generators()) as $generator) {
 			echo "  $generator\n";
 		}
 	}

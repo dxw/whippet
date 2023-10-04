@@ -116,8 +116,8 @@ class Plugin extends \RubbishThorClone
 			// Make sure every entry in the lockfile also appears in the manifest
 			$plugins_to_delete = array_keys((array) $this->plugins_locked);
 
-			foreach ($this->plugins_locked as $lock_dir => $lock_plugin) {
-				foreach ($this->plugins_manifest as $manifest_dir => $manifest_plugin) {
+			foreach (array_keys($this->plugins_locked) as $lock_dir) {
+				foreach (array_keys($this->plugins_manifest) as $manifest_dir) {
 					if ($lock_dir == $manifest_dir) {
 						unset($plugins_to_delete[array_search($lock_dir, $plugins_to_delete)]);
 					}
@@ -238,7 +238,7 @@ class Plugin extends \RubbishThorClone
 		$gitignore = new \Dxw\Whippet\Git\Gitignore($this->project_dir);
 		$ignores = $gitignore->get_ignores();
 
-		foreach ($this->plugins_locked as $dir => $plugin) {
+		foreach (array_keys($this->plugins_locked) as $dir) {
 			$plugin_dir = "/wp-content/plugins/{$dir}\n";
 
 			if (array_search($plugin_dir, $ignores) === false) {
