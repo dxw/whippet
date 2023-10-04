@@ -8,6 +8,9 @@ class Generate
 
 	public function __construct()
 	{
+		/**
+		* @psalm-suppress UndefinedConstant
+		*/
 		$this->generators_dir = WHIPPET_ROOT.'/generators';
 	}
 
