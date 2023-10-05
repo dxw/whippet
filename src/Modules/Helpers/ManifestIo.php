@@ -118,6 +118,9 @@ trait ManifestIo
 
 		$this->plugins_locked = new \stdClass();
 
+		/**
+		 * @psalm-suppress UndefinedThisPropertyFetch
+		 */
 		foreach (scandir($this->plugin_dir) as $dir) {
 			if ($dir[0] == '.') {
 				continue;

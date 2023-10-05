@@ -26,6 +26,9 @@ else
 	echo "==> Running php-cs-fixer..."
 	./vendor/bin/php-cs-fixer fix --dry-run -v --diff
 
+	echo "==> Running Psalm..."
+	./vendor/bin/psalm
+
 	echo "==> Running the tests..."
 	./vendor/bin/phpunit && ./vendor/bin/kahlan spec
 fi

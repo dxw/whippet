@@ -13,7 +13,7 @@ class Release
 	public $release_dir;
 	private $public_dir;
 
-	public function __construct($releases_dir, $message, $number, $public_dir)
+	public function __construct($releases_dir, $number, $public_dir)
 	{
 		$this->whippet_init();
 		$this->load_plugins_lock();

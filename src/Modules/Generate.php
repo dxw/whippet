@@ -8,6 +8,9 @@ class Generate
 
 	public function __construct()
 	{
+		/**
+		* @psalm-suppress UndefinedConstant
+		*/
 		$this->generators_dir = WHIPPET_ROOT.'/generators';
 	}
 
@@ -40,8 +43,8 @@ class Generate
 	public function list_generators()
 	{
 		echo "Available generators:\n\n";
-		foreach ($this->get_generators() as $generator => $file) {
-			echo "  $generator\n";
+		foreach (array_keys($this->get_generators()) as $generator) {
+			echo strval($generator) . "\n";
 		}
 	}
 

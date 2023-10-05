@@ -6,7 +6,7 @@ abstract class WhippetGenerator
 {
 	use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
 
-	public function __construct($options)
+	public function __construct()
 	{
 		//
 		// This should not be called. You should declare your own constructor
@@ -14,8 +14,7 @@ abstract class WhippetGenerator
 		// requires.
 		//
 
-		trigger_error('Generators must declare a constructor', E_USER_FATAL);
-		die();
+		trigger_error('Generators must declare a constructor', E_USER_ERROR);
 	}
 
 	abstract public function generate();

@@ -10,6 +10,7 @@ class Deploy
 	private $releases_dir;
 	private $shared_dir;
 	private $public_dir;
+	private $releases_manifest;
 
 	public function __construct($dir)
 	{
@@ -17,6 +18,7 @@ class Deploy
 		$this->releases_dir = "{$this->deploy_dir}/releases";
 		$this->shared_dir = "{$this->deploy_dir}/shared";
 		$this->public_dir = "";
+		$this->releases_manifest = [];
 	}
 
 	public function deploy($force, $keep, $public)
@@ -57,7 +59,7 @@ class Deploy
 				$release_number = 0;
 			}
 
-			$new_release = new Release($this->releases_dir, '', $release_number, $this->public_dir);
+			$new_release = new Release($this->releases_dir, $release_number, $this->public_dir);
 
 			// Make it.
 			$new_release->create($force, $public);
@@ -156,7 +158,7 @@ class Deploy
 				$this->releases_manifest[] = $release;
 				$this->save_releases_manifest();
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			echo $e->getMessage();
 
 			exit(1);

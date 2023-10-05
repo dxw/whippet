@@ -29,9 +29,7 @@ class Installer
 		$dependencies = [];
 
 		foreach (['themes', 'plugins'] as $type) {
-			foreach ($this->lockFile->getDependencies($type) as $dep) {
-				$dependencies[$type] = $this->lockFile->getDependencies($type);
-			}
+			$dependencies[$type] = $this->lockFile->getDependencies($type);
 		}
 
 		return $this->install($dependencies);

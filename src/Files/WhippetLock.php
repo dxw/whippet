@@ -2,6 +2,9 @@
 
 namespace Dxw\Whippet\Files;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class WhippetLock extends Base
 {
 	public function getDependencies(/* string */ $type)

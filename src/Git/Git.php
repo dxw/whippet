@@ -81,7 +81,7 @@ class Git
 			return false;
 		}
 
-		$this->run_command("mv {$tmpdir}/.git {$this->repo_path}");
+		$this->run_command(['mv', $tmpdir . '/.git', $this->repo_path]);
 
 		return true;
 	}

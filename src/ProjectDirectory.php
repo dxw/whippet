@@ -25,6 +25,7 @@ class ProjectDirectory
 		$this->path = $path;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function __toString()
 	{
 		return $this->path;

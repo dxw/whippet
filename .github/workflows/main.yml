@@ -35,3 +35,6 @@ jobs:
 
     - name: Run lints and tests
       run: ./script/test
+    
+    - name: Run Psalm for this specific PHP version
+      run: ./vendor/bin/psalm --php-version=${{ matrix.php-versions }}
