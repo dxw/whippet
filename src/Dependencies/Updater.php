@@ -278,19 +278,6 @@ class Updater
 	}
 
 	/**
-	 * Version strings passed to WordPress APIs must not start with a v.
-	 *
-	 * So, v6.3.1 becomes 6.3.1.
-	 */
-	private function getCanonicalVersion($version)
-	{
-		if(str_starts_with($version, 'v')) {
-			return substr($version, 1);
-		}
-		return $version;
-	}
-
-	/**
 	 * Add a language pack to a lockfile, including translations for themes and plugins.
 	 *
 	 * Note that a missing language pack for WordPress Core is considered an
@@ -301,7 +288,7 @@ class Updater
 	 */
 	private function addLanguageToLockfile(array $dep)
 	{
-		$wpCoreVersion = $this->getCanonicalVersion($this->get_wordpress_core_version());
+		$wpCoreVersion = $this->get_bare_version_number($this->get_wordpress_core_version());
 		$result = TranslationsApi::fetchLanguageSrcAndRevision(DependencyTypes::LANGUAGES, $dep['name'], $wpCoreVersion, null);
 		if ($result->isErr()) {
 			return $result;
@@ -317,7 +304,7 @@ class Updater
 				if(substr($version, 0, 18) === 'No tags for commit') {
 					continue;
 				} else {
-					$version = $this->getCanonicalVersion($version);
+					$version = $this->get_bare_version_number($version);
 				}
 				$result = TranslationsApi::fetchLanguageSrcAndRevision($type, $dep['name'], $version, $name);
 				if ($result->isErr()) {
