@@ -314,7 +314,7 @@ class Updater
 
 		foreach($this->themeAndPluginVersions as $type => $versions) {
 			foreach($versions as $name => $version) {
-				if (str_starts_with($version, 'No tags for commit')) {
+				if(substr($version, 0, 18) === 'No tags for commit') {
 					continue;
 				} else {
 					$version = $this->getCanonicalVersion($version);
