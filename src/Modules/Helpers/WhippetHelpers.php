@@ -114,9 +114,7 @@ trait WhippetHelpers
 		$canonical_version = $this->get_bare_version_number($config_version);
 		$ver_len = strlen($canonical_version);
 		while ($i < count($latest_core_version['offers'])) {
-			print_r("counter: {$i} canonical version: {$canonical_version}\n");
 			if (substr($latest_core_version['offers'][$i]['version'], 0, $ver_len) === $canonical_version) {
-				print_r("VERSION: {$latest_core_version['offers'][$i]['version']}\n");
 				return $latest_core_version['offers'][$i]['version'];
 			}
 			$i++;
