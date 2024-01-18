@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `whippet generate app` generates an app which can be deployed by Whippet.
+- `whippet deps describe` always prints the most detailed semver version available.
 
 ### Added
 - Support for PHP 8
