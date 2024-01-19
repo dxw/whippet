@@ -374,6 +374,10 @@ class Git
 			return \Result\Result::ok('No tags for commit ' . $commit_hash);
 		}
 
+		usort($tags_array, function ($a, $b) {
+			return strlen($b) <=> strlen($a);
+		});
+
 		$resultArray = explode('/', $tags_array[0]);
 		$result = str_replace("^{}", "", end($resultArray));
 
