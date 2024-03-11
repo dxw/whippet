@@ -41,7 +41,7 @@ class Git
 
 	public function checkout($revision)
 	{
-		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '&&', 'git', 'checkout', $revision]);
+		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', $revision]);
 
 		return $this->check_git_return('Checkout failed', $return, $output);
 	}
@@ -213,7 +213,7 @@ class Git
 
 	public function fetch()
 	{
-		list($output, $return) = $this->run_command(['git', 'fetch', '-a']);
+		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '--force']);
 
 		return $this->check_git_return('Checkout failed', $return, $output);
 	}
