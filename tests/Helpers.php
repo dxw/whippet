@@ -114,10 +114,27 @@ trait Helpers
 		return new \Dxw\Whippet\ProjectDirectory($dir);
 	}
 
+	private function createDefaultApplicationJson($path)
+	{
+		$data = ["wordpress" => ["repository" => "git@git.example.com:wordpress/snapshot", "revision" => "6.3.1"]];
+		$json = json_encode($data);
+		$bytes = file_put_contents($path, $json);
+	}
+
+	private function getDirWithDefaults()
+	{
+		$dir = $this->getDir();
+		mkdir($dir.'/config');
+		touch($dir.'/config/application.json');
+		$this->createDefaultApplicationJson($dir."/config/application.json");
+		mkdir($dir.'/wp-content');
+		mkdir($dir.'/wp-content/plugins');
+		return $dir;
+	}
+
 	private function getDir()
 	{
 		$root = \org\bovigo\vfs\vfsStream::setup();
-
 		return $root->url();
 	}
 }

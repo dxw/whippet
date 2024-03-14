@@ -41,6 +41,7 @@ class DependenciesInstallerTest extends \PHPUnit\Framework\TestCase
 				$my_plugin,
 				$another_plugin,
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -67,7 +68,8 @@ EOT;
 				'plugins' => [
 					'my-plugin' =>  \Result\Result::ok($warning_msg),
 					'another-plugin' => \Result\Result::ok("Inspections for this plugin:\n* 01/05/2015 - 0.1.3 - No issues found - https://advisories.dxw.com/plugins/another_plugin/")
-				]
+					],
+					[],
 			][$type][$dep['name']];
 		};
 
@@ -124,6 +126,7 @@ EOT;
 			'plugins' => [
 				$my_plugin,
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -179,6 +182,7 @@ EOT;
 				],
 			],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -279,6 +283,7 @@ EOT;
 				],
 			],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -315,6 +320,7 @@ EOT;
 				],
 			],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -345,6 +351,7 @@ EOT;
 		$whippetLock = $this->getWhippetLock(sha1('foobar'), [
 			'themes' => [],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -388,6 +395,7 @@ EOT;
 					'revision' => '789abc',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -449,6 +457,7 @@ EOT;
 					'revision' => '789abc',
 				],
 			],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -483,6 +492,7 @@ EOT;
 				],
 			],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
@@ -519,6 +529,7 @@ EOT;
 				],
 			],
 			'plugins' => [],
+			'languages' => [],
 		]);
 		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
 
