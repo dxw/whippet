@@ -31,8 +31,22 @@ trait Helpers
 		return $whippetLock;
 	}
 
-	private function getGit($isRepo, $cloneRepo, $checkout)
+	private function getArchivedWarning()
 	{
+		$warning = <<<'EOT'
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING: GitHub repo is archived. This dependency !!
+!! should be replaced before the repo is removed.    !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+EOT;
+		return $warning;
+	}
+
+	private function getGit($isRepo, $cloneRepo, $checkout, $isArchived = false)
+	{
+		$archived_warning = $this->getArchivedWarning();
+
 		$git = $this->getMockBuilder('\\Dxw\\Whippet\\Git\\Git')
 		->disableOriginalConstructor()
 		->getMock();
@@ -42,6 +56,11 @@ trait Helpers
 
 		if ($cloneRepo !== null) {
 			$return = true;
+			$output = "git clone output\n";
+
+			if ($isArchived) {
+				$output = $archived_warning . $output;
+			}
 
 			if (is_array($cloneRepo)) {
 				$return = $cloneRepo['return'];
@@ -51,8 +70,8 @@ trait Helpers
 			$git->expects($this->exactly(1))
 			->method('clone_repo')
 			->with($cloneRepo)
-			->will($this->returnCallback(function () use ($return) {
-				echo "git clone output\n";
+			->will($this->returnCallback(function () use ($output, $return) {
+				echo $output;
 
 				return $return;
 			}));
@@ -60,6 +79,11 @@ trait Helpers
 
 		if ($checkout !== null) {
 			$return = true;
+			$output = "git checkout output\n";
+
+			if ($isArchived) {
+				$output = $archived_warning . $output;
+			}
 
 			if (is_array($checkout)) {
 				$return = $checkout['return'];
@@ -69,8 +93,8 @@ trait Helpers
 			$git->expects($this->exactly(1))
 			->method('checkout')
 			->with($checkout)
-			->will($this->returnCallback(function () use ($return) {
-				echo "git checkout output\n";
+			->will($this->returnCallback(function () use ($output, $return) {
+				echo $output;
 
 				return $return;
 			}));

@@ -161,6 +161,65 @@ EOT;
 		$this->assertEquals($expectedOutput, $output);
 	}
 
+	public function testInstallArchiveRepo()
+	{
+		$dir = $this->getDir();
+		file_put_contents($dir.'/whippet.json', 'foobar');
+		file_put_contents($dir.'/whippet.lock', 'foobar');
+
+		$my_theme = [
+			'name' => 'my-theme',
+			'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
+			'revision' => '27ba906',
+		];
+
+		$whippetLock = $this->getWhippetLock(sha1('foobar'), [
+			'themes' => [
+				$my_theme,
+			],
+			'plugins' => [],
+		]);
+		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+
+		$gitMyTheme = $this->getGit(false, 'git@git.govpress.com:wordpress-themes/my-theme', '27ba906', true);
+		$this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/themes/my-theme', $gitMyTheme);
+
+		$inspection_check_results = function ($type, $dep) {
+			return [
+				'themes' =>  [
+					'my-theme' => \Result\Result::ok('')
+				],
+			][$type][$dep['name']];
+		};
+
+		$dependencies = new \Dxw\Whippet\Dependencies\Installer(
+			$this->getFactory(),
+			$this->getProjectDirectory($dir),
+			$this->fakeInspectionCheckerWithResults($inspection_check_results)
+		);
+
+		ob_start();
+		$result = $dependencies->installAll();
+		$output = ob_get_clean();
+
+		$this->assertFalse($result->isErr());
+		$expectedOutput = <<<'EOT'
+[Adding themes/my-theme]
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING: GitHub repo is archived. This dependency !!
+!! should be replaced before the repo is removed.    !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+git clone output
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING: GitHub repo is archived. This dependency !!
+!! should be replaced before the repo is removed.    !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+git checkout output
+
+
+EOT;
+		$this->assertEquals($expectedOutput, $output);
+	}
 
 	public function testInstallAllThemeAlreadyCloned()
 	{
@@ -465,6 +524,67 @@ EOT;
 		$output = ob_get_clean();
 
 		$this->assertEquals("[Adding plugins/my-plugin]\ngit clone output\ngit checkout output\n\n", $output);
+		$this->assertFalse($result->isErr());
+	}
+
+	public function testInstallSingleAlreadyClonedAndArchived()
+	{
+		$dir = $this->getDir();
+		file_put_contents($dir.'/whippet.json', 'foobar');
+		file_put_contents($dir.'/whippet.lock', 'foobar');
+
+		$whippetLock = $this->getWhippetLock(sha1('foobar'), [
+			'themes' => [
+				[
+					'name' => 'my-theme',
+					'src' => 'git@git.govpress.com:wordpress-themes/my-theme',
+					'revision' => '27ba906',
+				],
+			],
+			'plugins' => [
+				[
+					'name' => 'my-plugin',
+					'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
+					'revision' => '123456',
+				],
+				[
+					'name' => 'another-plugin',
+					'src' => 'git@git.govpress.com:wordpress-plugins/another-plugin',
+					'revision' => '789abc',
+				],
+			],
+		]);
+		$this->addFactoryCallStatic('\\Dxw\\Whippet\\Files\\WhippetLock', 'fromFile', $dir.'/whippet.lock', \Result\Result::ok($whippetLock));
+
+		$gitMyPlugin = $this->getGit(false, 'git@git.govpress.com:wordpress-plugins/my-plugin', '123456', true);
+		$this->addFactoryNewInstance('\\Dxw\\Whippet\\Git\\Git', $dir.'/wp-content/plugins/my-plugin', $gitMyPlugin);
+
+		$dependencies = new \Dxw\Whippet\Dependencies\Installer(
+			$this->getFactory(),
+			$this->getProjectDirectory($dir),
+			$this->fakeInspectionChecker()
+		);
+		ob_start();
+		$result = $dependencies->installSingle('plugins/my-plugin');
+		$output = ob_get_clean();
+		$expectedOutput = <<<'EOT'
+[Adding plugins/my-plugin]
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING: GitHub repo is archived. This dependency !!
+!! should be replaced before the repo is removed.    !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+git clone output
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING: GitHub repo is archived. This dependency !!
+!! should be replaced before the repo is removed.    !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+git checkout output
+
+
+EOT;
+
+
+		$this->assertEquals($expectedOutput, $output);
 		$this->assertFalse($result->isErr());
 	}
 

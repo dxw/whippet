@@ -39,8 +39,69 @@ class Git
 		return file_exists("{$this->repo_path}/.git");
 	}
 
+	private function is_github_repository($repository)
+	{
+		$pos = strpos($repository, 'github.com');
+		return $pos !== false;
+	}
+
+	/** Issue a warning to the user if a GitHub repository is archived.
+	 *
+	 * Note that we specifically ignore any non-GitHub repository for now,
+	 * which is why we have not factored this code into its own class structure.
+	 *
+	 * See: https://docs.github.com/en/rest/repos/repos?get-a-repository
+	 */
+	public function check_is_archived_github_repository($repository)
+	{
+		if (!$this->is_github_repository($repository)) {
+			return;
+		}
+		$baseurl = 'https://api.github.com/repos';  # Must not have a trailing slash.
+		$substrings = explode('/', $repository);
+		$num_substrings = count($substrings);
+		# If the URL is http formatted: ['https', 'github.com', 'org', 'repo']
+		# If the URL is ssh formatted: ['git@git.github.com:org', 'repo']
+		if ($num_substrings < 2) {
+			return false;
+		}
+		$repo =  $substrings[$num_substrings - 1];
+		if (false !== strpos($repo, '.git')) {  # repo.git
+			$repo = str_replace('.git', '', $repo);
+		}
+
+		if (false !== strpos($repository, '@')) {
+			# ssh formatted...
+			$org = explode(':', $substrings[$num_substrings - 2])[1];
+		} else {
+			# http formatted...
+			$org =  $substrings[$num_substrings - 2];
+		}
+		$api_url = join('/', [$baseurl, $org, $repo]);
+
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $api_url);
+		curl_setopt($curl, CURLOPT_USERAGENT, 'Whippet');
+		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$raw_json = curl_exec($curl);
+		$json = json_decode($raw_json);
+		curl_close($curl);
+		if (!is_null($json) && property_exists($json, 'archived') && $json->archived) {
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+			echo "!! WARNING: GitHub repo is archived. This dependency !!\n";
+			echo "!! should be replaced before the repo is removed.    !!\n";
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+		}
+	}
+
 	public function checkout($revision)
 	{
+		list($output, $return) = $this->run_command(['git', 'remote', 'get-url', 'origin']);
+		if ($return === 0) {
+			$this->check_is_archived_github_repository($output[0]);
+		}
+
 		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', $revision]);
 
 		return $this->check_git_return('Checkout failed', $return, $output);
@@ -62,6 +123,8 @@ class Git
 
 	public function clone_repo($repository)
 	{
+		$this->check_is_archived_github_repository($repository);
+
 		list($output, $return) = $this->run_command(['git', 'clone', $repository, $this->repo_path], false);
 
 		if (!$this->check_git_return('Clone failed', $return, $output)) {
@@ -73,6 +136,8 @@ class Git
 
 	public function clone_no_checkout($repository)
 	{
+		$this->check_is_archived_github_repository($repository);
+
 		$tmpdir = $this->get_tmpdir();
 
 		list($output, $return) = $this->run_command(['git', 'clone', '--no-checkout', $repository, $tmpdir], false);
