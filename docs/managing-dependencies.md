@@ -1,16 +1,33 @@
-# Managing themes and plugins
+# Managing themes, plugins and language packs
 
 Note: At the moment, Whippet assumes it is running within dxw's infrastructure, and makes some assumptions accordingly. If you run into a problem where this may be the cause, please open an issue.
 
-To manage plugins and themes using Whippet, you make entries in the `whippet.json` file in the root of the application.
+To manage plugins, themes and language packs using Whippet, you make entries in the `whippet.json` file in the root of the application.
 
 The file should specify a source for plugins and themes. The source should be a base url for a git repo.
 
 If you are a dxw customer, the source will be `git@git.govpress.com:wordpress-plugins/`. If not, we suggest using `https://github.com/wp-plugins` for plugins.
 
-The rest of the file should specify plugins and themes that you want to install. Example:
+For language packs, Whippet will query `https://api.wordpress.org/translations/` and use the given URL for the
+version of the language pack that you need. For any language you wish to install, Whippet will install the
+relevant files for the themes and plugins in your `whippet.json` file, as well as the files for WordPress Core.
 
+Note that if you do not have a file called `config/application.json` with an entry such as:
+
+```json
+{
+    "wordpress": {
+        "repository": "git@git.govpress.com:wordpress/snapshot",
+        "revision": "6.2.2"
+    }
+}
 ```
+
+Whippet will assume that you are using the current latest stable version of WordPress.
+
+The rest of the file should specify plugins, themes and language packs that you want to install. Example:
+
+```shell
 {
     "src": {
         "plugins": "git@git.govpress.com:wordpress-plugins/",
@@ -23,19 +40,23 @@ The rest of the file should specify plugins and themes that you want to install.
         {"name": "twentyfourteen"},
         {"name": "twentysixteen"},
         {"name": "twentyten"}
+    ],
+    "languages": [
+        {"name": "en_GB"},
+        {"name": "ja"}
     ]
 }
 ```
 
 The `{"name": "akismet"}` instructs Whippet (on request) to install the most recent version of Akismet available in the repo. Whippet will determine a valid repo URL for the akismet plugin by appending the name to the source. In this example:
 
-```
+```shell
 git@git.govpress.com:wordpress-plugins/akismet
 ```
 
 You can also specify a particular label or branch that you want to use. Generally, this will either be master (the default) or a tag (for a specific version), but you can use any git reference. So you can do:
 
-```
+```shell
 {
     "name": "akismet",
     "ref": "v1.1"
@@ -48,7 +69,7 @@ Finally, you can also specify a repo for an individual plugin or theme explicitl
 
 - Pull version 3.0.0 from your own special repo:
 
-```
+```json
 {
     "name": "akismet",
     "ref": "v3.0.0",
@@ -58,7 +79,7 @@ Finally, you can also specify a repo for an individual plugin or theme explicitl
 
 - Or, pull master:
 
-```
+```json
 {
     "name": "akismet",
     "ref": "master",
@@ -68,7 +89,7 @@ Finally, you can also specify a repo for an individual plugin or theme explicitl
 
 - This works too:
 
-```
+```json
 {
     "name": "akismet",
     "src": "git@my-git-server.com:akismet"

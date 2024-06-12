@@ -6,7 +6,7 @@ Whippet can generate new Whippet-compliant applications and themes for you.
 
 To create a new Whippet application, run:
 
-```
+```shell
 $ whippet generate app
 ```
 
@@ -24,7 +24,7 @@ There are a few configuration steps you'll need to follow when you create a new 
 
 By default, Whippet uses the latest release of WordPress. To specify a version to develop against, you'll need to edit `config/application.json`:
 
-```
+```json
 {
     "wordpress": {
         "repository": "https://github.com/WordPress/WordPress.git",
@@ -37,7 +37,7 @@ You can also change the WordPress repository used here by setting the `-r` optio
 
 To change the version, replace the "revision" value with the version you'd like:
 
-```
+```json
         "revision": "4.1.1"
 ```
 
@@ -62,7 +62,7 @@ The recommended method for running a Whippet application is to use the [wpc](htt
 
 An application that uses Whippet must have the following directory structure, and must be a git repository:
 
-```
+```md
 - config      # Application configuration files
 - public      # Non-WordPress files that should be available via the web
 - wp-content  # Your application's wp-content directory
@@ -75,7 +75,7 @@ An application that uses Whippet must have the following directory structure, an
 
 To create a new Whippet theme, run:
 
-```
+```shell
 $ whippet generate theme
 ```
 
@@ -89,7 +89,7 @@ The generated theme is based on the theme in the [dxw WordPress template](https:
 
 To create a new Whippet plugin, run:
 
-```
+```shell
 $ whippet generate plugin
 ```
 

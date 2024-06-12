@@ -16,7 +16,9 @@ class Inspections_Api_Test extends \PHPUnit\Framework\TestCase
 			->andReturn(\Result\Result::ok([]));
 
 		$api = new \Dxw\Whippet\Services\InspectionsApi('https://advisories.dxw.com', '/wp-json/v1/inspections/', $json_api);
-		$api->getInspections('my-plugin');
+		$result = $api->getInspections('my-plugin');
+		$this->assertFalse($result->isErr());
+		$this->assertEquals([], $result->unwrap());
 	}
 
 	public function testNoInspections()

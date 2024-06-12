@@ -46,10 +46,12 @@ class Validator
 
 		// Check that entries in whippet.json
 		// match entries in whippet.lock
-		foreach (['themes', 'plugins'] as $type) {
+		foreach (DependencyTypes::getDependencyTypes() as $type) {
 			$whippetJsonDependencies = $whippetJson->getDependencies($type);
 			$whippetLockDependencies = $whippetLock->getDependencies($type);
-			if (count($whippetJsonDependencies) !== count($whippetLockDependencies)) {
+			if (DependencyTypes::isLanguageType($type) && count($whippetJsonDependencies) > count($whippetLockDependencies)) {
+				return \Result\Result::err(sprintf('Mismatched dependencies count for type %s', $type));
+			} elseif (DependencyTypes::isNotLanguageType($type) && count($whippetJsonDependencies) !== count($whippetLockDependencies)) {
 				return \Result\Result::err(sprintf('Mismatched dependencies count for type %s', $type));
 			}
 

@@ -58,8 +58,8 @@ sudo ln -s $PWD/bin/whippet /usr/local/bin/whippet
 
 The main things you can use Whippet to do are:
 
-* [Generating a Whippet application or theme](docs/generate.md)
-* [Managing themes and plugins](docs/themesandplugins.md)
+* [Generating a Whippet application, theme or plugin](docs/generate.md)
+* [Managing themes, plugins and language packs](docs/managing-dependencies.md)
 * [Deploying a Whippet application](docs/deploy.md)
 
 ## Support
