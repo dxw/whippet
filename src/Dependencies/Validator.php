@@ -15,7 +15,7 @@ class Validator
 		$this->dir = $dir;
 	}
 
-	public function validate()
+	public function validate(bool $enforceRefs = false)
 	{
 		$whippetLock = $this->loadWhippetLock();
 		if ($whippetLock->isErr()) {
@@ -56,6 +56,11 @@ class Validator
 			foreach ($whippetJsonDependencies as $whippetJsonDependency) {
 				if (!$this->lockMatchFoundForDependency($whippetJsonDependency, $whippetLockDependencies)) {
 					return \Result\Result::err(sprintf('No entry found in whippet.lock for %s: %s', $type, $whippetJsonDependency["name"]));
+				}
+				if ($enforceRefs) {
+					if (!array_key_exists('ref', $whippetJsonDependency)) {
+						return \Result\Result::err(sprintf("Missing reference in whippet.json for %s: %s", $type, $whippetJsonDependency["name"]));
+					}
 				}
 			}
 

@@ -181,6 +181,94 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 					expect($result->getErr())->toEqual('Missing revision property in whippet.lock for plugins: advanced-custom-fields-pro');
 				});
 			});
+			context('but an entry in .json is missing a ref when --enforce-refs is set', function () {
+				it('returns an error', function () {
+					$whippetContents = '{
+						"src": {
+							"plugins": "git@git.govpress.com:wordpress-plugins/"
+						},
+						"plugins": [
+							{"name": "akismet", "ref": "v1"},
+							{"name": "advanced-custom-fields-pro"}
+						]
+					}';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn([], [
+							[
+								'name' => 'akismet',
+								'ref' => 'v1'
+							],
+							[
+								'name' => 'advanced-custom-fields-pro'
+							]
+						]);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+							[
+								'name' => 'advanced-custom-fields-pro',
+								'src' => 'a_src_2',
+								'revision' => 'a_revision_2'
+							]
+						]);
+					ob_start();
+					$result = $this->validator->validate(true);
+					$output = ob_get_clean();
+					expect($result->getErr())->toEqual("Missing reference in whippet.json for plugins: advanced-custom-fields-pro");
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->isErr())->toEqual(true);
+				});
+			});
+			context('but an entry in whippet.json is missing a ref when --enforce-refs is not set', function () {
+				it('returns an ok result', function () {
+					$whippetContents = '{
+						"src": {
+							"plugins": "git@git.govpress.com:wordpress-plugins/"
+						},
+						"plugins": [
+							{"name": "akismet", "ref": "v1"},
+							{"name": "advanced-custom-fields-pro"}
+						]
+					}';
+					allow('file_get_contents')->toBeCalled()->andReturn($whippetContents);
+					allow('sha1')->toBeCalled()->andReturn('a_matching_sha');
+					expect('sha1')->toBeCalled()->once()->with($whippetContents);
+					allow($this->whippetLock)->toReceive('getHash')->andReturn('a_matching_sha');
+					allow($this->whippetJson)->toReceive('getDependencies')->andReturn([], [
+							[
+								'name' => 'akismet',
+								'ref' => 'v1'
+							],
+							[
+								'name' => 'advanced-custom-fields-pro'
+							]
+						]);
+					allow($this->whippetLock)->toReceive('getDependencies')->andReturn([], [
+							[
+								'name' => 'akismet',
+								'src' => 'a_src_1',
+								'revision' => 'a_revision_1'
+							],
+							[
+								'name' => 'advanced-custom-fields-pro',
+								'src' => 'a_src_2',
+								'revision' => 'a_revision_2'
+							]
+						]);
+					ob_start();
+					$result = $this->validator->validate();
+					$output = ob_get_clean();
+					expect($output)->toEqual("Valid whippet.json and whippet.lock \n");
+					expect($result)->toBeAnInstanceOf(\Result\Result::class);
+					expect($result->isErr())->toEqual(false);
+				});
+			});
 			context('and everything is good', function () {
 				it('returns an ok result', function () {
 					$whippetContents = '{

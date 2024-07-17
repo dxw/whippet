@@ -32,7 +32,9 @@ class Dependencies extends \RubbishThorClone
 		};
 		$this->command('install', 'Installs dependencies', $inspections_host_option);
 		$this->command('update', 'Updates dependencies to their latest versions. Use deps update [type]/[name] to update a specific dependency', $inspections_host_option);
-		$this->command('validate', 'Validate whippet.json and whippet.lock files');
+		$this->command('validate', 'Validate whippet.json and whippet.lock files', function ($option_parser) {
+			$option_parser->addRule('r|enforce-refs', "Enforce refs for all whippet dependencies");
+		});
 		$this->command('describe', 'List dependencies and their versions');
 	}
 
@@ -78,7 +80,8 @@ class Dependencies extends \RubbishThorClone
 	{
 		$dir = $this->getDirectory();
 		$validator = new \Dxw\Whippet\Dependencies\Validator($this->factory, $dir);
-		$this->exitIfError(($validator->validate()));
+		$enforceRefs = isset($this->options->{'enforce-refs'}) ? true : false;
+		$this->exitIfError(($validator->validate($enforceRefs)));
 	}
 
 	public function describe()
