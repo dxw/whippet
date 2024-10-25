@@ -57,7 +57,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an error', function () {
 					$whippetContents = '{
                         "src": {
-                            "plugins": "git@git.govpress.com:wordpress-plugins/"
+                            "plugins": "git@github.com:dxw-wordpress-plugins/"
                         },
                         "plugins": [
                             {"name": "akismet"},
@@ -77,7 +77,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an error', function () {
 					$whippetContents = '{
                             "src": {
-                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                                "plugins": "git@github.com:dxw-wordpress-plugins/"
                             },
                             "plugins": [
                                 {"name": "akismet"},
@@ -110,7 +110,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an error', function () {
 					$whippetContents = '{
                             "src": {
-                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                                "plugins": "git@github.com:dxw-wordpress-plugins/"
                             },
                             "plugins": [
                                 {"name": "akismet"},
@@ -146,7 +146,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an error', function () {
 					$whippetContents = '{
                             "src": {
-                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                                "plugins": "git@github.com:dxw-wordpress-plugins/"
                             },
                             "plugins": [
                                 {"name": "akismet"},
@@ -185,7 +185,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an error', function () {
 					$whippetContents = '{
 						"src": {
-							"plugins": "git@git.govpress.com:wordpress-plugins/"
+							"plugins": "git@github.com:dxw-wordpress-plugins/"
 						},
 						"plugins": [
 							{"name": "akismet", "ref": "v1"},
@@ -229,7 +229,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an ok result', function () {
 					$whippetContents = '{
 						"src": {
-							"plugins": "git@git.govpress.com:wordpress-plugins/"
+							"plugins": "git@github.com:dxw-wordpress-plugins/"
 						},
 						"plugins": [
 							{"name": "akismet", "ref": "v1"},
@@ -273,7 +273,7 @@ describe(\Dxw\Whippet\Dependencies\Validator::class, function () {
 				it('returns an ok result', function () {
 					$whippetContents = '{
                             "src": {
-                                "plugins": "git@git.govpress.com:wordpress-plugins/"
+                                "plugins": "git@github.com:dxw-wordpress-plugins/"
                             },
                             "plugins": [
                                 {"name": "akismet"},
