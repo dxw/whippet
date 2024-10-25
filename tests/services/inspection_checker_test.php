@@ -31,7 +31,7 @@ class Inspection_Checker_Test extends \PHPUnit\Framework\TestCase
 
 		$my_plugin = [
 			'name' => 'my-plugin',
-			'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
+			'src' => 'git@github.com:dxw-wordpress-plugins/my-plugin',
 			'revision' => '123456',
 		];
 		$checker = new \Dxw\Whippet\Services\InspectionChecker($api);
@@ -46,7 +46,7 @@ class Inspection_Checker_Test extends \PHPUnit\Framework\TestCase
 
 		$my_plugin = [
 			'name' => 'my-plugin',
-			'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
+			'src' => 'git@github.com:dxw-wordpress-plugins/my-plugin',
 			'revision' => '123456',
 		];
 		$checker = new \Dxw\Whippet\Services\InspectionChecker($api);
@@ -75,7 +75,7 @@ EOT;
 
 		$my_plugin = [
 			'name' => 'my-plugin',
-			'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
+			'src' => 'git@github.com:dxw-wordpress-plugins/my-plugin',
 			'revision' => '123456',
 		];
 		$checker = new \Dxw\Whippet\Services\InspectionChecker($api);
@@ -103,7 +103,7 @@ EOT;
 
 		$my_plugin = [
 			'name' => 'my-plugin',
-			'src' => 'git@git.govpress.com:wordpress-plugins/my-plugin',
+			'src' => 'git@github.com:dxw-wordpress-plugins/my-plugin',
 			'revision' => '123456',
 		];
 		$checker = new \Dxw\Whippet\Services\InspectionChecker($api);

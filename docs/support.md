@@ -21,8 +21,8 @@ Manually edit the `whippet.json` file to add an entry to the "plugins" section f
 ```
 {
     "src": {
-        "plugins": "git@git.govpress.com:wordpress-plugins/",
-        "themes": "git@git.govpress.com:wordpress-themes/"
+        "plugins": "git@github.com:dxw-wordpress-plugins/",
+        "themes": "git@github.com:dxw/"
     },
     "plugins": [
         {"name": "akismet"}
@@ -40,8 +40,8 @@ And you want to add a plugin called "Foo", you would edit it to look like this:
 ```
 {
     "src": {
-        "plugins": "git@git.govpress.com:wordpress-plugins/",
-        "themes": "git@git.govpress.com:wordpress-themes/"
+        "plugins": "git@github.com:dxw-wordpress-plugins/",
+        "themes": "git@github.com:dxw/"
     },
     "plugins": [
         {"name": "akismet"},

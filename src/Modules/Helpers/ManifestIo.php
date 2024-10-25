@@ -40,7 +40,7 @@ trait ManifestIo
 
 			if ($plugin == 'source') {
 				if (empty($data)) {
-					echo "Source is empty. It should just specify a repo root:\n\n  source = 'git@git.govpress.com:wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.";
+					echo "Source is empty. It should just specify a repo root:\n\n  source = 'git@github.com:dxw-wordpress-plugins/'\n\nWhippet will attempt to find a source for your plugins by appending the plugin name to this URL.";
 					exit(1);
 				}
 
