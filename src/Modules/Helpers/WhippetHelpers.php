@@ -57,7 +57,7 @@ trait WhippetHelpers
 			$this->application_config = json_decode('
             {
                 "wordpress": {
-                    "repository": "git@git.govpress.com:wordpress/snapshot",
+                    "repository": "git@github.com:dxw/wordpress-snapshot",
                     "revision": "master"
                 }
             }
