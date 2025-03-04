@@ -1,12 +1,13 @@
-<phpunit bootstrap="tests/Helpers.php" backupGlobals="false" colors="true">
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="tests/Helpers.php" backupGlobals="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
   <testsuites>
     <testsuite name="unit_and_integration">
       <directory suffix="_test.php">tests</directory>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">src</directory>
-    </whitelist>
-  </filter>
 </phpunit>

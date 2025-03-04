@@ -45,7 +45,7 @@ class Gitignore
 	private function ensure_closing_newline($ignores)
 	{
 		$index_of_last_line = count($ignores) - 1;
-		$last_line = $ignores[$index_of_last_line];
+		$last_line = $index_of_last_line >= 0 ? $ignores[$index_of_last_line] : 0;
 		$last_character = substr($last_line, -1);
 
 		if ($last_character != "\n") {
