@@ -1,1 +1,2 @@
+brew "rust"
 brew "shellcheck"
