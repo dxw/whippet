@@ -55,7 +55,43 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 			});
 		});
 
-		it('outputs a JSON report and returns an OK result', function () {
+		context('one of the dependency types is empty', function () {
+			it('just returns results for the populated dependency type', function () {
+				$whippetLock = Double::instance([
+					'extends' => '\Dxw\Whippet\Files\WhippetLock',
+					'magicMethods' => true
+				]);
+				allow($whippetLock)->toReceive('getDependencies')->andReturn([], [
+					[
+						'name' => 'plugin-one',
+						'src' => 'plugin-one-src',
+						'revision' => 'commit-hash'
+					],
+				]);
+				allow($this->factory)->toReceive('callStatic')->andReturn(\Result\Result::ok($whippetLock));
+				$git = Double::instance([
+					'extends' => '\Dxw\Whippet\Git\Git',
+					'magicMethods' => true
+				]);
+				allow(\Dxw\Whippet\Git\Git::class)->toBe($git);
+				allow($git)->toReceive('::tag_for_commit')->andReturn(\Result\Result::ok('v3.0'));
+
+				ob_start();
+
+				$result = $this->describer->describe();
+
+				$output = ob_get_clean();
+
+				expect(json_decode($output, null, 5, JSON_OBJECT_AS_ARRAY))->toEqual([
+					'plugins' => [
+						'plugin-one' => 'v3.0'
+					]
+				]);
+				expect($result->isErr())->toBe(false);
+			});
+		});
+
+		it('outputs a per-type alphabetised JSON report and returns an OK result', function () {
 			$whippetLock = Double::instance([
 				'extends' => '\Dxw\Whippet\Files\WhippetLock',
 				'magicMethods' => true
@@ -72,6 +108,11 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 					'src' => 'plugin-one-src',
 					'revision' => 'commit-hash'
 				],
+				[
+					'name' => 'another-plugin',
+					'src' => 'another-plugin-src',
+					'revision' => 'commit-hash'
+				],
 			]);
 			allow($this->factory)->toReceive('callStatic')->andReturn(\Result\Result::ok($whippetLock));
 			$git = Double::instance([
@@ -79,7 +120,7 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 				'magicMethods' => true
 			]);
 			allow(\Dxw\Whippet\Git\Git::class)->toBe($git);
-			allow($git)->toReceive('::tag_for_commit')->andReturn(\Result\Result::ok('v1.0.1'), \Result\Result::ok('v3.0'));
+			allow($git)->toReceive('::tag_for_commit')->andReturn(\Result\Result::ok('v1.0.1'), \Result\Result::ok('v3.0'), \Result\Result::ok('v2.0'));
 
 			ob_start();
 
@@ -92,6 +133,7 @@ describe(Dxw\Whippet\Dependencies\Describer::class, function () {
 					'theme-one' => 'v1.0.1'
 				],
 				'plugins' => [
+					'another-plugin' => 'v2.0',
 					'plugin-one' => 'v3.0'
 				]
 			]);

@@ -32,6 +32,9 @@ class Describer
 				}
 				$results[$type][$dep["name"]] = $result->unwrap();
 			}
+			if (array_key_exists($type, $results) && is_array($results[$type])) {
+				ksort($results[$type]);
+			}
 		}
 		$pretty_results = json_encode($results, JSON_PRETTY_PRINT);
 		printf($pretty_results);

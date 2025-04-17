@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Use current dxw Git URIs for documentation and tests
+- The output of `whippet deps describe` is alphabetised
 
 ## [v2.5.0] - 2024-07-24
 
