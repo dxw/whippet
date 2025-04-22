@@ -16,7 +16,5 @@ if [ -z "$CI" ]; then
 	fi
 fi
 
-if [ -f composer.json ]; then
-	echo "==> Installing PHP dependencies using Composer..."
-	composer install
-fi
+echo "==> Updating Cargo dependencies..."
+cargo update

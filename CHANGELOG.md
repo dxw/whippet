@@ -6,8 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+- Cargo tooling for Rust
+
 ### Changed
 - Use current dxw Git URIs for documentation and tests
+
+### Removed
+- PHP version of Whippet
 
 ## [v2.5.0] - 2024-07-24
 

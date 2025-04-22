@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# script/test: Build the application.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -n "$DEBUG" ]; then
+	set -x
+fi
+
+echo "==> Updating..."
+script/update
+
+echo "==> Cleaning old files..."
+cargo clean
+
+echo "==> Building Whippet..."
+cargo build

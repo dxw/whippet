@@ -1,0 +1,6 @@
+[package]
+name = "whippet"
+version = "3.0.0"
+edition = "2024"
+
+[dependencies]

@@ -11,24 +11,17 @@ if [ -n "$DEBUG" ]; then
 	set -x
 fi
 
-echo "==> Updating..."
-script/update
+echo "==> Building..."
+script/build
 
-TEST_FILE=$1
+echo "==> Running ShellCheck..."
+./.shellcheck.sh
 
-if [ -n "$TEST_FILE" ]; then
-	echo "==> Running the tests matching '$TEST_FILE'..."
-	./vendor/bin/phpunit "$TEST_FILE"
-else
-	echo "==> Running ShellCheck..."
-	./.shellcheck.sh
+echo "==> Running code formatter..."
+cargo fmt
 
-	echo "==> Running php-cs-fixer..."
-	./vendor/bin/php-cs-fixer fix --dry-run -v --diff
+echo "==> Running code linter..."
+cargo clippy
 
-	echo "==> Running Psalm..."
-	./vendor/bin/psalm
-
-	echo "==> Running the tests..."
-	./vendor/bin/phpunit && ./vendor/bin/kahlan spec
-fi
+echo "==> Running the tests..."
+cargo test
