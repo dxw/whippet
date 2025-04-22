@@ -11,8 +11,8 @@ if [ -n "$DEBUG" ]; then
 	set -x
 fi
 
-echo "==> Updating..."
-script/update
+echo "==> Building..."
+script/build
 
 echo "==> Running ShellCheck..."
 ./.shellcheck.sh
