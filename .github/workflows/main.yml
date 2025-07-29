@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php-versions: ['7.4', '8.0', '8.1', '8.2']
+        php-versions: ['8.1', '8.2', '8.3']
       fail-fast: false
     name: PHP ${{ matrix.php-versions }}
     steps:
@@ -35,6 +35,6 @@ jobs:
 
     - name: Run lints and tests
       run: ./script/test
-    
+
     - name: Run Psalm for this specific PHP version
       run: ./vendor/bin/psalm --php-version=${{ matrix.php-versions }}

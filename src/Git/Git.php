@@ -416,6 +416,10 @@ class Git
 			return \Result\Result::err('ref not found');
 		}
 
+		if (!is_array($output)) {
+			return \Result\Result::err('git error');
+		}
+
 		return \Result\Result::ok(explode("\t", $output[0])[0]);
 	}
 
