@@ -78,7 +78,23 @@ class Release
 		// Clone WP and remove things we don't want
 		$wp = new \Dxw\Whippet\Git\Git($this->release_dir);
 		$wp->clone_repo($this->application_config->wordpress->repository);
-		$wp->checkout($this->application_config->wordpress->revision);
+
+		if (getenv('WP_CONFIG_WP_ENVIRONMENT_TYPE') === false) {
+			// On production environments we deploy the WP Core revision
+			// described in the application config, which will normally be the
+			// major version tag of the latest WordPress release, e.g. v6.
+			$wp->checkout($this->application_config->wordpress->revision);
+		} else {
+			// On non-production, e.g. staging environments, we deploy a 'latest'
+			// version tag, if there is one. This allows us to deploy staging
+			// environments "ahead" of production, for example to test a new
+			// version of WordPress that we may not have tested enough to deploy
+			// to production.
+			$wp_version_result = $wp->checkout('latest');
+			if ($wp_version_result === false) {
+				$wp->checkout($this->application_config->wordpress->revision);
+			}
+		}
 
 		foreach (['wp-content', '.git'] as $delete) {
 			if (is_dir("{$this->release_dir}/$delete")) {
