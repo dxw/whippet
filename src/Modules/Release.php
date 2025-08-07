@@ -79,7 +79,8 @@ class Release
 		$wp = new \Dxw\Whippet\Git\Git($this->release_dir);
 		$wp->clone_repo($this->application_config->wordpress->repository);
 
-		if (getenv('WP_CONFIG_WP_ENVIRONMENT_TYPE') === false) {
+		if ((getenv('WP_CONFIG_WP_ENVIRONMENT_TYPE') === false || getenv('WP_CONFIG_WP_ENVIRONMENT_TYPE') === 'production') ||
+			(getenv('WP_ENVIRONMENT_TYPE') === false || getenv('WP_ENVIRONMENT_TYPE') === 'production')) {
 			// On production environments we deploy the WP Core revision
 			// described in the application config, which will normally be the
 			// major version tag of the latest WordPress release, e.g. v6.
