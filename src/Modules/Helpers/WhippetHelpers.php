@@ -6,6 +6,7 @@ trait WhippetHelpers
 {
 	private $plugins_manifest_file;
 	private $project_dir;
+	private $plugin_dir;
 	private $application_config;
 	private $plugins_lock_file;
 

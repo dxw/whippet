@@ -2,6 +2,7 @@
 
 namespace Dxw\Whippet;
 
+/** @psalm-suppress UnusedClass */
 abstract class WhippetGenerator
 {
 	use \Dxw\Whippet\Modules\Helpers\WhippetHelpers;
