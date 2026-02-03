@@ -7,7 +7,6 @@ Whippet has a few basic goals:
 1. Allowing proper build steps to take place, that automate build tasks both during development and deployment
 2. Properly managing plugins and themes, allowing them to be version controlled and easily updated
 3. Managing the creation of releases, including rollbacks
-4. Automating the generation of commonly required objects like new applications and new themes
 
 Whippet can manage plugins and themes and releases.
 
@@ -58,7 +57,6 @@ sudo ln -s $PWD/bin/whippet /usr/local/bin/whippet
 
 The main things you can use Whippet to do are:
 
-* [Generating a Whippet application or theme](docs/generate.md)
 * [Managing themes and plugins](docs/themesandplugins.md)
 * [Deploying a Whippet application](docs/deploy.md)
 

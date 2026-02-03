@@ -1,7 +1,6 @@
 <?php
 
 $finder = \PhpCsFixer\Finder::create()
-->exclude('generators')
 ->exclude('vendor')
 ->in(__DIR__);
 
