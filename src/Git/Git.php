@@ -57,28 +57,32 @@ class Git
 		if (!$this->is_github_repository($repository)) {
 			return;
 		}
-		$baseurl = 'https://api.github.com/repos';  # Must not have a trailing slash.
-		$substrings = explode('/', $repository);
-		$num_substrings = count($substrings);
-		# If the URL is http formatted: ['https', 'github.com', 'org', 'repo']
-		# If the URL is ssh formatted: ['git@git.github.com:org', 'repo']
-		if ($num_substrings < 2) {
-			return false;
-		}
-		$repo =  $substrings[$num_substrings - 1];
-		if (false !== strpos($repo, '.git')) {  # repo.git
-			$repo = str_replace('.git', '', $repo);
-		}
+		try {
+			$baseurl = 'https://api.github.com/repos';  # Must not have a trailing slash.
+			$substrings = explode('/', $repository);
+			$num_substrings = count($substrings);
+			# If the URL is http formatted: ['https', 'github.com', 'org', 'repo']
+			# If the URL is ssh formatted: ['git@git.github.com:org', 'repo']
+			if ($num_substrings < 2) {
+				return false;
+			}
+			$repo =  $substrings[$num_substrings - 1];
+			if (false !== strpos($repo, '.git')) {  # repo.git
+				$repo = str_replace('.git', '', $repo);
+			}
 
-		if (false !== strpos($repository, '@')) {
-			# ssh formatted...
-			$org = explode(':', $substrings[$num_substrings - 2])[1];
-		} else {
-			# http formatted...
-			$org =  $substrings[$num_substrings - 2];
+			if (false !== strpos($repository, '@')) {
+				# ssh formatted...
+				$org = explode(':', $substrings[$num_substrings - 2])[1];
+			} else {
+				# http formatted...
+				$org =  $substrings[$num_substrings - 2];
+			}
+			$api_url = join('/', [$baseurl, $org, $repo]);
+		} catch (\Exception $exn) {
+			echo "WARNING: could not parse URL: " . $repository . " is archived.";
+			return;
 		}
-		$api_url = join('/', [$baseurl, $org, $repo]);
-
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $api_url);
 		curl_setopt($curl, CURLOPT_USERAGENT, 'Whippet');
