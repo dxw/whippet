@@ -18,13 +18,6 @@ class Whippet extends \RubbishThorClone
 			$option_parser->addRule('p|public::', 'Deploy public/ in a given directory, adjacent to the app');
 		});
 
-		$this->command('generate [THING]', 'Generates a thing', function ($option_parser) {
-			$option_parser->addRule('l|list', 'Lists available generators');
-			$option_parser->addRule('d|directory::', "Override the generator's default creation directory with this one");
-			$option_parser->addRule('n|nogitignore', 'When generating a theme, do not generate the accompanying .gitignore file');
-			$option_parser->addRule('r|repository::', 'When generating an app, override the default application.json WordPress repository with this one');
-		});
-
 		$this->command('init [PATH]', 'Creates a new Whippet application at PATH. NB: this is a shortcut for whippet generate -d PATH whippet.', function ($option_parser) {
 			$option_parser->addRule('r|repository::', 'Override the default application.json WordPress repository with this one');
 		});
@@ -64,13 +57,6 @@ class Whippet extends \RubbishThorClone
 		if ($path) {
 			$this->options->directory = $path;
 		}
-
-		(new Modules\Generate())->start('app', $this->options);
-	}
-
-	public function generate($thing = false)
-	{
-		(new Modules\Generate())->start($thing, $this->options);
 	}
 
 	public function dependencies()
