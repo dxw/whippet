@@ -18,7 +18,7 @@ TEST_FILE=$1
 
 if [ -n "$TEST_FILE" ]; then
 	echo "==> Running the tests matching '$TEST_FILE'..."
-	./vendor/bin/phpunit "$TEST_FILE"
+	./vendor/bin/kahlan "$TEST_FILE"
 else
 	echo "==> Running ShellCheck..."
 	./.shellcheck.sh
@@ -30,5 +30,5 @@ else
 	./vendor/bin/psalm
 
 	echo "==> Running the tests..."
-	./vendor/bin/phpunit && ./vendor/bin/kahlan spec
+	./vendor/bin/kahlan spec
 fi
