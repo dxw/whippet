@@ -52,6 +52,8 @@ class Installer
 				return $this->install([$type => [$dep]]);
 			}
 		}
+
+		return \Result\Result::ok();
 	}
 
 	private function install(array $dependencies)
