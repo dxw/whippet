@@ -6,16 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v2.8.0]
 
-## Changed
+### Changed
 - Do not check for archived repo if Git URL cannot be parsed
 - Update Guzzle to v7
 
-## Removed
+### Removed
 - Generators
 
 ## [v2.7.1]
 
-## Fixed
+### Fixed
 - PHP 8 deprecation warning in WhippetHelpers
 
 ## [v2.7.0]
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Brew installs PHP 8
 - Composer expects PHP 8
 
-## Removed
+### Removed
 - Support for PHP versions below 8.1
 - CI/CD pipeline only tests PHP versions 8.{1,2,3}
 
