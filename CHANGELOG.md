@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Do not check for archived repo if Git URL cannot be parsed
+- Update Guzzle to v7
 
 ## Removed
 - Generators
