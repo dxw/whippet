@@ -183,6 +183,38 @@ class Files_WhippetLock_Test extends \PHPUnit\Framework\TestCase
 		]), file_get_contents($dir.'/my-whippet.lock'), true);
 	}
 
+	public function testSaveToPathAlphabeticalOrdering()
+	{
+		$dir = $this->getDir();
+
+		$data = [
+			"plugins" => [
+				[
+					"name" => "zebra"
+				],
+				[
+					"name" => "aardvark"
+				]
+			]
+		];
+
+		$whippetLock = new \Dxw\Whippet\Files\WhippetLock($data);
+
+		$whippetLock->saveToPath($dir.'/my-whippet.lock');
+
+		$this->assertTrue(file_exists($dir.'/my-whippet.lock'));
+		$this->assertEquals([
+			"plugins" => [
+				[
+					"name" => "aardvark"
+				],
+				[
+					"name" => "zebra"
+				]
+			]
+		], json_decode(file_get_contents($dir.'/my-whippet.lock'), true));
+	}
+
 	public function testFromStringInvalid()
 	{
 		$output = \Dxw\Whippet\Files\WhippetLock::fromString('this is not json');
