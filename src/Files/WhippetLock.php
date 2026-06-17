@@ -42,4 +42,16 @@ class WhippetLock extends Base
 			'revision' => $revision,
 		];
 	}
+
+	public function saveToPath($path)
+	{
+		foreach (\Dxw\Whippet\Dependencies\DependencyTypes::getDependencyTypes() as $type) {
+			if (isset($this->data[$type])) {
+				usort($this->data[$type], function ($item1, $item2) {
+					return $item1['name'] <=> $item2['name'];
+				});
+			}
+		}
+		parent::saveToPath($path);
+	}
 }
