@@ -10,7 +10,6 @@ class Whippet extends \RubbishThorClone
 	public function commands()
 	{
 		$this->command('plugins PLUGIN_COMMAND', '');
-		$this->command('theme THEME_COMMAND', '');
 
 		$this->command('deploy DIR', "Generates a working WordPress installation in DIR, based on the current contents of your app's repository", function ($option_parser) {
 			$option_parser->addRule('f|force', 'Force Whippet to deploy, even if a release already exists for this commit');
@@ -28,11 +27,6 @@ class Whippet extends \RubbishThorClone
 	public function plugins()
 	{
 		(new Modules\Plugin())->start(array_slice($this->argv, 1));
-	}
-
-	public function theme()
-	{
-		(new Modules\Theme())->start(array_slice($this->argv, 1));
 	}
 
 	public function deploy($dir)
