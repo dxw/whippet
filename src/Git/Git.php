@@ -118,8 +118,8 @@ class Git
 
 	private function has_revision_locally($revision)
 	{
-		list($output, $return) = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}']);
-		return $return === 0;
+		$result = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}']);
+		return $result[1] === 0;
 	}
 
 	public function hard_reset($revision = 'HEAD')
