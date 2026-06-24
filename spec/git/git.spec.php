@@ -2,103 +2,66 @@
 
 namespace Dxw\Whippet\Git;
 
-class TestGit extends Git
-{
-	public $commandsRun = [];
-	public $commandResults = [];
-
-	protected function run_command(array $cmd, $cd = true)
-	{
-		$commandString = implode(' ', $cmd);
-		$this->commandsRun[] = $cmd;
-
-		foreach ($this->commandResults as $pattern => $result) {
-			if ($commandString === $pattern || strpos($commandString, $pattern) !== false) {
-				return $result;
-			}
-		}
-
-		return [['default output'], 0];
-	}
-}
+use Kahlan\Plugin\Double;
 
 describe(Git::class, function () {
 	describe('->checkout()', function () {
 		context('when revision is already present locally', function () {
 			it('checks out directly and does not fetch or check remote archive status', function () {
-				$git = new TestGit('/path/to/repo');
-				// Mock the check for revision existence to return success (exit code 0)
-				$git->commandResults = [
-					'cat-file' => [[''], 0],
-					'checkout' => [['Already on commit'], 0]
-				];
+				$git = Double::instance(['extends' => Git::class, 'args' => ['/path/to/repo']]);
+				$commandsRun = [];
+
+				allow($git)->toReceive('run_command')->andRun(function ($cmd, $cd = true) use (&$commandsRun) {
+					$commandsRun[] = $cmd;
+					$cmdStr = implode(' ', $cmd);
+
+					if (strpos($cmdStr, 'cat-file') !== false) {
+						return [[], 0];
+					} elseif (strpos($cmdStr, 'checkout') !== false) {
+						return [['Already on commit'], 0];
+					}
+
+					return [[], 0];
+				});
 
 				$result = $git->checkout('a1b2c3d4e5f6');
 
 				expect($result)->toBe(true);
-
-				$hasCatFile = false;
-				$hasCheckoutOnly = false;
-				$hasFetch = false;
-				$hasRemoteGetUrl = false;
-
-				foreach ($git->commandsRun as $cmd) {
-					$cmdStr = implode(' ', $cmd);
-					if (strpos($cmdStr, 'cat-file') !== false) {
-						$hasCatFile = true;
-					}
-					if (strpos($cmdStr, 'checkout') !== false && strpos($cmdStr, 'fetch') === false) {
-						$hasCheckoutOnly = true;
-					}
-					if (strpos($cmdStr, 'fetch') !== false) {
-						$hasFetch = true;
-					}
-					if (strpos($cmdStr, 'remote get-url') !== false) {
-						$hasRemoteGetUrl = true;
-					}
-				}
-
-				expect($hasCatFile)->toBe(true);
-				expect($hasCheckoutOnly)->toBe(true);
-				expect($hasFetch)->toBe(false);
-				expect($hasRemoteGetUrl)->toBe(false);
+				expect($commandsRun)->toBe([
+					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
+					['git', 'checkout', 'a1b2c3d4e5f6']
+				]);
 			});
 		});
 
 		context('when revision is not present locally', function () {
 			it('checks if the revision exists locally (fails), checks remote URL, fetches, and then checks out', function () {
-				$git = new TestGit('/path/to/repo');
-				// Mock the check for revision existence to fail (exit code 1)
-				$git->commandResults = [
-					'cat-file' => [['not found'], 1],
-					'remote get-url' => [['https://example.org/repo'], 0],
-					'fetch' => [['fetched successfully'], 0]
-				];
+				$git = Double::instance(['extends' => Git::class, 'args' => ['/path/to/repo']]);
+				$commandsRun = [];
+
+				allow($git)->toReceive('run_command')->andRun(function ($cmd, $cd = true) use (&$commandsRun) {
+					$commandsRun[] = $cmd;
+					$cmdStr = implode(' ', $cmd);
+
+					if (strpos($cmdStr, 'cat-file') !== false) {
+						return [['not found'], 1];
+					} elseif (strpos($cmdStr, 'remote get-url') !== false) {
+						return [['https://example.org/repo'], 0];
+					} elseif (strpos($cmdStr, 'fetch') !== false) {
+						return [['fetched successfully'], 0];
+					}
+
+					return [[], 0];
+				});
 
 				$result = $git->checkout('a1b2c3d4e5f6');
 
 				expect($result)->toBe(true);
-
-				$hasCatFile = false;
-				$hasFetchAndCheckout = false;
-				$hasRemoteGetUrl = false;
-
-				foreach ($git->commandsRun as $cmd) {
-					$cmdStr = implode(' ', $cmd);
-					if (strpos($cmdStr, 'cat-file') !== false) {
-						$hasCatFile = true;
-					}
-					if (strpos($cmdStr, 'fetch') !== false && strpos($cmdStr, 'checkout') !== false) {
-						$hasFetchAndCheckout = true;
-					}
-					if (strpos($cmdStr, 'remote get-url') !== false) {
-						$hasRemoteGetUrl = true;
-					}
-				}
-
-				expect($hasCatFile)->toBe(true);
-				expect($hasRemoteGetUrl)->toBe(true);
-				expect($hasFetchAndCheckout)->toBe(true);
+				expect($commandsRun)->toBe([
+					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
+					['git', 'remote', 'get-url', 'origin'],
+					['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', 'a1b2c3d4e5f6']
+				]);
 			});
 		});
 	});
