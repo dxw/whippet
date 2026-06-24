@@ -106,9 +106,20 @@ class Git
 			$this->check_is_archived_github_repository($output[0]);
 		}
 
+		if ($this->has_revision_locally($revision)) {
+			list($output, $return) = $this->run_command(['git', 'checkout', $revision]);
+			return $this->check_git_return('Checkout failed', $return, $output);
+		}
+
 		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', $revision]);
 
 		return $this->check_git_return('Checkout failed', $return, $output);
+	}
+
+	private function has_revision_locally($revision)
+	{
+		$result = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}']);
+		return $result[1] === 0;
 	}
 
 	public function hard_reset($revision = 'HEAD')
