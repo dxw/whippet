@@ -7,7 +7,7 @@ use Kahlan\Plugin\Double;
 describe(Git::class, function () {
 	describe('->checkout()', function () {
 		context('when revision is already present locally', function () {
-			it('checks out directly and does not fetch or check remote archive status', function () {
+			it('checks remote URL and checks out directly without fetching', function () {
 				$git = Double::instance(['extends' => Git::class, 'args' => ['/path/to/repo']]);
 				$commandsRun = [];
 
@@ -15,7 +15,9 @@ describe(Git::class, function () {
 					$commandsRun[] = $cmd;
 					$cmdStr = implode(' ', $cmd);
 
-					if (strpos($cmdStr, 'cat-file') !== false) {
+					if (strpos($cmdStr, 'remote get-url') !== false) {
+						return [['https://example.org/repo'], 0];
+					} elseif (strpos($cmdStr, 'cat-file') !== false) {
 						return [[], 0];
 					} elseif (strpos($cmdStr, 'checkout') !== false) {
 						return [['Already on commit'], 0];
@@ -28,6 +30,7 @@ describe(Git::class, function () {
 
 				expect($result)->toBe(true);
 				expect($commandsRun)->toBe([
+					['git', 'remote', 'get-url', 'origin'],
 					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
 					['git', 'checkout', 'a1b2c3d4e5f6']
 				]);
@@ -35,7 +38,7 @@ describe(Git::class, function () {
 		});
 
 		context('when revision is not present locally', function () {
-			it('checks if the revision exists locally (fails), checks remote URL, fetches, and then checks out', function () {
+			it('checks remote URL, checks if the revision exists locally (fails), fetches, and then checks out', function () {
 				$git = Double::instance(['extends' => Git::class, 'args' => ['/path/to/repo']]);
 				$commandsRun = [];
 
@@ -58,8 +61,8 @@ describe(Git::class, function () {
 
 				expect($result)->toBe(true);
 				expect($commandsRun)->toBe([
-					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
 					['git', 'remote', 'get-url', 'origin'],
+					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
 					['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', 'a1b2c3d4e5f6']
 				]);
 			});
