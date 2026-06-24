@@ -101,6 +101,11 @@ class Git
 
 	public function checkout($revision)
 	{
+		if ($this->has_revision_locally($revision)) {
+			list($output, $return) = $this->run_command(['git', 'checkout', $revision]);
+			return $this->check_git_return('Checkout failed', $return, $output);
+		}
+
 		list($output, $return) = $this->run_command(['git', 'remote', 'get-url', 'origin']);
 		if ($return === 0) {
 			$this->check_is_archived_github_repository($output[0]);
@@ -109,6 +114,12 @@ class Git
 		list($output, $return) = $this->run_command(['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', $revision]);
 
 		return $this->check_git_return('Checkout failed', $return, $output);
+	}
+
+	private function has_revision_locally($revision)
+	{
+		list($output, $return) = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}']);
+		return $return === 0;
 	}
 
 	public function hard_reset($revision = 'HEAD')
