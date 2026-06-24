@@ -16,7 +16,7 @@ namespace Dxw\Whippet\Git;
  **/
 class Git
 {
-	protected $command_separators = ['&&', '||'];
+	protected $command_separators = ['&&', '||', '2>/dev/null'];
 	private $repo_path;
 
 	public function __construct($repo_path)
@@ -118,7 +118,7 @@ class Git
 
 	private function has_revision_locally($revision)
 	{
-		$result = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}']);
+		$result = $this->run_command(['git', 'cat-file', '-e', $revision . '^{commit}', '2>/dev/null']);
 		return $result[1] === 0;
 	}
 
