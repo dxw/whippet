@@ -31,7 +31,7 @@ describe(Git::class, function () {
 				expect($result)->toBe(true);
 				expect($commandsRun)->toBe([
 					['git', 'remote', 'get-url', 'origin'],
-					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
+					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}', '2>/dev/null'],
 					['git', 'checkout', 'a1b2c3d4e5f6']
 				]);
 			});
@@ -62,7 +62,7 @@ describe(Git::class, function () {
 				expect($result)->toBe(true);
 				expect($commandsRun)->toBe([
 					['git', 'remote', 'get-url', 'origin'],
-					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}'],
+					['git', 'cat-file', '-e', 'a1b2c3d4e5f6^{commit}', '2>/dev/null'],
 					['git', 'fetch', '-a', '--force', '&&', 'git', 'checkout', 'a1b2c3d4e5f6']
 				]);
 			});
