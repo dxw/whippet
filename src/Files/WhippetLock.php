@@ -43,6 +43,7 @@ class WhippetLock extends Base
 		];
 	}
 
+	#[\Override]
 	public function saveToPath($path)
 	{
 		foreach (\Dxw\Whippet\Dependencies\DependencyTypes::getDependencyTypes() as $type) {

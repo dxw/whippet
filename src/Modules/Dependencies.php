@@ -25,6 +25,7 @@ class Dependencies extends \RubbishThorClone
 		$this->inspections_api = new \Dxw\Whippet\Services\InspectionsApi($inspections_api_host, $inspections_api_path, $json_api);
 	}
 
+	#[\Override]
 	public function commands()
 	{
 		$inspections_host_option = function ($option_parser) {
