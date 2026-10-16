@@ -1,3 +1,3 @@
-brew "php@8.2"
+brew "php@8.3"
 brew "composer"
 brew "shellcheck"
