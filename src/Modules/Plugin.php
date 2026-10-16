@@ -11,6 +11,7 @@ class Plugin extends \RubbishThorClone
 	private $plugin_dir;
 	private $plugins_locked;
 
+	#[\Override]
 	public function commands()
 	{
 		$this->command('install', 'Deploys the current set of plugins into your project');

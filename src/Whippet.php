@@ -7,6 +7,7 @@ namespace Dxw\Whippet;
  */
 class Whippet extends \RubbishThorClone
 {
+	#[\Override]
 	public function commands()
 	{
 		$this->command('plugins PLUGIN_COMMAND', '');
