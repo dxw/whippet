@@ -19,6 +19,7 @@ class InspectionChecker
 		switch ($type) {
 			case 'themes':
 				return \Result\Result::ok('');
+			case 'mu-plugins':
 			case 'plugins':
 				return $this->checkPlugin($dependency);
 			default:
