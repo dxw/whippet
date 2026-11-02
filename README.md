@@ -64,6 +64,25 @@ For dxw developers who will encounter Whippet in a support context.
 
 See the [Support](docs/support.md) doc.
 
+## Development and releases
+
+When a new version is ready for release, open a PR updating the changelog accordingly.
+
+Immediately after merging the release PR, you must:
+
+1. Apply the version tag (format `v1.2.3`) to the latest commit on the `main` branch. You can either do this locally, then push the tag, or use GitHub's "Release" UI for this.
+2. Apply the appropriate major version tag (format `v1`) to that same commit:
+
+   ```sh
+   git checkout main
+   git pull && git fetch --tags -f
+   ## Where v1.2.3 is the latest version you created in step 1, and `v1` is the respective major version
+   git tag -f v1 v1.2.3
+   git push origin v1 -f
+   ```
+
+3. Open a PR updating the [dxw Homebrew tap](https://github.com/dxw/homebrew-tap) to point to the latest release
+
 ## Licence
 
 [MIT](COPYING.txt)
